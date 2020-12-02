@@ -2,7 +2,7 @@
 ## Infraestructura Big Data usando docker-compose.
 <br> En este contendeor podras encontrar HDFS, Hive, Spark, Hue, Zeppelin, Kafka, Zookeeper y NiFi
 <br> Para la implementacion de este contenedor solo basta con descargar (clonar) este repositorio y, proceder a descomprimir en tu maquina local. 
-<br> Luego, desde la linea de comando, ubicate sobre el directorio Hadoop y ejecuta `docker-compose up`
+<br> Luego, desde la linea de comando, ubicate sobre el directorio Hadoop y ejecuta `docker-compose up -d`
 <br>Con esto completamos la instalación de Hadoop – HDFS -Spark -Hive- NiFi.
 ## Podemos comprobar la correcta ejecución de la siguiente forma. 
 <br>En un browser ingresar a http://localhost: `numero de puerto`
