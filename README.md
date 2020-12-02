@@ -12,8 +12,10 @@
 <br>** 8081 (Spark  Worker)
 <br>** 8888 (Hue. Se solicitará la creación de una cuenta. Ingrese admin como usuario y admin como password)
 <br>** 9999 (NiFi)
+<br>** 3030 (Kafka - Topics)
 <br>** 18630 (StreamSets. Utilice admin / admin)
 <br>** 19090 (zeppelin)
+
 ### Para el uso de Hive 
 <br> Ejecute en la consola `sudo docker exec -it hive-server bash`
 <br> Luego ingrese al directorio donde esta alojado Hive, para esto deberá ejecutar el comando `cd /opt/hive/bin`
@@ -32,8 +34,8 @@
 <br> Una vez dentro de dicho directorio, ejecute el siguiente comando  `./pyspark`
 ### Para el uso de Kafka
 <br> Ejecute en la consola `sudo docker exec -it kafka bash`
-<br> Luego ingrese al directorio donde esta alojado Kafka, para esto deberá ejecutar el comando `cd /opt/kafka/bin`
-<br> Una vez dentro del directorio, podra ejecutar `./kafka-topics.sh` para proceder con la creacion de los topics
+<br> Luego ingrese al directorio donde esta alojado Kafka, para esto deberá ejecutar el comando `cd /usr/local/bin`
+<br> Una vez dentro del directorio, podra ejecutar `./kafka-topics` para proceder con la creacion de los topics
 
 
 <br> Mas info en [Blog de Julio Lopez-Nunez](https://juliopezblog.wordpress.com/)..
