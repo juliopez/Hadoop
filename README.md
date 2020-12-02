@@ -25,7 +25,7 @@
 ### Para el uso de Spark (Scala)
 <br> Ejecute en la consola `sudo docker exec -it spark-master bash`
 <br> Luego ingrese al directorio donde esta alojado Spark, para esto deberá ejecutar el comando `cd /spark/bin`
-<br> Una vez dentro de dicho directorio, ejecute Hive el siguiente comando  `./spark-shell`
+<br> Una vez dentro de dicho directorio, ejecute el siguiente comando  `./spark-shell`
 ### Para el uso de pyspark (Python)
 <br> Ejecute en la consola `sudo docker exec -it spark-master bash`
 <br> Luego ingrese al directorio donde esta alojado Spark, para esto deberá ejecutar el comando `cd /spark/bin`
