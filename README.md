@@ -30,6 +30,10 @@
 <br> Ejecute en la consola `sudo docker exec -it spark-master bash`
 <br> Luego ingrese al directorio donde esta alojado Spark, para esto deberá ejecutar el comando `cd /spark/bin`
 <br> Una vez dentro de dicho directorio, ejecute el siguiente comando  `./pyspark`
+### Para el uso de Kafka
+<br> Ejecute en la consola `sudo docker exec -it kafka bash`
+<br> Luego ingrese al directorio donde esta alojado Kafka, para esto deberá ejecutar el comando `cd /opt/kafka/bin`
+<br> Una vez dentro del directorio, podra ejecutar `./kafka-topics.sh` para proceder con la creacion de los topics
 
 
 <br> Mas info en [Blog de Julio Lopez-Nunez](https://juliopezblog.wordpress.com/)..
