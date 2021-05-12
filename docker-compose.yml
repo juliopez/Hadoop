@@ -157,10 +157,10 @@ services:
           - /tmp/mysql/data:/var/lib/mysql
           - ./init.sql:/data/application/init.sql
       environment:
-          MYSQL_ROOT_USER: root
+          MYSQL_ROOT_USER: hueroot
           MYSQL_ROOT_PASSWORD: secret
           MYSQL_DATABASE: hue
-          MYSQL_USER: root
+          MYSQL_USER: hueroot
           MYSQL_PASSWORD: secret
       networks:
         net_pet:
@@ -179,11 +179,10 @@ services:
         ipv4_address: 172.27.1.15
 
   kafka:
-    image: landoop/fast-data-dev:latest
+    image: wurstmeister/kafka:2.12-2.3.0
     container_name: kafka
     ports:
       - "9092:9092"
-      - "3030:3030"    
     environment:
       KAFKA_ADVERTISED_HOST_NAME: 172.27.1.16
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
