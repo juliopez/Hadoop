@@ -109,25 +109,10 @@ services:
         ipv4_address: 172.27.1.11
 
   zeppelin:
-    image: openkbs/docker-spark-bde2020-zeppelin
+    image: apache/zeppelin:0.8.0
     container_name: zeppelin
-    environment:
-      CORE_CONF_fs_defaultFS: "hdfs://namenode:8020"
-      SPARK_MASTER: "spark://spark-master:7077"
-      MASTER: "spark://spark-master:7077"
-      SPARK_MASTER_URL: spark://spark-master:7077
-      ZEPPELIN_PORT: 8080
-      ZEPPELIN_JAVA_OPTS:
-        -Dspark.driver.memory=1g
-        -Dspark.executor.memory=2g
     ports:
       - 19090:8080
-    env_file:
-      - ./hadoop-hive.env
-    volumes:
-      - /tmp/simple-demo/zeppelin/data:/usr/lib/zeppelin/data:rw
-      - /tmp/simple-demo/zeppelin/notebook:/usr/lib/zeppelin/notebook:rw
-    command: /usr/lib/zeppelin/bin/zeppelin.sh
     networks:
       net_pet:
         ipv4_address: 172.27.1.12
@@ -160,8 +145,8 @@ services:
           MYSQL_ROOT_USER: hueroot
           MYSQL_ROOT_PASSWORD: secret
           MYSQL_DATABASE: hue
-          MYSQL_USER: hueroot
           MYSQL_PASSWORD: secret
+          MYSQL_USER: hueroot
       networks:
         net_pet:
           ipv4_address: 172.27.1.14
@@ -179,11 +164,11 @@ services:
         ipv4_address: 172.27.1.15
 
   kafka:
-    image: lensesio/fast-data-dev:latest
+    image: landoop/fast-data-dev:latest
     container_name: kafka
     ports:
       - "9092:9092"
-      - "3030:3030"
+      - "3030:3030"    
     environment:
       KAFKA_ADVERTISED_HOST_NAME: 172.27.1.16
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
@@ -221,3 +206,4 @@ networks:
       driver: default
       config:
         - subnet: 172.27.0.0/16
+
