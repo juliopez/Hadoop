@@ -1,3 +1,8 @@
+📺 Repositorio oficial del video de YouTube:
+👉 https://youtu.be/qjjBWUUJq3s
+
+⭐ Si este repositorio te resulta útil, considera darle una estrella
+
 # Hadoop / Docker-Compose by @Juliopez
 ## Infraestructura Big Data usando docker-compose.
 <br> En este contendeor podras encontrar HDFS, Hive, Spark, Hue, Zeppelin, Kafka, Zookeeper y NiFi
