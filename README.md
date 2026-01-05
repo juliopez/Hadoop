@@ -1,10 +1,12 @@
 📺 Repositorio oficial del video de YouTube:
 👉 https://youtu.be/qjjBWUUJq3s
 
-⭐ Si este repositorio te resulta útil, considera darle una estrella
+⭐ Si este repositorio te resulta útil para estudiar o practicar, considera darle una estrella
 
 # Hadoop / Docker-Compose by @Juliopez
 ## Infraestructura Big Data usando docker-compose.
+📌 Repositorio con fines educativos para aprendizaje y práctica de Big Data.
+
 <br> En este contendeor podras encontrar HDFS, Hive, Spark, Hue, Zeppelin, Kafka, Zookeeper y NiFi
 <br> Para la implementacion de este contenedor solo basta con descargar (clonar) este repositorio y, proceder a descomprimir en tu maquina local. 
 <br> Luego, desde la linea de comando, ubicate sobre el directorio Hadoop y ejecuta `docker-compose up`
