@@ -1,9 +1,22 @@
+# Hadoop / Docker-Compose by @juliopez
+
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18968438.svg)](https://doi.org/10.5281/zenodo.18968438)
+![License](https://img.shields.io/badge/license-GPL--2.0-blue)
+![Status](https://img.shields.io/badge/status-active-green)
+
 📺 Repositorio oficial del video de YouTube:
 👉 https://youtu.be/qjjBWUUJq3s
 
 ⭐ Si este repositorio te resulta útil para estudiar o practicar, considera darle una estrella
 
-# Hadoop / Docker-Compose by @Juliopez
+## How to cite this repository
+
+If you use this infrastructure in research or technical work, please cite:
+
+López-Núñez, J. (2026).  
+Hadoop Infrastructure for Big Data using Docker Compose (Version 1.0.0) [Software].  
+Zenodo. https://doi.org/10.5281/zenodo.18968438
+
 ## Infraestructura Big Data usando docker-compose.
 📌 Repositorio con fines educativos para aprendizaje y práctica de Big Data.
 
