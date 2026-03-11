@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+title: "Hadoop Infrastructure for Big Data using Docker Compose"
+message: "If you use this repository, please cite it as follows."
+
+type: software
+
+authors:
+  - family-names: "López Núñez"
+    given-names: "Julio"
+    affiliation: "Universidad de Konstanz"
+    orcid: "https://orcid.org/0000-0002-7920-1563"
+
+version: 1.0.0
+date-released: 2026
+
+doi: 10.5281/zenodo.18968438
+
+repository-code: https://github.com/juliopez/Hadoop
+
+license: GPL-2.0
+
+
