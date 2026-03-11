@@ -4,6 +4,11 @@
 ![License](https://img.shields.io/badge/license-GPL--2.0-blue)
 ![Status](https://img.shields.io/badge/status-active-green)
 
+Infrastructure for Big Data experimentation using the Hadoop ecosystem deployed with Docker Compose.
+
+This repository provides a reproducible environment including Hadoop, Spark, Hive and NiFi for learning, experimentation and technical demonstrations.
+
+
 📺 Repositorio oficial del video de YouTube:
 👉 https://youtu.be/qjjBWUUJq3s
 
@@ -16,6 +21,10 @@ If you use this infrastructure in research or technical work, please cite:
 López-Núñez, J. (2026).  
 Hadoop Infrastructure for Big Data using Docker Compose (Version 1.0.0) [Software].  
 Zenodo. https://doi.org/10.5281/zenodo.18968438
+
+## License
+
+This project is distributed under the GPL-2.0 license.
 
 ## Infraestructura Big Data usando docker-compose.
 📌 Repositorio con fines educativos para aprendizaje y práctica de Big Data.
