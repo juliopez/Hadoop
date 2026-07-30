@@ -1687,7 +1687,7 @@ Al finalizar este laboratorio, el estudiante habrá desarrollado una aplicación
 
 ### Consulta rápida
 
-Como complemento a los contenidos desarrollados en este capítulo, al final del mismo se incorpora el **[Anexo D. Principales comandos de PySpark](#anexo-d-pyspark)**. Este anexo reúne los comandos más utilizados para la creación de aplicaciones con PySpark, organizados por categorías como gestión de la **SparkSession**, lectura y escritura de datos, manipulación de **DataFrames**, transformaciones, acciones, funciones integradas, consultas SQL y persistencia. Se recomienda utilizarlo como material de consulta durante el desarrollo de los laboratorios, proyectos y evaluaciones del curso.
+Como complemento a los contenidos desarrollados en este capítulo, al final del mismo se incorpora el **[Anexo D. Principales comandos de PySpark](https://github.com/juliopez/Hadoop/blob/master/material_docente/libro/anexos/anexo-d-pyspark.md**. Este anexo reúne los comandos más utilizados para la creación de aplicaciones con PySpark, organizados por categorías como gestión de la **SparkSession**, lectura y escritura de datos, manipulación de **DataFrames**, transformaciones, acciones, funciones integradas, consultas SQL y persistencia. Se recomienda utilizarlo como material de consulta durante el desarrollo de los laboratorios, proyectos y evaluaciones del curso.
 
 ---
 
