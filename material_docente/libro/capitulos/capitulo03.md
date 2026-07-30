@@ -813,7 +813,7 @@ El almacenamiento distribuido constituye la base sobre la cual se construyen las
 
 ### Consulta rápida
 
-Como complemento a los contenidos desarrollados en este capítulo, revisar el [Anexo A. Comandos básicos de HDFS](https://github.com/juliopez/Hadoop/blob/master/material_docente/libro/anexos/anexo-a-comandos-basicos-de-hdfs.md), el cual reúne las principales instrucciones utilizadas para administrar archivos, directorios y el clúster Hadoop desde la línea de comandos. Este anexo está concebido como una guía de referencia permanente y será utilizado de forma recurrente en los laboratorios de Apache Hive, Apache Spark, Apache Kafka y Apache NiFi desarrollados en los capítulos posteriores.
+Como complemento a los contenidos desarrollados en este capítulo, revisar el **[Anexo A. Comandos básicos de HDFS](https://github.com/juliopez/Hadoop/blob/master/material_docente/libro/anexos/anexo-a-comandos-basicos-de-hdfs.md)**, el cual reúne las principales instrucciones utilizadas para administrar archivos, directorios y el clúster Hadoop desde la línea de comandos. Este anexo está concebido como una guía de referencia permanente y será utilizado de forma recurrente en los laboratorios de Apache Hive, Apache Spark, Apache Kafka y Apache NiFi desarrollados en los capítulos posteriores.
 
 ---
 
