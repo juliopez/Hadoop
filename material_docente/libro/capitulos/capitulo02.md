@@ -191,7 +191,7 @@ Considerando las características del problema, se propone utilizar una arquitec
 La arquitectura general del proyecto se presenta en la Figura 2.2.
 
 <p align="center">
-  <img src="images/cap02/Figura_2_2_Arquitectura_SmartCity_Analytics.png"
+  <img src="../images/cap02/Figura_2_2_Arquitectura_SmartCity_Analytics.png"
        alt="Arquitectura general del caso SmartCity Analytics"
        width="900">
 </p>
