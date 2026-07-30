@@ -1167,7 +1167,7 @@ Cada estudiante deberá entregar:
 
 ### Consulta rápida
 
-Como complemento a los contenidos desarrollados en este capítulo, al final del mismo se incorpora el **[Anexo C. Principales comandos de Apache Spark (PySpark)](#anexo-c-spark.md)**, el cual reúne las instrucciones más utilizadas durante el desarrollo de aplicaciones con Apache Spark. Este material constituye una guía de consulta rápida para la creación de sesiones de trabajo, manipulación de DataFrames, transformaciones, acciones, consultas mediante Spark SQL, lectura y escritura de datos, así como la ejecución de aplicaciones utilizando `spark-submit`. Se recomienda utilizar este anexo como apoyo permanente durante la realización de los laboratorios y proyectos del curso.
+Como complemento a los contenidos desarrollados en este capítulo, al final del mismo se incorpora el **[Anexo C. Principales comandos de Apache Spark (PySpark)](https://github.com/juliopez/Hadoop/blob/master/material_docente/libro/anexos/anexo-c-spark.md)**, el cual reúne las instrucciones más utilizadas durante el desarrollo de aplicaciones con Apache Spark. Este material constituye una guía de consulta rápida para la creación de sesiones de trabajo, manipulación de DataFrames, transformaciones, acciones, consultas mediante Spark SQL, lectura y escritura de datos, así como la ejecución de aplicaciones utilizando `spark-submit`. Se recomienda utilizar este anexo como apoyo permanente durante la realización de los laboratorios y proyectos del curso.
 
 ---
 
