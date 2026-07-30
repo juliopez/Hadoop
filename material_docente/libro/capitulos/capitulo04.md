@@ -931,7 +931,7 @@ En los sistemas tradicionales, las consultas SQL se ejecutan sobre una base de d
 
 ### Consulta rápida
 
-Como complemento a los contenidos desarrollados en este capítulo, al final del mismo se incorpora el [**Anexo B. Principales comandos de Apache Hive**](#anexo-b-anexo-hive), el cual reúne las instrucciones más utilizadas del lenguaje HiveQL para la administración de bases de datos, tablas y consultas analíticas. Este anexo está concebido como una guía de referencia permanente y será utilizado de forma recurrente en los laboratorios de Apache Spark, Apache Kafka y Apache NiFi desarrollados en los capítulos posteriores.
+Como complemento a los contenidos desarrollados en este capítulo, al final del mismo se incorpora el [**Anexo B. Principales comandos de Apache Hive**](https://github.com/juliopez/Hadoop/blob/master/material_docente/libro/anexos/anexo-b-anexo-hive.md), el cual reúne las instrucciones más utilizadas del lenguaje HiveQL para la administración de bases de datos, tablas y consultas analíticas. Este anexo está concebido como una guía de referencia permanente y será utilizado de forma recurrente en los laboratorios de Apache Spark, Apache Kafka y Apache NiFi desarrollados en los capítulos posteriores.
 
 ---
 
