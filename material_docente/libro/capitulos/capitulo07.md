@@ -2506,7 +2506,7 @@ Al finalizar esta actividad el estudiante habrá implementado exitosamente un si
 ---
 
 ### Consulta rápida
-Durante el desarrollo de las actividades y del laboratorio de este capítulo puede ser necesario consultar la sintaxis de los principales comandos de administración de Apache Kafka. Para facilitar su ejecución, al final **[Anexo E. Guía rápida de comandos de Apache Kafka](#anexo-e-kafka.md)**, donde se presenta una recopilación organizada de los comandos más utilizados para la creación y administración de *Topics*, gestión de *Consumer Groups*, publicación y consumo de eventos, así como operaciones básicas de administración del clúster.
+Durante el desarrollo de las actividades y del laboratorio de este capítulo puede ser necesario consultar la sintaxis de los principales comandos de administración de Apache Kafka. Para facilitar su ejecución, al final **[Anexo E. Guía rápida de comandos de Apache Kafka](https://github.com/juliopez/Hadoop/blob/master/material_docente/libro/anexos/anexo-e-kafka.md)**, donde se presenta una recopilación organizada de los comandos más utilizados para la creación y administración de *Topics*, gestión de *Consumer Groups*, publicación y consumo de eventos, así como operaciones básicas de administración del clúster.
 
 ---
 
