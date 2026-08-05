@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Simulador Interactivo de MapReduce</title>
+  <style>
+    :root{--bg:#f5f7fb;--panel:#fff;--text:#1f2937;--muted:#6b7280;--border:#dbe3ee;--input:#2563eb;--split:#0f766e;--map:#7c3aed;--shuffle:#d97706;--reduce:#dc2626;--output:#15803d;--shadow:0 12px 30px rgba(15,23,42,.08)}
+    *{box-sizing:border-box} body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text)}
+    header{background:linear-gradient(135deg,#0f172a,#1e3a8a);color:#fff;padding:28px 20px;text-align:center} header h1{margin:0 0 8px;font-size:clamp(1.8rem,4vw,2.8rem)} header p{margin:0;opacity:.9}
+    main{width:min(1200px,calc(100% - 32px));margin:24px auto 48px}.panel{background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:20px;box-shadow:var(--shadow);margin-bottom:20px}.grid{display:grid;grid-template-columns:1.3fr .7fr;gap:18px}
+    textarea{width:100%;min-height:150px;resize:vertical;border:1px solid var(--border);border-radius:12px;padding:14px;font:inherit;line-height:1.5;background:#fbfdff}label{display:block;font-weight:700;margin-bottom:8px}.controls{display:grid;gap:12px;align-content:start}.controls input[type="range"]{width:100%}
+    .button-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}button{border:0;border-radius:10px;padding:11px 16px;font-weight:700;cursor:pointer;transition:.15s}button:hover{transform:translateY(-1px)}button:disabled{opacity:.45;cursor:not-allowed;transform:none}.primary{background:#2563eb;color:#fff}.secondary{background:#e5e7eb;color:#111827}.danger{background:#fee2e2;color:#991b1b}
+    .pipeline{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:18px}.stage{padding:14px 10px;border-radius:12px;color:#fff;text-align:center;font-weight:800;opacity:.35;transition:.25s}.stage.active{opacity:1;transform:translateY(-2px);box-shadow:0 8px 18px rgba(15,23,42,.15)}.s-input{background:var(--input)}.s-split{background:var(--split)}.s-map{background:var(--map)}.s-shuffle{background:var(--shuffle)}.s-reduce{background:var(--reduce)}.s-output{background:var(--output)}
+    .step-title{font-size:1.25rem;margin:0 0 6px}.step-description{margin:0 0 18px;color:var(--muted)}.workspace{min-height:300px;display:grid;gap:14px}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}.card{border:1px solid var(--border);border-radius:14px;padding:14px;background:#fff}.card h3{margin:0 0 10px;font-size:1rem}
+    .tokens,.pairs,.group-list,.results{display:flex;flex-wrap:wrap;gap:8px}.chip{padding:7px 10px;border-radius:999px;background:#eef2ff;border:1px solid #c7d2fe;font-size:.9rem;font-weight:700}.pair{padding:7px 9px;border-radius:8px;background:#f5f3ff;border:1px solid #ddd6fe;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.88rem}.group{border-left:5px solid var(--shuffle);background:#fff7ed;padding:10px 12px;border-radius:8px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}.result{border-left:5px solid var(--output);background:#f0fdf4;padding:10px 12px;border-radius:8px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-weight:800}
+    .log{max-height:230px;overflow:auto;background:#0f172a;color:#d1fae5;border-radius:12px;padding:14px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.88rem;line-height:1.55;white-space:pre-wrap}.note{background:#eff6ff;border-left:5px solid #2563eb;padding:12px 14px;border-radius:10px;color:#1e3a8a}.fault-box{margin-top:14px;border:1px dashed #f59e0b;background:#fffbeb;border-radius:12px;padding:12px}.fault-status{font-weight:800;color:#92400e}
+    @media(max-width:820px){.grid{grid-template-columns:1fr}.pipeline{grid-template-columns:repeat(2,1fr)}}@media(max-width:480px){.pipeline{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<header><h1>Simulador Interactivo de MapReduce</h1><p>Conteo de palabras mediante Input, Split, Map, Shuffle &amp; Sort, Reduce y Output.</p></header>
+<main>
+  <section class="panel grid">
+    <div>
+      <label for="inputText">Texto de entrada</label>
+      <textarea id="inputText">Big Data permite procesar grandes volúmenes de datos. Big Data utiliza procesamiento distribuido. MapReduce divide el trabajo y procesa datos en paralelo.</textarea>
+      <div class="button-row">
+        <button class="primary" id="startBtn">Iniciar simulación</button>
+        <button class="secondary" id="nextBtn" disabled>Siguiente paso</button>
+        <button class="secondary" id="autoBtn" disabled>Ejecución automática</button>
+        <button class="danger" id="resetBtn">Reiniciar</button>
+      </div>
+    </div>
+    <div class="controls">
+      <div><label for="mapperCount">Cantidad de nodos Mapper: <span id="mapperValue">3</span></label><input id="mapperCount" type="range" min="2" max="6" value="3"></div>
+      <div><label for="reducerCount">Cantidad de nodos Reducer: <span id="reducerValue">2</span></label><input id="reducerCount" type="range" min="1" max="4" value="2"></div>
+      <div><label for="speed">Velocidad automática: <span id="speedValue">1200 ms</span></label><input id="speed" type="range" min="400" max="2500" step="100" value="1200"></div>
+      <div class="fault-box"><label><input type="checkbox" id="simulateFault"> Simular falla de un Mapper</label><div id="faultStatus" class="fault-status">Sin fallas simuladas.</div></div>
+    </div>
+  </section>
+  <section class="panel">
+    <div class="pipeline">
+      <div class="stage s-input">1. Input</div><div class="stage s-split">2. Split</div><div class="stage s-map">3. Map</div><div class="stage s-shuffle">4. Shuffle &amp; Sort</div><div class="stage s-reduce">5. Reduce</div><div class="stage s-output">6. Output</div>
+    </div>
+    <h2 id="stepTitle" class="step-title">Preparado para comenzar</h2>
+    <p id="stepDescription" class="step-description">Ingrese un texto y presione “Iniciar simulación”.</p>
+    <div id="workspace" class="workspace"><div class="note">La simulación utiliza un caso clásico de MapReduce: contar cuántas veces aparece cada palabra.</div></div>
+  </section>
+  <section class="panel"><h2>Registro de ejecución</h2><div id="log" class="log">Esperando inicio de la simulación...</div></section>
+</main>
+<script>
+const $=id=>document.getElementById(id), inputText=$('inputText'),mapperCount=$('mapperCount'),reducerCount=$('reducerCount'),speed=$('speed'),mapperValue=$('mapperValue'),reducerValue=$('reducerValue'),speedValue=$('speedValue'),startBtn=$('startBtn'),nextBtn=$('nextBtn'),autoBtn=$('autoBtn'),resetBtn=$('resetBtn'),simulateFault=$('simulateFault'),faultStatus=$('faultStatus'),stepTitle=$('stepTitle'),stepDescription=$('stepDescription'),workspace=$('workspace'),log=$('log'),stages=[...document.querySelectorAll('.stage')];
+let state=null,currentStep=-1,autoTimer=null;
+mapperCount.oninput=()=>mapperValue.textContent=mapperCount.value;reducerCount.oninput=()=>reducerValue.textContent=reducerCount.value;speed.oninput=()=>speedValue.textContent=`${speed.value} ms`;
+function words(text){return text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^\p{L}\p{N}\s]/gu,' ').split(/\s+/).filter(Boolean)}
+function chunks(items,n){const r=Array.from({length:n},()=>[]);items.forEach((x,i)=>r[i%n].push(x));return r}
+function esc(v){return String(v).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#039;')}
+function build(){const w=words(inputText.value);if(!w.length){alert('Ingrese un texto válido antes de iniciar.');return null}const s=chunks(w,+mapperCount.value),mapped=s.map(a=>a.map(x=>[x,1])),sh={};mapped.flat().forEach(([k,v])=>(sh[k]??=[]).push(v));const keys=Object.keys(sh).sort((a,b)=>a.localeCompare(b,'es')),rb=Array.from({length:+reducerCount.value},()=>[]);keys.forEach((k,i)=>rb[i%rb.length].push([k,sh[k]]));const red=rb.map(b=>b.map(([k,v])=>[k,v.reduce((a,c)=>a+c,0)]));return{w,s,mapped,sh,rb,red}}
+function addLog(m){log.textContent+=`\n[${new Date().toLocaleTimeString('es-CL')}] ${m}`;log.scrollTop=log.scrollHeight}
+function setStage(i){stages.forEach((s,j)=>s.classList.toggle('active',j<=i))}
+function renderInput(){stepTitle.textContent='Paso 1. Datos de entrada';stepDescription.textContent='El sistema recibe el conjunto completo de datos que será procesado.';workspace.innerHTML=`<div class="card"><h3>Texto original</h3><p>${esc(inputText.value)}</p></div><div class="card"><h3>Palabras detectadas</h3><div class="tokens">${state.w.map(w=>`<span class="chip">${esc(w)}</span>`).join('')}</div></div>`;addLog(`Input recibido: ${state.w.length} palabras.`)}
+function renderSplit(){stepTitle.textContent='Paso 2. División en bloques';stepDescription.textContent='Los datos se distribuyen entre varios nodos Mapper para su procesamiento paralelo.';workspace.innerHTML=`<div class="cards">${state.s.map((a,i)=>`<div class="card"><h3>Bloque ${i+1} → Mapper ${i+1}</h3><div class="tokens">${a.map(w=>`<span class="chip">${esc(w)}</span>`).join('')}</div></div>`).join('')}</div>`;addLog(`Split completado en ${state.s.length} bloques.`)}
+function renderMap(){stepTitle.textContent='Paso 3. Fase Map';stepDescription.textContent='Cada Mapper transforma las palabras en pares clave–valor con el formato (palabra, 1).';let fm='';if(simulateFault.checked&&state.mapped.length>1){faultStatus.textContent='Falla simulada en Mapper 2. La tarea fue reasignada al Mapper 1.';fm='<div class="note">Se simuló una falla en el Mapper 2. El bloque fue reasignado y procesado nuevamente por otro nodo.</div>';addLog('Falla detectada en Mapper 2; tarea reasignada.')}else faultStatus.textContent='Sin fallas simuladas.';workspace.innerHTML=fm+`<div class="cards">${state.mapped.map((p,i)=>`<div class="card"><h3>Mapper ${i+1}</h3><div class="pairs">${p.map(([k,v])=>`<span class="pair">(${esc(k)}, ${v})</span>`).join('')}</div></div>`).join('')}</div>`;addLog('Fase Map completada: pares clave–valor generados.')}
+function renderShuffle(){stepTitle.textContent='Paso 4. Shuffle & Sort';stepDescription.textContent='El sistema agrupa todos los valores asociados a la misma clave y ordena las claves.';workspace.innerHTML=`<div class="group-list">${Object.keys(state.sh).sort((a,b)=>a.localeCompare(b,'es')).map(k=>`<div class="group">${esc(k)} → [${state.sh[k].join(', ')}]</div>`).join('')}</div>`;addLog(`Shuffle & Sort completado: ${Object.keys(state.sh).length} claves agrupadas.`)}
+function renderReduce(){stepTitle.textContent='Paso 5. Fase Reduce';stepDescription.textContent='Cada Reducer suma los valores asociados a una clave y produce un total.';workspace.innerHTML=`<div class="cards">${state.red.map((b,i)=>`<div class="card"><h3>Reducer ${i+1}</h3><div class="results">${b.map(([k,v])=>`<div class="result">${esc(k)} → ${v}</div>`).join('')}</div></div>`).join('')}</div>`;addLog(`Fase Reduce completada con ${state.red.length} reducers.`)}
+function renderOutput(){stepTitle.textContent='Paso 6. Resultado final';stepDescription.textContent='Los resultados parciales de todos los Reducers se consolidan en una salida única.';const f=state.red.flat().sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0],'es'));workspace.innerHTML=`<div class="card"><h3>Conteo final de palabras</h3><div class="results">${f.map(([k,v])=>`<div class="result">${esc(k)} → ${v}</div>`).join('')}</div></div><div class="note">La simulación finalizó correctamente.</div>`;addLog('Output generado. Simulación finalizada.');nextBtn.disabled=true;autoBtn.disabled=true;startBtn.disabled=false;stopAuto()}
+const renders=[renderInput,renderSplit,renderMap,renderShuffle,renderReduce,renderOutput];
+function next(){if(!state)return;currentStep++;if(currentStep>=renders.length)return;setStage(currentStep);renders[currentStep]();if(currentStep===renders.length-1){nextBtn.disabled=true;autoBtn.disabled=true}}
+function start(){state=build();if(!state)return;currentStep=-1;log.textContent='Simulación iniciada.';startBtn.disabled=true;nextBtn.disabled=false;autoBtn.disabled=false;mapperCount.disabled=true;reducerCount.disabled=true;inputText.disabled=true;next()}
+function startAuto(){if(!state)return;if(autoTimer){stopAuto();return}autoBtn.textContent='Detener ejecución';autoTimer=setInterval(()=>{if(currentStep>=renders.length-1){stopAuto();return}next()},+speed.value)}
+function stopAuto(){if(autoTimer)clearInterval(autoTimer);autoTimer=null;autoBtn.textContent='Ejecución automática'}
+function reset(){stopAuto();state=null;currentStep=-1;setStage(-1);startBtn.disabled=false;nextBtn.disabled=true;autoBtn.disabled=true;mapperCount.disabled=false;reducerCount.disabled=false;inputText.disabled=false;faultStatus.textContent='Sin fallas simuladas.';stepTitle.textContent='Preparado para comenzar';stepDescription.textContent='Ingrese un texto y presione “Iniciar simulación”.';workspace.innerHTML='<div class="note">La simulación utiliza un caso clásico de MapReduce: contar cuántas veces aparece cada palabra.</div>';log.textContent='Esperando inicio de la simulación...'}
+startBtn.onclick=start;nextBtn.onclick=next;autoBtn.onclick=startAuto;resetBtn.onclick=reset;
+</script>
+</body>
+</html>
