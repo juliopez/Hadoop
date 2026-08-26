@@ -1,4 +1,3 @@
-version: '3' 
 services:
 
   namenode:
@@ -15,7 +14,7 @@ services:
     networks:
       net_pet:
         ipv4_address: 172.27.1.5
-  
+
   datanode:
     image: bde2020/hadoop-datanode:2.0.0-hadoop2.7.4-java8
     container_name: datanode
@@ -33,7 +32,7 @@ services:
     networks:
       net_pet:
         ipv4_address: 172.27.1.6
-  
+
   hive-server:
     image: bde2020/hive:2.3.2-postgresql-metastore
     container_name: hive-server
@@ -49,7 +48,7 @@ services:
     networks:
       net_pet:
         ipv4_address: 172.27.1.7
-  
+
   hive-metastore:
     image: bde2020/hive:2.3.2-postgresql-metastore
     container_name: hive-metastore
@@ -65,7 +64,7 @@ services:
     networks:
       net_pet:
         ipv4_address: 172.27.1.8
-  
+
   hive-metastore-postgresql:
     image: bde2020/hive-metastore-postgresql:2.3.0
     container_name: hive-metastore-postgresql
@@ -74,7 +73,7 @@ services:
     networks:
       net_pet:
         ipv4_address: 172.27.1.9
-    
+
   spark-master:
     image: bde2020/spark-master:2.4.0-hadoop2.7
     container_name: spark-master
@@ -88,7 +87,7 @@ services:
     networks:
       net_pet:
         ipv4_address: 172.27.1.10
-     
+
   spark-worker:
     image: bde2020/spark-worker:2.4.0-hadoop2.7
     container_name: spark-worker
@@ -98,8 +97,6 @@ services:
       - SPARK_MASTER=spark://spark-master:7077
       - CORE_CONF_fs_defaultFS=hdfs://namenode:8020
       - HIVE_CORE_CONF_javax_jdo_option_ConnectionURL=jdbc:postgresql://hive-metastore/metastore
-    depends_on:
-      - spark-master
     ports:
       - 8081:8081
     env_file:
@@ -131,7 +128,7 @@ services:
       networks:
         net_pet:
           ipv4_address: 172.27.1.13
-  
+
   database:
       image: mysql:5.7
       container_name: database
@@ -154,7 +151,7 @@ services:
   zookeeper:
     hostname: zookeeper
     container_name: zookeeper
-    image: bitnami/zookeeper:latest
+    image: zookeeper:3.8
     environment:
       - ALLOW_ANONYMOUS_LOGIN=yes
     ports:
@@ -168,13 +165,13 @@ services:
     container_name: kafka
     ports:
       - "9092:9092"
-      - "3030:3030"    
+      - "3030:3030"
     environment:
       KAFKA_ADVERTISED_HOST_NAME: 172.27.1.16
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
     networks:
       net_pet:
-        ipv4_address: 172.27.1.16  
+        ipv4_address: 172.27.1.16
 
   streamsets:
     image: streamsets/datacollector:3.13.0-latest
@@ -183,7 +180,7 @@ services:
       - "18630:18630"
     networks:
       net_pet:
-        ipv4_address: 172.27.1.17  
+        ipv4_address: 172.27.1.17
 
   nifi:
     image: apache/nifi:latest
@@ -195,10 +192,10 @@ services:
       - NIFI_CLUSTER_IS_NODE=true
       - NIFI_CLUSTER_NODE_PROTOCOL_PORT=8082
       - NIFI_ZK_CONNECT_STRING=zookeeper:2181
-      - NIFI_ELECTION_MAX_WAIT=1 min 
+      - NIFI_ELECTION_MAX_WAIT=1 min
     networks:
       net_pet:
-        ipv4_address: 172.27.1.18    
+        ipv4_address: 172.27.1.18
 
 networks:
   net_pet:
