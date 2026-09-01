@@ -47,10 +47,10 @@ Cada carpeta puede contener:
 | 02 | Arquitecturas Big Data |
 | 03 | Apache Hadoop |
 | 04 | HDFS y almacenamiento distribuido |
-| 05 | Ecosistema Hadoop |
-| 06 | Apache Spark: fundamentos |
-| 07 | Apache Spark: RDD y DataFrames |
-| 08 | Apache Spark SQL |
+| 05 | Ejercicios HDFS |
+| 06 | Apache HIVE |
+| 07 | Ejercicios Apache HIVE |
+| 08 | Apache Spark: fundamentos RDD y DataFrames |
 | 09 | PySpark |
 | 10 | Laboratorio integrador con Spark |
 | 11 | Apache Kafka |
