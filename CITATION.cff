@@ -10,13 +10,9 @@ authors:
     affiliation: "Universidad de Konstanz"
     orcid: "https://orcid.org/0000-0002-7920-1563"
 
-version: 1.0.0
-date-released: 2026
+version: 2.0.0
+date-released: 2026-09-07
 
-doi: 10.5281/zenodo.18968438
-
-repository-code: https://github.com/juliopez/Hadoop
+repository-code: https://github.com/juliolopez/Hadoop
 
 license: GPL-2.0
-
-
