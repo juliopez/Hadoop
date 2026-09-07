@@ -3,8 +3,9 @@ services:
   namenode:
     image: bde2020/hadoop-namenode:2.0.0-hadoop2.7.4-java8
     container_name: namenode
+    restart: unless-stopped
     volumes:
-      - /tmp/hdfs/namenode:/hadoop/dfs/name
+      - namenode_data:/hadoop/dfs/name
     environment:
       - CLUSTER_NAME=test
     env_file:
@@ -18,8 +19,9 @@ services:
   datanode:
     image: bde2020/hadoop-datanode:2.0.0-hadoop2.7.4-java8
     container_name: datanode
+    restart: unless-stopped
     volumes:
-      - /tmp/hdfs/datanode:/hadoop/dfs/data
+      - datanode_data:/hadoop/dfs/data
       - ./bank:/bank
     env_file:
       - ./hadoop-hive.env
@@ -36,6 +38,7 @@ services:
   hive-server:
     image: bde2020/hive:2.3.2-postgresql-metastore
     container_name: hive-server
+    restart: unless-stopped
     env_file:
       - ./hadoop-hive.env
     environment:
@@ -52,6 +55,7 @@ services:
   hive-metastore:
     image: bde2020/hive:2.3.2-postgresql-metastore
     container_name: hive-metastore
+    restart: unless-stopped
     env_file:
       - ./hadoop-hive.env
     command: /opt/hive/bin/hive --service metastore
@@ -68,6 +72,9 @@ services:
   hive-metastore-postgresql:
     image: bde2020/hive-metastore-postgresql:2.3.0
     container_name: hive-metastore-postgresql
+    restart: unless-stopped
+    volumes:
+      - hive_metastore_data:/var/lib/postgresql/data
     depends_on:
       - datanode
     networks:
@@ -77,9 +84,10 @@ services:
   spark-master:
     image: bde2020/spark-master:2.4.0-hadoop2.7
     container_name: spark-master
+    restart: unless-stopped
     ports:
-      - 8080:8080
-      - 7077:7077
+      - "8080:8080"
+      - "7077:7077"
     environment:
       - CORE_CONF_fs_defaultFS=hdfs://namenode:8020
     env_file:
@@ -91,6 +99,7 @@ services:
   spark-worker:
     image: bde2020/spark-worker:2.4.0-hadoop2.7
     container_name: spark-worker
+    restart: unless-stopped
     depends_on:
       - spark-master
     environment:
@@ -98,7 +107,7 @@ services:
       - CORE_CONF_fs_defaultFS=hdfs://namenode:8020
       - HIVE_CORE_CONF_javax_jdo_option_ConnectionURL=jdbc:postgresql://hive-metastore/metastore
     ports:
-      - 8081:8081
+      - "8081:8081"
     env_file:
       - ./hadoop-hive.env
     networks:
@@ -108,54 +117,63 @@ services:
   zeppelin:
     image: apache/zeppelin:0.8.0
     container_name: zeppelin
+    restart: unless-stopped
     ports:
-      - 19090:8080
+      - "19090:8080"
+    volumes:
+      - zeppelin_notebooks:/zeppelin/notebook
     networks:
       net_pet:
         ipv4_address: 172.27.1.12
 
   hue:
-      image: gethue/hue:20191107-135001
-      hostname: hue
-      container_name: hue
-      dns: 8.8.8.8
-      ports:
+    image: gethue/hue:20191107-135001
+    hostname: hue
+    container_name: hue
+    restart: unless-stopped
+    dns: 8.8.8.8
+    ports:
       - "8888:8888"
-      volumes:
-        - ./hue-overrides.ini:/usr/share/hue/desktop/conf/z-hue.ini
-      depends_on:
-      - "database"
-      networks:
-        net_pet:
-          ipv4_address: 172.27.1.13
+    volumes:
+      - ./hue-overrides.ini:/usr/share/hue/desktop/conf/z-hue.ini
+    depends_on:
+      - database
+    networks:
+      net_pet:
+        ipv4_address: 172.27.1.13
 
   database:
-      image: mysql:5.7
-      container_name: database
-      ports:
-          - "33061:3306"
-      command: --init-file /data/application/init.sql
-      volumes:
-          - /tmp/mysql/data:/var/lib/mysql
-          - ./init.sql:/data/application/init.sql
-      environment:
-          MYSQL_ROOT_USER: hueroot
-          MYSQL_ROOT_PASSWORD: secret
-          MYSQL_DATABASE: hue
-          MYSQL_PASSWORD: secret
-          MYSQL_USER: hueroot
-      networks:
-        net_pet:
-          ipv4_address: 172.27.1.14
+    image: mysql:5.7
+    container_name: database
+    restart: unless-stopped
+    ports:
+      - "33061:3306"
+    command: --init-file /data/application/init.sql
+    volumes:
+      - hue_mysql_data:/var/lib/mysql
+      - ./init.sql:/data/application/init.sql
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: hue
+      MYSQL_PASSWORD: secret
+      MYSQL_USER: hueroot
+    networks:
+      net_pet:
+        ipv4_address: 172.27.1.14
 
   zookeeper:
     hostname: zookeeper
     container_name: zookeeper
     image: zookeeper:3.8
+    restart: unless-stopped
     environment:
       - ALLOW_ANONYMOUS_LOGIN=yes
     ports:
       - "2181:2181"
+    volumes:
+      - zookeeper_data:/data
+      - zookeeper_datalog:/datalog
+      - zookeeper_logs:/logs
     networks:
       net_pet:
         ipv4_address: 172.27.1.15
@@ -163,12 +181,17 @@ services:
   kafka:
     image: landoop/fast-data-dev:latest
     container_name: kafka
+    restart: unless-stopped
     ports:
       - "9092:9092"
       - "3030:3030"
     environment:
       KAFKA_ADVERTISED_HOST_NAME: 172.27.1.16
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+    volumes:
+      - kafka_data:/data
+    depends_on:
+      - zookeeper
     networks:
       net_pet:
         ipv4_address: 172.27.1.16
@@ -176,26 +199,41 @@ services:
   streamsets:
     image: streamsets/datacollector:3.13.0-latest
     container_name: streamsets
+    restart: unless-stopped
+    ulimits:
+      nofile:
+        soft: 32768
+        hard: 32768
     ports:
       - "18630:18630"
+    volumes:
+      - streamsets_data:/data
     networks:
       net_pet:
         ipv4_address: 172.27.1.17
 
   nifi:
-    image: apache/nifi:latest
+    image: apache/nifi:2.11.0
     container_name: nifi
+    restart: unless-stopped
     ports:
-      - 9999:9999
+      - "9999:8443"
     environment:
-      - NIFI_WEB_HTTP_PORT=9999
-      - NIFI_CLUSTER_IS_NODE=true
-      - NIFI_CLUSTER_NODE_PROTOCOL_PORT=8082
-      - NIFI_ZK_CONNECT_STRING=zookeeper:2181
-      - NIFI_ELECTION_MAX_WAIT=1 min
+      NIFI_WEB_HTTPS_HOST: "0.0.0.0"
+      NIFI_WEB_PROXY_HOST: "${NIFI_PROXY_HOST}"
+      SINGLE_USER_CREDENTIALS_USERNAME: ${NIFI_USERNAME:-admin}
+      SINGLE_USER_CREDENTIALS_PASSWORD: ${NIFI_PASSWORD:-NifiLab2026!Secure}
+    volumes:
+      - nifi_conf:/opt/nifi/nifi-current/conf
+      - nifi_content_repository:/opt/nifi/nifi-current/content_repository
+      - nifi_database_repository:/opt/nifi/nifi-current/database_repository
+      - nifi_flowfile_repository:/opt/nifi/nifi-current/flowfile_repository
+      - nifi_provenance_repository:/opt/nifi/nifi-current/provenance_repository
+      - nifi_state:/opt/nifi/nifi-current/state
     networks:
       net_pet:
         ipv4_address: 172.27.1.18
+
 
 networks:
   net_pet:
@@ -204,3 +242,21 @@ networks:
       config:
         - subnet: 172.27.0.0/16
 
+
+volumes:
+  namenode_data:
+  datanode_data:
+  hive_metastore_data:
+  hue_mysql_data:
+  zeppelin_notebooks:
+  zookeeper_data:
+  zookeeper_datalog:
+  zookeeper_logs:
+  kafka_data:
+  streamsets_data:
+  nifi_conf:
+  nifi_content_repository:
+  nifi_database_repository:
+  nifi_flowfile_repository:
+  nifi_provenance_repository:
+  nifi_state:
