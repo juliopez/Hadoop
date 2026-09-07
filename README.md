@@ -11,7 +11,7 @@ Este repositorio proporciona un entorno reproducible que integra
 StreamSets**, orientado al aprendizaje, laboratorios y demostraciones
 técnicas.
 
-> **Versión Version 2.0.0 (2026):** incorpora persistencia explícita para los
+> **Versión 2.0.0 (2026):** incorpora persistencia explícita para los
 > componentes que almacenan estado y una configuración actualizada de
 > Apache NiFi 2.11.0.
 
@@ -23,9 +23,9 @@ considera darle una estrella.
 
 ------------------------------------------------------------------------
 
-## Principales mejoras de la versión Version 2.0.0
+## Principales mejoras de la Version 2.0.0
 
-La versión Version 2.0.0 mantiene la arquitectura docente original, pero corrige un
+La Version 2.0.0 mantiene la arquitectura docente original, pero corrige un
 problema importante: en la versión anterior parte de la información
 podía quedar almacenada únicamente dentro del filesystem de los
 contenedores.
