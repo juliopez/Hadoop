@@ -1,5 +1,7 @@
 # Hadoop / Docker Compose by @juliopez
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18968437.svg)](https://doi.org/10.5281/zenodo.18968437)
+
 ![License](https://img.shields.io/badge/license-GPL--2.0-blue)
 ![Status](https://img.shields.io/badge/status-active-green)
 
@@ -23,9 +25,9 @@ considera darle una estrella.
 
 ------------------------------------------------------------------------
 
-## Principales mejoras de la Version 2.0.0
+## Principales mejoras de la versión 2.0.0
 
-La Version 2.0.0 mantiene la arquitectura docente original, pero corrige un
+La versión 2.0.0 mantiene la arquitectura docente original, pero corrige un
 problema importante: en la versión anterior parte de la información
 podía quedar almacenada únicamente dentro del filesystem de los
 contenedores.
@@ -175,16 +177,16 @@ también pueden desaparecer.
 En un navegador utilice `localhost` para una instalación local o la
 IP/DNS de la instancia cuando trabaje en AWS.
 
-  |Servicio                    |Puerto  |Ejemplo local|
-  |----------------------------|--------|--------------------------------|
-  |Hadoop NameNode                 |50070| `http://localhost:50070`|
-  |Spark Master                     |8080| `http://localhost:8080`|
-  |Spark Worker                     |8081| `http://localhost:8081`|
-  |Hue                              |8888| `http://localhost:8888`|
-  |Apache NiFi                      |9999| `https://localhost:9999/nifi/`|
-  |Kafka UI/servicio expuesto       |3030| `http://localhost:3030`|
-  |StreamSets                      |18630| `http://localhost:18630`|
-  |Zeppelin                        |19090| `http://localhost:19090`|
+  Servicio                       Puerto Ejemplo local
+  ---------------------------- -------- --------------------------------
+  Hadoop NameNode                 50070 `http://localhost:50070`
+  Spark Master                     8080 `http://localhost:8080`
+  Spark Worker                     8081 `http://localhost:8081`
+  Hue                              8888 `http://localhost:8888`
+  Apache NiFi                      9999 `https://localhost:9999/nifi/`
+  Kafka UI/servicio expuesto       3030 `http://localhost:3030`
+  StreamSets                      18630 `http://localhost:18630`
+  Zeppelin                        19090 `http://localhost:19090`
 
 ### Credenciales
 
@@ -513,7 +515,10 @@ cite:
 López-Núñez, J. (2026).\
 *Hadoop Infrastructure for Big Data using Docker Compose* (Version
 2.0.0) \[Software\].\
+Zenodo. https://doi.org/10.5281/zenodo.22645069
 
+For the repository as a whole and all versions, use the conceptual DOI:
+https://doi.org/10.5281/zenodo.18968437
 
 ------------------------------------------------------------------------
 
