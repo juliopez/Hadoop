@@ -177,16 +177,16 @@ también pueden desaparecer.
 En un navegador utilice `localhost` para una instalación local o la
 IP/DNS de la instancia cuando trabaje en AWS.
 
-  Servicio                       Puerto Ejemplo local
-  ---------------------------- -------- --------------------------------
-  Hadoop NameNode                 50070 `http://localhost:50070`
-  Spark Master                     8080 `http://localhost:8080`
-  Spark Worker                     8081 `http://localhost:8081`
-  Hue                              8888 `http://localhost:8888`
-  Apache NiFi                      9999 `https://localhost:9999/nifi/`
-  Kafka UI/servicio expuesto       3030 `http://localhost:3030`
-  StreamSets                      18630 `http://localhost:18630`
-  Zeppelin                        19090 `http://localhost:19090`
+  |Servicio                    |  Puerto | Ejemplo local|
+  |----------------------------|---------|--------------------------------|
+  |Hadoop NameNode             |   50070 |`http://localhost:50070`|
+  |Spark Master                |    8080 |`http://localhost:8080`|
+  |Spark Worker                |    8081 |`http://localhost:8081`|
+  |Hue                         |    8888 |`http://localhost:8888`|
+  |Apache NiFi                 |    9999 |`https://localhost:9999/nifi/`|
+  |Kafka UI/servicio expuesto  |    3030 |`http://localhost:3030`|
+  |StreamSets                  |   18630 |`http://localhost:18630`|
+  |Zeppelin                    |   19090 |`http://localhost:19090`|
 
 ### Credenciales
 
