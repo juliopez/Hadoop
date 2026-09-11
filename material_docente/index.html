@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Big Data — Material Docente</title>
+<style>
+:root{--bg:#f5f7fb;--panel:#fff;--text:#1f2937;--muted:#64748b;--line:#dbe3ee;--blue:#2563eb;--navy:#0f172a;--shadow:0 12px 30px rgba(15,23,42,.08)}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text)}
+header{background:linear-gradient(135deg,#0f172a,#1e3a8a);color:white;padding:54px 20px}
+.hero{width:min(1100px,calc(100% - 32px));margin:auto}.eyebrow{font-weight:800;letter-spacing:.12em;text-transform:uppercase;opacity:.75;font-size:.82rem}
+h1{font-size:clamp(2.2rem,6vw,4rem);margin:8px 0 12px}.lead{font-size:1.08rem;line-height:1.7;max-width:780px;opacity:.92;margin:0}
+main{width:min(1100px,calc(100% - 32px));margin:30px auto 60px}.intro{background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:var(--shadow);line-height:1.7}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:22px}.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:var(--shadow);display:flex;flex-direction:column;min-height:230px;transition:.18s}.card:hover{transform:translateY(-3px);box-shadow:0 16px 36px rgba(15,23,42,.12)}
+.icon{font-size:2rem}.card h2{margin:12px 0 8px;font-size:1.35rem}.card p{color:var(--muted);line-height:1.65;margin:0 0 18px}.links{margin-top:auto;display:flex;gap:9px;flex-wrap:wrap}
+a.button{display:inline-block;text-decoration:none;background:var(--blue);color:#fff;padding:10px 14px;border-radius:10px;font-weight:750}
+a.alt{background:#e8eef8;color:#1e3a8a}.sim-list{display:grid;gap:8px;margin:2px 0 18px}.sim-list a{color:#1d4ed8;text-decoration:none;font-weight:700}.sim-list small{display:block;color:var(--muted);font-weight:400;margin-top:2px}
+footer{border-top:1px solid var(--line);margin-top:32px;padding-top:20px;color:var(--muted);font-size:.92rem;line-height:1.6}
+@media(max-width:720px){.grid{grid-template-columns:1fr}header{padding:38px 10px}.card{min-height:auto}}
+</style>
+</head>
+<body>
+<header><div class="hero">
+<div class="eyebrow">Material docente</div>
+<h1>Big Data</h1>
+<p class="lead">Recursos académicos para apoyar el aprendizaje de fundamentos, arquitecturas y procesamiento distribuido en Big Data, complementando el entorno tecnológico Hadoop disponible en este repositorio.</p>
+</div></header>
+
+<main>
+<section class="intro">
+<strong>Portal de recursos del curso.</strong> Desde aquí puedes acceder al libro, las presentaciones y los simuladores interactivos. Los materiales están organizados para acompañar progresivamente el trabajo conceptual y práctico.
+</section>
+
+<section class="grid">
+<article class="card">
+<div class="icon">📘</div><h2>Libro del curso</h2>
+<p>Material de estudio sobre fundamentos de Big Data, arquitectura Hadoop, HDFS, MapReduce, Hive, Spark y procesamiento distribuido.</p>
+<div class="links"><a class="button" href="libro/">Explorar libro</a></div>
+</article>
+
+<article class="card">
+<div class="icon">🎮</div><h2>Simuladores interactivos</h2>
+<p>Recursos visuales para observar paso a paso procesos que normalmente ocurren dentro de una arquitectura distribuida.</p>
+<div class="sim-list">
+<a href="simuladores/simulador_hdfs.html">HDFS <small>Bloques · NameNode · DataNodes · Replicación · Lectura · Tolerancia a fallos</small></a>
+<a href="simuladores/simulador_mapreduce.html">MapReduce <small>Input · Split · Map · Shuffle &amp; Sort · Reduce · Output</small></a>
+</div>
+<div class="links"><a class="button" href="simuladores/">Explorar simuladores</a></div>
+</article>
+
+<article class="card">
+<div class="icon">📑</div><h2>Presentaciones</h2>
+<p>Presentaciones utilizadas durante el desarrollo del curso para introducir y sintetizar los principales contenidos de cada unidad.</p>
+<div class="links"><a class="button" href="presentaciones/">Explorar presentaciones</a></div>
+</article>
+
+<article class="card">
+<div class="icon">🧪</div><h2>Laboratorios y actividades</h2>
+<p>Espacio previsto para guías prácticas, ejercicios y actividades orientadas a ejecutar, verificar e interpretar el funcionamiento del ecosistema Big Data.</p>
+<div class="links"><a class="button alt" href="../">Repositorio Hadoop</a></div>
+</article>
+</section>
+
+<footer>
+<strong>Hadoop / Docker Compose — Material Docente</strong><br>
+Repositorio educativo orientado al aprendizaje, experimentación y demostración de tecnologías Big Data.
+</footer>
+</main>
+</body>
+</html>
