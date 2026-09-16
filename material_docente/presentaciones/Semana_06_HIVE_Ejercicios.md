@@ -1,4 +1,4 @@
-# Semana 7 — Guía de comandos Apache Hive
+# Semana 6 — Guía de comandos Apache Hive
 
 ## 1. Introducción
 
