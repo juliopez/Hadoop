@@ -1,4 +1,4 @@
-# Semana 7 — Introducción a Apache Hive
+# Semana 6 — Introducción a Apache Hive
 
 ## 1. De HDFS a Hive: el siguiente paso
 
