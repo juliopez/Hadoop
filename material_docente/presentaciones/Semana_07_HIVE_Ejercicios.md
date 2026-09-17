@@ -1,4 +1,4 @@
-# Semana 7  — Radiografía de Hive y HDFS
+# Semana 7  — Guía de Ejercicios - Radiografía de Hive y HDFS
 ## Datos, metadatos y persistencia
 
 # Paso 1 de 5 — ¿Dónde estamos realmente?
