@@ -840,10 +840,10 @@ LOCAL
 
 indica que Hive buscará el archivo en el sistema de archivos local accesible desde el entorno correspondiente.
 
-También puede utilizarse:
+También puede utilizarse (ASI LO HACEMOS AL UTILIZAR LA INFRAESTRUCTURA DE ESTE CURSO):
 
 ```sql
-LOAD DATA INPATH '/ruta/hdfs'
+LOAD DATA INPATH ''hdfs://namenode:8020/......../.........ruta/hdfs'
 INTO TABLE ventas;
 ```
 
