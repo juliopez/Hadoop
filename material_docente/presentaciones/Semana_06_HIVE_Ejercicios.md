@@ -840,10 +840,12 @@ LOCAL
 
 indica que Hive buscará el archivo en el sistema de archivos local accesible desde el entorno correspondiente.
 
-También puede utilizarse (ASI LO HACEMOS AL UTILIZAR LA INFRAESTRUCTURA DE ESTE CURSO):
+También puede utilizarse **(ASI LO HACEMOS AL UTILIZAR LA INFRAESTRUCTURA DE ESTE CURSO)**:
+
+## Nota: Este es solo un ejemplo, usted debe escribir la ruta de sus datos
 
 ```sql
-LOAD DATA INPATH ''hdfs://namenode:8020/......../.........ruta/hdfs'
+LOAD DATA INPATH 'hdfs://namenode:8020/......../.........ruta/hdfs........datos.csv'
 INTO TABLE ventas;
 ```
 
@@ -874,6 +876,34 @@ ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ','
 LOCATION '/curso/hive/ventas/';
 ```
+También es posible cargar datos mediante `LOAD DATA`. Sin embargo, **este no es el mecanismo principal utilizado en los ejercicios de este curso**.
+
+En nuestra infraestructura trabajaremos principalmente con **tablas externas**, asociadas directamente a un directorio de HDFS mediante la cláusula `LOCATION`.
+
+Por ejemplo:
+
+```sql
+CREATE EXTERNAL TABLE ventas_hive (
+    id_venta INT,
+    fecha STRING,
+    cliente STRING,
+    ciudad STRING,
+    categoria STRING,
+    monto DOUBLE
+)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+STORED AS TEXTFILE
+LOCATION 'hdfs://namenode:8020/curso/hive/datos_ventas/';
+```
+En este caso, Hive consulta directamente los archivos almacenados en:
+
+``` text
+/curso/hive/datos_ventas/
+```
+donde se encuentra `ventas_hive.csv`.
+
+Por lo tanto, para esta tabla no es necesario ejecutar `LOAD DATA INPATH`.
 
 ---
 
