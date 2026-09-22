@@ -1,5 +1,22 @@
 # Semana 6 — Guía de Ejercicios Apache Hive
 
+----------------------------------------------------------------------------------------
+## Nota importante para el desarrollo de los ejercicios
+
+Para varios de los ejercicios de esta guía, recuerde que durante la creación de la tabla externa en Hive se especificó una ubicación en HDFS similar a la siguiente:
+
+```sql
+LOCATION 'hdfs://namenode:8020/curso/hive/datos_ventas/';
+```
+
+Esta ubicación corresponde al directorio de **HDFS** donde se encuentra almacenado el archivo `ventas_hive.csv` utilizado por la tabla externa.
+
+Por lo tanto, tenga presente la siguiente relación:
+
+Tabla externa en Hive → ubicación (LOCATION) en HDFS → archivo `ventas_hive.csv`
+
+---------------------------------------------------------------------------------------
+
 ## 1. Introducción
 
 Apache Hive permite consultar y analizar grandes volúmenes de datos utilizando un lenguaje similar a SQL denominado **HiveQL**.
