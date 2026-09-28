@@ -164,7 +164,7 @@ services:
   zookeeper:
     hostname: zookeeper
     container_name: zookeeper
-    image: zookeeper:3.8
+    image: zookeeper:3.8.7
     restart: unless-stopped
     environment:
       - ALLOW_ANONYMOUS_LOGIN=yes
@@ -213,7 +213,7 @@ services:
         ipv4_address: 172.27.1.17
 
   nifi:
-    image: apache/nifi:2.11.0
+    image: apache/nifi:2.12.0
     container_name: nifi
     restart: unless-stopped
     ports:

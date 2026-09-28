@@ -15,7 +15,7 @@ técnicas.
 
 > **Versión 2.0.0 (2026):** incorpora persistencia explícita para los
 > componentes que almacenan estado y una configuración actualizada de
-> Apache NiFi 2.11.0.
+> Apache NiFi 2.12.0.
 
 📺 **Video de instalación y configuración:**\
 https://youtu.be/qjjBWUUJq3s
@@ -188,7 +188,9 @@ IP/DNS de la instancia cuando trabaje en AWS.
   |StreamSets                  |   18630 |`http://localhost:18630`|
   |Zeppelin                    |   19090 |`http://localhost:19090`|
 
-### Credenciales
+### Credenciales de laboratorio
+
+Las credenciales incluidas en este repositorio son **valores predeterminados intencionales para fines docentes**. No deben reutilizarse para proteger servicios reales ni despliegues expuestos a Internet. En entornos externos al laboratorio, reemplácelas mediante variables de entorno antes de iniciar los contenedores.
 
 **NiFi**
 
@@ -213,7 +215,7 @@ Contraseña: admin
 
 ------------------------------------------------------------------------
 
-## Apache NiFi 2.11.0
+## Apache NiFi 2.12.0
 
 Esta versión utiliza HTTPS. Docker publica el puerto `9999` del host
 hacia el puerto HTTPS `8443` del contenedor.
