@@ -1926,6 +1926,391 @@ Registre:
 
 ---
 
+---
+
+# Nivel 4 — Programa PySpark ejecutable
+
+Hasta ahora hemos trabajado principalmente de manera interactiva dentro de la consola de PySpark. En este nivel aprenderemos a guardar instrucciones en un archivo y ejecutarlas posteriormente como un programa Spark.
+
+El recorrido será:
+
+```text
+Código PySpark
+      │
+      ▼
+ archivo .py
+      │
+      ▼
+  spark-submit
+      │
+      ▼
+Spark Master
+      │
+      ▼
+resultado
+```
+
+Este procedimiento permite conservar, reutilizar y entregar una solución completa sin depender de una sesión interactiva.
+
+---
+
+## Ejercicio 16 — Crear, guardar y ejecutar un programa PySpark
+
+### Objetivo
+
+Crear un archivo `.py`, guardar instrucciones PySpark y ejecutarlas utilizando Spark.
+
+Si se encuentra dentro de una sesión PySpark, salga utilizando:
+
+```python
+exit()
+```
+
+Permanezca dentro del contenedor `spark-master`.
+
+Compruebe su ubicación:
+
+```bash
+pwd
+```
+
+Para este ejercicio trabajaremos desde una carpeta sencilla dentro del contenedor:
+
+```bash
+mkdir -p /tmp/curso_spark
+cd /tmp/curso_spark
+```
+
+---
+
+### Paso 1. Crear un archivo Python
+
+Utilice un editor de texto disponible en el contenedor. Por ejemplo:
+
+```bash
+vi ejercicio16.py
+```
+
+> Si prefiere otro editor disponible en su entorno, puede utilizarlo. Lo importante es crear y guardar un archivo de texto con extensión `.py`.
+
+Ingrese el siguiente programa:
+
+```python
+from pyspark.sql import SparkSession
+from pyspark.sql.functions import avg
+
+spark = (
+    SparkSession.builder
+    .appName("Ejercicio16_Guia2")
+    .getOrCreate()
+)
+
+datos = [
+    ("Ana", 150000.0),
+    ("Luis", 85000.0),
+    ("Carla", 210000.0),
+    ("Pedro", 95000.0),
+    ("Maria", 180000.0)
+]
+
+df = spark.createDataFrame(
+    datos,
+    ["cliente", "monto"]
+)
+
+df.show()
+
+df.agg(
+    avg("monto").alias("monto_promedio")
+).show()
+
+spark.stop()
+```
+
+Guarde el archivo y cierre el editor.
+
+---
+
+### Paso 2. Comprobar que el archivo fue guardado
+
+Ejecute:
+
+```bash
+ls -l ejercicio16.py
+```
+
+Puede revisar su contenido utilizando:
+
+```bash
+cat ejercicio16.py
+```
+
+Observe que ahora el código ya no depende de haber sido escrito directamente en la consola interactiva.
+
+---
+
+### Paso 3. Ejecutar el programa con Spark
+
+Configure Python 3:
+
+```bash
+export PYSPARK_PYTHON=python3
+export PYSPARK_DRIVER_PYTHON=python3
+```
+
+Ejecute el programa utilizando:
+
+```bash
+/spark/bin/spark-submit \
+  --master spark://spark-master:7077 \
+  ejercicio16.py
+```
+
+Observe la salida.
+
+Debería visualizar:
+
+1. el DataFrame con los cinco registros;
+2. el monto promedio calculado;
+3. mensajes propios de la ejecución de Spark.
+
+Conceptualmente:
+
+```text
+ejercicio16.py
+      │
+      ▼
+ spark-submit
+      │
+      ▼
+Spark Application
+      │
+      ▼
+Spark Master
+      │
+      ▼
+ Worker / Executor
+      │
+      ▼
+resultado
+```
+
+---
+
+### Paso 4. Modificar y volver a ejecutar
+
+Abra nuevamente:
+
+```bash
+vi ejercicio16.py
+```
+
+Agregue un sexto registro al conjunto de datos, por ejemplo:
+
+```python
+("Diego", 120000.0)
+```
+
+Guarde nuevamente el archivo.
+
+Ejecute otra vez:
+
+```bash
+/spark/bin/spark-submit \
+  --master spark://spark-master:7077 \
+  ejercicio16.py
+```
+
+Compare el nuevo promedio con el obtenido anteriormente.
+
+### Interprete
+
+Responda:
+
+1. ¿Qué diferencia práctica existe entre escribir instrucciones directamente en `pyspark` y guardarlas en un archivo `.py`?
+2. ¿Qué función cumple `SparkSession.builder...getOrCreate()` dentro del programa?
+3. ¿Qué función cumple `spark-submit`?
+4. ¿Qué ventaja ofrece conservar el análisis como un archivo ejecutable?
+5. ¿Por qué el programa finaliza con `spark.stop()`?
+
+> **Idea clave:** un programa PySpark permite guardar una solución completa y ejecutarla posteriormente sobre el clúster Spark.
+
+---
+
+## Ejercicio 17 — Documentar decisiones e interpretaciones dentro del código
+
+### Objetivo
+
+Utilizar comentarios dentro de un programa PySpark para explicar decisiones técnicas e interpretar los resultados obtenidos.
+
+En trabajos prácticos y evaluaciones, el código puede incluir no solamente instrucciones ejecutables, sino también explicaciones escritas mediante comentarios.
+
+En Python, una línea que comienza con:
+
+```python
+#
+```
+
+corresponde a un comentario y no es ejecutada por Python.
+
+---
+
+### Paso 1. Crear una copia del programa anterior
+
+Desde:
+
+```text
+/tmp/curso_spark
+```
+
+ejecute:
+
+```bash
+cp ejercicio16.py ejercicio17.py
+```
+
+Abra:
+
+```bash
+vi ejercicio17.py
+```
+
+---
+
+### Paso 2. Incorporar comentarios de decisión
+
+Antes de crear el DataFrame, incorpore un bloque como:
+
+```python
+# DECISIÓN:
+# En este ejercicio se crea un DataFrame con las columnas
+# cliente y monto porque necesitamos calcular una medida
+# descriptiva sobre la variable monto.
+```
+
+Los comentarios deben explicar una decisión relevante del procesamiento y no limitarse a repetir literalmente la instrucción siguiente.
+
+Por ejemplo, no sería suficiente escribir:
+
+```python
+# Crear un DataFrame
+df = spark.createDataFrame(...)
+```
+
+Una explicación más útil sería:
+
+```python
+# DECISIÓN:
+# Se representa la información mediante un DataFrame porque
+# necesitamos trabajar con columnas identificadas por nombre
+# y aplicar funciones de agregación sobre monto.
+```
+
+---
+
+### Paso 3. Incorporar una interpretación
+
+Después de la operación que calcula el promedio, incorpore:
+
+```python
+# INTERPRETACIÓN:
+# Escriba aquí una breve interpretación del resultado obtenido
+# después de ejecutar el programa.
+```
+
+Primero ejecute el programa:
+
+```bash
+/spark/bin/spark-submit \
+  --master spark://spark-master:7077 \
+  ejercicio17.py
+```
+
+Observe el resultado y posteriormente complete el comentario de interpretación con el valor obtenido.
+
+---
+
+### Paso 4. Incorporar una respuesta conceptual dentro del código
+
+Agregue al final del archivo:
+
+```python
+# PREGUNTA:
+# ¿Qué ventaja tendría definir explícitamente un schema
+# si este programa debiera procesar un archivo cuya estructura
+# conocemos de antemano?
+#
+# RESPUESTA:
+# Escriba aquí su respuesta.
+```
+
+Guarde nuevamente el archivo.
+
+Compruebe que los comentarios no impiden su ejecución:
+
+```bash
+/spark/bin/spark-submit \
+  --master spark://spark-master:7077 \
+  ejercicio17.py
+```
+
+---
+
+### Reflexione
+
+En este ejercicio hemos combinado:
+
+```text
+Programa PySpark
+      │
+      ├── código ejecutable
+      │
+      ├── decisiones técnicas
+      │
+      ├── respuestas conceptuales
+      │
+      └── interpretación de resultados
+```
+
+Esta forma de trabajo permite que un mismo archivo conserve tanto la solución implementada como el razonamiento asociado a ella.
+
+> **Importante:** los comentarios deben ser breves, específicos y coherentes con el código efectivamente ejecutado.
+
+---
+
+## Resultado esperado del Nivel 4
+
+Al finalizar estos ejercicios debería poder realizar el siguiente flujo de manera autónoma:
+
+```text
+crear archivo .py
+       │
+       ▼
+escribir código PySpark
+       │
+       ▼
+guardar
+       │
+       ▼
+ejecutar con spark-submit
+       │
+       ▼
+revisar resultados
+       │
+       ▼
+modificar el programa
+       │
+       ▼
+volver a ejecutar
+       │
+       ▼
+documentar decisiones
+e interpretaciones
+```
+
+Con esto, además del trabajo interactivo desarrollado anteriormente, dispondrá de una segunda modalidad de trabajo con Spark: **programas PySpark guardados como archivos ejecutables**.
+
+
 # Cierre de la Guía Práctica 2
 
 Durante esta guía avanzamos desde el procesamiento mediante RDD hacia el procesamiento estructurado de Apache Spark.
