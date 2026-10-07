@@ -2034,6 +2034,80 @@ Por lo tanto:
 
 En los siguientes ejercicios aprenderemos esta segunda modalidad.
 
+### Del trabajo interactivo al desarrollo incremental
+
+Trabajar con un archivo `.py` no significa que deba escribir todo el programa antes de probarlo. Puede conservar la misma lógica de trabajo utilizada hasta ahora en PySpark: **escribir una parte, ejecutarla, observar el resultado y continuar**.
+
+La diferencia es que cada bloque quedará guardado en el archivo:
+
+```text
+PySpark interactivo                  Archivo .py
+
+>>> instrucción                     escribir BLOQUE 1
+>>> resultado                             │
+>>> siguiente instrucción                 ▼
+                                        guardar
+                                          │
+                                          ▼
+                                     spark-submit
+                                          │
+                                          ▼
+                                      comprobar
+                                          │
+                                          ▼
+                                    agregar BLOQUE 2
+                                          │
+                                          ▼
+                                        guardar
+                                          │
+                                          ▼
+                                     spark-submit
+```
+
+Por lo tanto, durante el desarrollo de un programa se recomienda trabajar **incrementalmente**:
+
+1. escriba un primer bloque;
+2. guarde el archivo;
+3. ejecútelo con `spark-submit`;
+4. compruebe que funciona y revise su resultado;
+5. vuelva a editar el archivo;
+6. agregue el siguiente bloque;
+7. guarde y ejecute nuevamente.
+
+Puede organizar visualmente el programa mediante comentarios:
+
+```python
+# ============================================================
+# BLOQUE 1 — CREACIÓN DE LOS DATOS
+# ============================================================
+
+# código...
+
+
+# ============================================================
+# BLOQUE 2 — CREACIÓN DEL DATAFRAME
+# ============================================================
+
+# código...
+
+
+# ============================================================
+# BLOQUE 3 — ANÁLISIS
+# ============================================================
+
+# código...
+```
+
+> **Importante:** `spark-submit` ejecuta el programa desde el comienzo. Si agrega un nuevo bloque y vuelve a ejecutarlo, también se ejecutarán nuevamente los bloques anteriores.
+
+Esta forma de trabajo permite mantener el ciclo que ya conoce:
+
+```text
+escribir → ejecutar → observar → corregir → continuar
+```
+
+pero ahora cada avance queda conservado dentro de un programa reproducible.
+
 ---
 
 ## Ejercicio 16 — Crear, guardar y ejecutar un programa PySpark
@@ -2075,7 +2149,11 @@ vi ejercicio16.py
 
 > Si prefiere otro editor disponible en su entorno, puede utilizarlo. Lo importante es crear y guardar un archivo de texto con extensión `.py`.
 
-Ingrese el siguiente programa:
+No escribiremos todo el programa de una sola vez. Lo construiremos y comprobaremos **por bloques**.
+
+#### Bloque 1 — Iniciar Spark y crear los datos
+
+Ingrese:
 
 ```python
 from pyspark.sql import SparkSession
@@ -2094,14 +2172,47 @@ datos = [
     ("Pedro", 95000.0),
     ("Maria", 180000.0)
 ]
+```
 
+Guarde el archivo y cierre el editor. Configure Python 3 y ejecute:
+
+```bash
+export PYSPARK_PYTHON=python3
+export PYSPARK_DRIVER_PYTHON=python3
+
+/spark/bin/spark-submit \
+  --master spark://spark-master:7077 \
+  ejercicio16.py
+```
+
+Si no aparecen errores, vuelva a abrir:
+
+```bash
+vi ejercicio16.py
+```
+
+#### Bloque 2 — Crear y visualizar el DataFrame
+
+Agregue al final:
+
+```python
 df = spark.createDataFrame(
     datos,
     ["cliente", "monto"]
 )
 
 df.show()
+```
 
+Guarde, cierre y vuelva a ejecutar el archivo con `spark-submit`. Compruebe que aparecen los cinco registros.
+
+Abra nuevamente el archivo.
+
+#### Bloque 3 — Incorporar el análisis
+
+Agregue:
+
+```python
 df.agg(
     avg("monto").alias("monto_promedio")
 ).show()
@@ -2109,7 +2220,9 @@ df.agg(
 spark.stop()
 ```
 
-Guarde el archivo y cierre el editor.
+Guarde y ejecute nuevamente el programa completo.
+
+Observe que, aunque solamente agregó el Bloque 3, `spark-submit` volvió a ejecutar los bloques 1, 2 y 3 en orden.
 
 ---
 
