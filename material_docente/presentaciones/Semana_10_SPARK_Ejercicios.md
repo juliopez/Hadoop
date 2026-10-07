@@ -1954,6 +1954,88 @@ Este procedimiento permite conservar, reutilizar y entregar una solución comple
 
 ---
 
+## Dos formas de trabajar con PySpark
+
+Hasta este punto de las guías hemos utilizado principalmente **PySpark de manera interactiva**. En esa modalidad, cada instrucción se escribe después del indicador:
+
+```text
+>>>
+```
+
+y se ejecuta inmediatamente.
+
+Por ejemplo:
+
+```python
+>>> df.show()
+>>> df.count()
+```
+
+Esta modalidad resulta útil para experimentar, comprobar instrucciones y observar resultados rápidamente. Sin embargo, las instrucciones pertenecen a esa sesión interactiva. Al finalizar PySpark mediante:
+
+```python
+exit()
+```
+
+PySpark **no guarda automáticamente las instrucciones escritas como un programa**.
+
+Existe una segunda modalidad: escribir las instrucciones en un **archivo Python con extensión `.py`** y ejecutar posteriormente ese archivo mediante Spark.
+
+Compare:
+
+```text
+MODALIDAD INTERACTIVA                 MODALIDAD SCRIPT
+
+./pyspark                             vi analisis.py
+    │                                      │
+    ▼                                      ▼
+>>> instrucción                      escribir programa
+>>> instrucción                            │
+>>> resultado                              ▼
+>>> instrucción                       guardar archivo
+    │                                      │
+    ▼                                      ▼
+  exit()                              spark-submit
+    │                                      │
+    ▼                                      ▼
+finaliza la sesión                      resultado
+```
+
+### Una distinción importante
+
+PySpark **no es un editor de archivos**. Si dispone de un archivo como:
+
+```text
+analisis.py
+```
+
+no debe pensar que al iniciar `pyspark` el archivo se abrirá para editarlo.
+
+En esta guía utilizaremos dos herramientas con responsabilidades diferentes:
+
+```text
+Editor de texto                  Apache Spark
+     │                                │
+     ▼                                ▼
+vi analisis.py                spark-submit analisis.py
+     │                                │
+     ▼                                ▼
+crear / modificar                 ejecutar
+guardar código                    procesar
+```
+
+Por lo tanto:
+
+- **`vi`** se utilizará para crear, abrir, modificar y guardar el código;
+- **`spark-submit`** se utilizará para ejecutar ese código mediante Spark;
+- **`pyspark`** continuará siendo útil cuando necesitemos trabajar de manera interactiva.
+
+> **Idea clave:** si desea experimentar rápidamente, puede utilizar la consola interactiva de PySpark. Si necesita conservar, modificar, volver a ejecutar o entregar una solución, resulta más apropiado trabajar con un archivo `.py`.
+
+En los siguientes ejercicios aprenderemos esta segunda modalidad.
+
+---
+
 ## Ejercicio 16 — Crear, guardar y ejecutar un programa PySpark
 
 ### Objetivo
