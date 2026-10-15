@@ -1,38 +1,36 @@
 ---
-name: Bug report
-about: Create a report to help us improve
-title: ''
-labels: ''
-assignees: ''
-
+name: "Error técnico"
+about: "Reporta fallas en Docker, Hadoop, Hive, Spark, Kafka, simuladores o el portal."
+title: "[Error] "
+labels: ["bug"]
+assignees: []
 ---
 
-**Describe the bug**
-A clear and concise description of what the bug is.
+## Componente afectado
+<!-- Ej.: Docker Compose, Hadoop/HDFS, Hive, Spark, PySpark, Kafka, simulador HDFS, portal web. -->
 
-**To Reproduce**
-Steps to reproduce the behavior:
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
+## Descripción del problema
+<!-- Explica qué falla y cuál es su impacto. -->
 
-**Expected behavior**
-A clear and concise description of what you expected to happen.
+## Pasos para reproducirlo
+1.
+2.
+3.
 
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
+## Comportamiento esperado
+<!-- ¿Qué debería ocurrir? -->
 
-**Desktop (please complete the following information):**
- - OS: [e.g. iOS]
- - Browser [e.g. chrome, safari]
- - Version [e.g. 22]
+## Comportamiento observado
+<!-- ¿Qué sucede realmente? Incluye mensajes de error pertinentes. -->
 
-**Smartphone (please complete the following information):**
- - Device: [e.g. iPhone6]
- - OS: [e.g. iOS8.1]
- - Browser [e.g. stock browser, safari]
- - Version [e.g. 22]
+## Entorno
+- Sistema operativo:
+- Versión de Docker y Docker Compose (si corresponde):
+- Navegador (para el portal o simuladores):
+- Servicio o componente afectado:
 
-**Additional context**
-Add any other context about the problem here.
+## Evidencias
+<!-- Adjunta capturas, registros o fragmentos de salida. Elimina contraseñas, tokens, IP privadas o datos personales antes de compartirlos. -->
+
+## Información adicional
+<!-- Otros antecedentes que ayuden a diagnosticar el problema. -->
