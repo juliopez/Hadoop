@@ -14,6 +14,20 @@ Al finalizar la guía, el estudiante deberá ser capaz de comprender el funciona
 | **Nivel 2 — Integración y optimización** | 6–10 | Múltiples DataFrames, joins, particiones y persistencia en memoria |
 | **Nivel 3 — Pipeline avanzado y transición a streaming** | 11–15 | Pipeline integral, HDFS entrada/salida, batch y transición conceptual hacia Kafka |
 
+## Conocimientos previos necesarios
+
+Esta tercera guía continúa el trabajo desarrollado en las semanas 9 y 10. Antes de comenzar, debe poder realizar las siguientes tareas sin depender de instrucciones paso a paso:
+
+- **Crear una `SparkSession`:** iniciar una aplicación PySpark y utilizar la sesión como punto de entrada para trabajar con datos estructurados.
+- **Leer datos como DataFrames:** cargar archivos almacenados en HDFS, identificar sus columnas y comprobar su esquema y cantidad de registros.
+- **Aplicar transformaciones:** seleccionar, filtrar y crear columnas derivadas; realizar agrupaciones y agregaciones mediante la DataFrame API.
+- **Ejecutar un programa con `spark-submit`:** guardar el código en un archivo `.py`, ejecutarlo desde el contenedor `spark-master` y revisar sus resultados o errores.
+- **Documentar decisiones técnicas:** incorporar comentarios en el código para explicar qué hace cada etapa, por qué se utiliza una operación y cómo se interpretan o validan los resultados.
+
+Estos conocimientos se trabajaron especialmente en la **Guía Práctica 2 (semana 10)**, incluidos sus ejercicios de creación, ejecución y documentación de programas PySpark. En esta guía se utilizarán de manera integrada para construir y validar un pipeline; no se volverán a desarrollar desde cero.
+
+---
+
 ## Antes de comenzar
 
 Se mantienen las responsabilidades de los componentes utilizadas durante el curso:
