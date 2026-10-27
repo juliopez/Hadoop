@@ -22,9 +22,9 @@ Conjuntos de datos sintéticos para ejercicios de integración, procesamiento y 
 | `zona_comercial` | Texto | Agrupación comercial sintética |
 | `prioridad` | Texto | Clasificación comercial sintética |
 
-## Archivos preparados, pendientes de publicación
+## Otros archivos disponibles
 
-Los siguientes archivos están definidos y validados, pero **todavía no se encuentran alojados en este directorio**.
+Los siguientes archivos CSV sintéticos también están disponibles en este directorio.
 
 ### `ventas_evaluacion.csv`
 100.000 filas; clave única `id_venta`.
