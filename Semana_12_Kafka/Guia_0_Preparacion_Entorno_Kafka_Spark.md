@@ -104,9 +104,9 @@ docker inspect kafka --format '{{json .NetworkSettings.Networks}}'
 docker inspect spark-master --format '{{json .NetworkSettings.Networks}}'
 ```
 
-**Punto crítico de la infraestructura actual:** el archivo `docker-compose.yml` del repositorio fija `KAFKA_ADVERTISED_HOST_NAME: 172.27.1.16`. Es una dirección específica del despliegue y no se debe asumir válida en AWS. En las pruebas docentes se resolvió la conectividad y se validó el flujo completo. En las instancias AWS se debe utilizar la configuración de red ya suministrada por el curso; no copiar la IP observada en otro equipo. Un puerto TCP abierto no garantiza que el cliente Kafka funcione. Kafka devuelve metadatos con el host y puerto de `advertised.listeners`. Si anuncia un nombre que Ubuntu no puede resolver, Python puede fallar con `KafkaTimeoutError` o `DNS Resolution failure`, aunque el puerto 9092 responda.
+**Punto crítico de la infraestructura actual:** el archivo `docker-compose.yml` del repositorio fija `KAFKA_ADVERTISED_HOST_NAME: 172.27.1.16`. Es una dirección específica del despliegue y no se debe asumir válida en AWS. En las instancias AWS se debe utilizar la configuración de red suministrada por el curso; no copiar la IP observada en otro equipo. Un puerto TCP abierto no garantiza que el cliente Kafka funcione. Kafka devuelve metadatos con el host y puerto de `advertised.listeners`. Si anuncia un nombre que Ubuntu no puede resolver, Python puede fallar con `KafkaTimeoutError` o `DNS Resolution failure`, aunque el puerto 9092 responda.
 
-**Solución correcta:** el responsable del laboratorio debe configurar listeners anunciados que sean resolubles desde cada red cliente, y asegurar que Spark y Kafka compartan una red Docker adecuada. La configuración exacta depende de la imagen y del despliegue institucional. **No copiar IP internas ni añadir nombres efímeros a `/etc/hosts` como solución general.**
+**Si aparece un error de conectividad:** comprobar que los listeners anunciados sean resolubles desde cada red cliente y que Spark y Kafka compartan una red Docker adecuada. La configuración exacta depende del despliegue del curso. **No copiar IP internas ni añadir nombres efímeros a `/etc/hosts` como solución general.**
 
 Para probar la resolución desde Spark:
 
@@ -181,7 +181,7 @@ docker exec spark-master bash -lc '/spark/bin/spark-submit --version'
 
 Si el ejecutable no está en el PATH, utilizar la ruta de Spark que se haya empleado durante las prácticas anteriores.
 
-**Entorno de referencia validado por el docente (29-10-2026):** Kafka 3.9.0 con ZooKeeper 3.8; Spark 2.4.0, Scala 2.11.12 y Java 8.
+**Versiones del laboratorio de referencia:** Kafka 3.9.0 con ZooKeeper 3.8; Spark 2.4.0, Scala 2.11.12 y Java 8.
 
 **Versiones Spark:** Las instancias del curso utilizan la infraestructura del repositorio; si alguna presenta otra versión, **no asumir que el conector siguiente sirve para cualquier Spark**: comprobar la versión real y seleccionar el artefacto compatible con Spark/Scala antes de ejecutar la Guía 2.
 
@@ -191,7 +191,7 @@ Conector correspondiente **únicamente al entorno de referencia Spark 2.4.0 / Sc
 org.apache.spark:spark-sql-kafka-0-10_2.11:2.4.0
 ```
 
-La primera ejecución de `spark-submit --packages` puede descargar el conector y sus dependencias desde Maven Central. En el entorno de referencia, esa descarga fue verificada; el laboratorio estudiantil debe contar con acceso a Maven o con las dependencias precargadas.
+La primera ejecución de `spark-submit --packages` puede descargar el conector y sus dependencias desde Maven Central. El laboratorio estudiantil debe contar con acceso a Maven o con las dependencias precargadas.
 
 **Importante:** `spark-submit --version` comprueba la versión de Spark, **no** descarga el conector. La descarga efectiva ocurre al ejecutar una aplicación con `--packages`, como se hace en la Guía 2.
 
