@@ -1,6 +1,6 @@
 # Guía práctica 2 — Procesamiento Near Real-Time de sismos con USGS, Apache Kafka y Spark
 
-**Asignatura:** Big Data · **Duración estimada:** 60 minutos · **Dificultad:** intermedia-alta · **Modalidad:** parejas · **Caso:** datos reales de sismos del USGS.
+**Asignatura:** Big Data · **Dificultad:** intermedia-alta · **Caso:** datos reales de sismos del USGS.
 
 ## Propósito y resultados de aprendizaje
 
@@ -8,7 +8,7 @@ Construir, ejecutar e interpretar un flujo de eventos cercano al tiempo real (**
 
 **API REST USGS → productor Python → tópico Kafka `sismos_usgs` → Spark Structured Streaming → resultados filtrados.**
 
-Al terminar, cada pareja podrá explicar la diferencia entre consultar una API y transmitir eventos; reconocer tópico, partición y offset; interpretar micro-lotes de Spark; aplicar un esquema explícito y un filtro de magnitud; y describir qué información conserva un checkpoint y qué limitaciones tiene.
+Al terminar, el estudiante podrá explicar la diferencia entre consultar una API y transmitir eventos; reconocer tópico, partición y offset; interpretar micro-lotes de Spark; aplicar un esquema explícito y un filtro de magnitud; y describir qué información conserva un checkpoint y qué limitaciones tiene.
 
 > **Importante:** USGS publica información que cambia con el tiempo. La cantidad de eventos, sus identificadores, magnitudes y offsets no tienen por qué coincidir con las capturas del docente. Un micro-lote vacío no significa necesariamente un error.
 
@@ -21,9 +21,9 @@ La actividad se desarrolla en la instancia AWS utilizada durante el semestre par
 - Python del anfitrión con `requests` y `kafka-python`, preferiblemente en un entorno virtual. El productor se ejecuta en Ubuntu; el script Spark se ejecuta dentro del contenedor.
 - Se utilizan los archivos `productor_usgs.py` y `sismos_checkpoint.py`, cuyos códigos se incluyen en esta guía. Pueden entregarse preparados para concentrar el trabajo en su ejecución e interpretación.
 - **Checkpoint:** `/tmp/checkpoint_sismos_usgs` dentro de `spark-master` sirve para la demostración y persiste entre ejecuciones mientras el contenedor y su sistema de archivos se conserven. **No es durable ante la recreación del contenedor**. Para conservar el checkpoint entre recreaciones del contenedor, es necesario utilizar un volumen persistente.
-- Si varias parejas trabajan simultáneamente, cada una debe utilizar un tópico y un checkpoint independientes, según las indicaciones del laboratorio.
+- Si varias personas trabajan simultáneamente en un broker compartido, cada instancia de trabajo debe utilizar un tópico y un checkpoint independientes, según las indicaciones del laboratorio.
 
-## Ejercicio 1 — Consultar la API real del USGS (10 minutos)
+## Ejercicio 1 — Consultar la API real del USGS
 
 **Objetivo:** reconocer el origen REST y el formato GeoJSON antes de transmitir eventos.
 
@@ -50,7 +50,7 @@ PY
 
 **Consignas:** (a) registrar el código HTTP y la cantidad de eventos; (b) identificar la función de `features`, `properties` y `geometry`; (c) explicar por qué una respuesta REST es una **instantánea** y no, por sí misma, un flujo de eventos. Si el feed contiene cero sismos, registrar ese resultado: es válido y no se deben inventar eventos.
 
-## Ejercicio 2 — Publicar eventos sísmicos en Kafka (15 minutos)
+## Ejercicio 2 — Publicar eventos sísmicos en Kafka
 
 **Objetivo:** transformar registros GeoJSON en mensajes JSON y observar la confirmación de publicación.
 
@@ -129,7 +129,7 @@ python productor_usgs.py
 
 > El ID se utiliza como clave Kafka; esto ayuda a mantener la afinidad de una clave con una partición, pero **no deduplica automáticamente** mensajes. La cantidad publicada puede ser inferior al número de elementos del feed cuando faltan campos esenciales.
 
-## Ejercicio 3 — Verificar mensajes y offsets en Kafka (10 minutos)
+## Ejercicio 3 — Verificar mensajes y offsets en Kafka
 
 **Objetivo:** comprobar que los eventos existen en el tópico independientemente del productor.
 
@@ -149,7 +149,7 @@ El comando supone que el contenedor se llama `kafka` y dispone de `kafka-console
 
 **Consignas:** (a) localizar al menos un mensaje con `id_evento`, `magnitud` y `ubicacion`; (b) contrastar su ID con el productor; (c) explicar por qué los offsets son **por partición** y no un contador global del tópico. Para identificar partición y offset utilizar la confirmación impresa en el ejercicio 2; el consumidor de consola mostrado aquí imprime el contenido, no esos metadatos.
 
-## Ejercicio 4 — Transformar y filtrar sismos con Spark Structured Streaming (15 minutos)
+## Ejercicio 4 — Transformar y filtrar sismos con Spark Structured Streaming
 
 **Objetivo:** interpretar el JSON con un esquema explícito y visualizar eventos de **magnitud ≥ 2.0**.
 
@@ -230,7 +230,7 @@ Mientras Spark continúa ejecutándose, volver a ejecutar el productor del ejerc
 
 > La API USGS puede devolver los mismos sismos en consultas sucesivas. La aparición de un mensaje en un micro-lote nuevo **no implica necesariamente un terremoto recién ocurrido**: puede ser una nueva publicación Kafka de un evento ya conocido.
 
-## Ejercicio 5 — Checkpoints, continuidad y límites de recuperación (10 minutos)
+## Ejercicio 5 — Checkpoints, continuidad y límites de recuperación
 
 **Objetivo:** observar el registro de progreso y distinguirlo de la deduplicación.
 
