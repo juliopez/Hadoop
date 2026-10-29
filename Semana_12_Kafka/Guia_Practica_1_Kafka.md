@@ -8,7 +8,9 @@ Aplicar los conceptos de tópicos, productores, consumidores, claves, particione
 
 ## Antes de comenzar
 
-**Entorno:** instancia AWS del curso, con Docker accesible sin `sudo`, Kafka 3.9.0 en modo ZooKeeper y los servicios del repositorio ya desplegados.\n\n**Requisitos previos:** Kafka y ZooKeeper iniciados; acceso a Docker; lectura de los apartados 2.1–2.5 del [libro](Apache_Kafka_Obra_Consolidada_Revision.md). Los comandos se ejecutan **dentro del contenedor Kafka**, salvo indicación contraria. Según la imagen Docker, las utilidades pueden llevar el sufijo `.sh` (por ejemplo, `kafka-topics.sh`). El broker `localhost:9092` de los ejemplos se refiere al interior del contenedor Kafka, no necesariamente al equipo anfitrión.
+**Entorno:** instancia AWS del curso, con Docker accesible sin `sudo`, Kafka 3.9.0 en modo ZooKeeper y los servicios del repositorio ya desplegados.
+
+**Requisitos previos:** haber completado la [Guía 0](Guia_0_Preparacion_Entorno_Kafka_Spark.md); Kafka y ZooKeeper iniciados; acceso a Docker; lectura de los apartados 2.1–2.5 del [libro](Apache_Kafka_Obra_Consolidada_Revision.md). Los comandos se ejecutan **dentro del contenedor Kafka**, salvo indicación contraria. Según la imagen Docker, las utilidades pueden llevar el sufijo `.sh` (por ejemplo, `kafka-topics.sh`). El broker `localhost:9092` de los ejemplos se refiere al interior del contenedor Kafka, no necesariamente al equipo anfitrión.
 
 ## Ejercicio 1 — Verificar el broker y crear el tópico (10 min)
 En el equipo anfitrión:
