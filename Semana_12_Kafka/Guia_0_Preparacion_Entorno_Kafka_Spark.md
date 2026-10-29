@@ -87,7 +87,7 @@ docker exec kafka bash -lc 'kafka-topics --bootstrap-server localhost:9092 --des
 | Origen de la conexión | Broker de referencia |
 |---|---|
 | Herramientas dentro del contenedor Kafka | `localhost:9092` |
-| Python ejecutado en Ubuntu | `localhost:9092` **solo si** el puerto está publicado y el broker anuncia una dirección resoluble desde Ubuntu |
+| Python ejecutado en el anfitrión | `localhost:9092` **solo si** el puerto está publicado y el broker anuncia una dirección resoluble desde el anfitrión |
 | Spark ejecutado dentro de `spark-master` | `kafka:9092` **solo si** ambos contenedores comparten red Docker y el broker anuncia una dirección accesible |
 
 Comprobar los puertos publicados:
@@ -104,7 +104,7 @@ docker inspect kafka --format '{{json .NetworkSettings.Networks}}'
 docker inspect spark-master --format '{{json .NetworkSettings.Networks}}'
 ```
 
-**Punto crítico de la infraestructura actual:** el archivo `docker-compose.yml` del repositorio fija `KAFKA_ADVERTISED_HOST_NAME: 172.27.1.16`. Es una dirección específica del despliegue y no se debe asumir válida en AWS. En cualquier instalación, revisar las direcciones anunciadas por el broker y evitar reutilizar IP internas de otros equipos. Un puerto TCP abierto no garantiza que el cliente Kafka funcione. Kafka devuelve metadatos con el host y puerto de `advertised.listeners`. Si anuncia un nombre que Ubuntu no puede resolver, Python puede fallar con `KafkaTimeoutError` o `DNS Resolution failure`, aunque el puerto 9092 responda.
+**Punto crítico de la infraestructura actual:** el archivo `docker-compose.yml` del repositorio fija `KAFKA_ADVERTISED_HOST_NAME: 172.27.1.16`. Es una dirección específica del despliegue y no se debe asumir válida en otras instalaciones. En cualquier instalación, revisar las direcciones anunciadas por el broker y evitar reutilizar IP internas de otros equipos. Un puerto TCP abierto no garantiza que el cliente Kafka funcione. Kafka devuelve metadatos con el host y puerto de `advertised.listeners`. Si anuncia un nombre que el anfitrión no puede resolver, Python puede fallar con `KafkaTimeoutError` o `DNS Resolution failure`, aunque el puerto 9092 responda.
 
 **Si aparece un error de conectividad:** comprobar que los listeners anunciados sean resolubles desde cada red cliente y que Spark y Kafka compartan una red Docker adecuada. La configuración exacta depende de cada despliegue. **No copiar IP internas ni añadir nombres efímeros a `/etc/hosts` como solución general.**
 
@@ -195,7 +195,7 @@ La primera ejecución de `spark-submit --packages` puede descargar el conector y
 
 **Importante:** `spark-submit --version` comprueba la versión de Spark, **no** descarga el conector. La descarga efectiva ocurre al ejecutar una aplicación con `--packages`, como se hace en la Guía 2.
 
-El contenedor de referencia usa una instalación antigua de Spark/PySpark y puede disponer de Python 2.7. **No actualizar Python dentro del contenedor ni instalar PySpark moderno** sin una evaluación de compatibilidad: el productor Python 3 se ejecuta en Ubuntu y el proceso Spark se ejecuta con el entorno proporcionado.
+El contenedor de referencia usa una instalación antigua de Spark/PySpark y puede disponer de Python 2.7. **No actualizar Python dentro del contenedor ni instalar PySpark moderno** sin una evaluación de compatibilidad: el productor Python 3 se ejecuta en el anfitrión y el proceso Spark se ejecuta con el entorno proporcionado.
 
 ## 7. Preparar los archivos en el anfitrión
 
