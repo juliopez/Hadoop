@@ -49,9 +49,9 @@ kafka-console-producer --bootstrap-server localhost:9092 --topic ventas --proper
 ```
 Publique estas tres líneas **sin espacios antes ni después de los dos puntos separadores**:
 ```text
-C-025:{"id_venta":"V004","id_cliente":"C-025","monto_total":12000,"moneda":"CLP"}
-C-025:{"id_venta":"V005","id_cliente":"C-025","monto_total":16000,"moneda":"CLP"}
-C-031:{"id_venta":"V006","id_cliente":"C-031","monto_total":9000,"moneda":"CLP"}
+C-025:{"id_venta":"V004","id_cliente":"C-025","monto_total":12000,"moneda":"USD"}
+C-025:{"id_venta":"V005","id_cliente":"C-025","monto_total":16000,"moneda":"USD"}
+C-031:{"id_venta":"V006","id_cliente":"C-031","monto_total":9000,"moneda":"USD"}
 ```
 En otra terminal, observe claves y valores:
 ```bash
