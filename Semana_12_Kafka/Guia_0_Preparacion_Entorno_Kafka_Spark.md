@@ -6,7 +6,7 @@
 
 **Aprovechar la instancia AWS y los servicios Hadoop/Spark utilizados en las semanas anteriores** para habilitar únicamente los componentes adicionales requeridos por Kafka y la integración con Spark. Preparar y verificar el entorno necesario para realizar, sin interrupciones por dependencias, la [Guía práctica 1 — Kafka](Guia_Practica_1_Kafka.md) y la [Guía práctica 2 — USGS, Kafka y Spark](Guia_Practica_2_Kafka_Spark.md).
 
-**Esta guía se realiza antes de los 60 minutos asignados a cada práctica.** No requiere repetir los ejercicios anteriores de HDFS, Hive o Spark ni reinstalar sus servicios. Su producto es la habilitación de Kafka, sus dependencias y una lista de comprobación completada.
+**Esta guía se realiza antes de comenzar las prácticas.** No requiere repetir los ejercicios anteriores de HDFS, Hive o Spark ni reinstalar sus servicios. Su producto es la habilitación de Kafka, sus dependencias y una lista de comprobación completada.
 
 **Punto de partida:** cada estudiante continúa trabajando en su instancia AWS habitual, accediendo mediante el procedimiento del curso. No crear otra instancia ni reconstruir Hadoop o Spark. La instancia puede contener servicios Docker ya desplegados; comprobarlo antes de instalar nada. Los nombres `kafka` y `spark-master` corresponden al laboratorio de referencia y deben ajustarse si la instancia del estudiante utiliza otros nombres.
 
@@ -226,7 +226,7 @@ docker exec spark-master bash -lc 'ls -lh /tmp/sismos_checkpoint.py'
 
 ## 8. Preparación para trabajo simultáneo
 
-Si todo el curso comparte un único broker, **los tópicos y checkpoints comunes pueden producir interferencias** entre parejas. La configuración mínima para un laboratorio individual es:
+Si todo el curso comparte un único broker, **los tópicos y checkpoints comunes pueden producir interferencias** entre participantes. La configuración mínima del laboratorio es:
 
 ```text
 Tópico Guía 1: ventas
@@ -234,7 +234,7 @@ Tópico Guía 2: sismos_usgs
 Checkpoint Spark: /tmp/checkpoint_sismos_usgs
 ```
 
-Para varias parejas, asignar identificadores por equipo (por ejemplo, `ventas_g01`, `sismos_usgs_g01` y `/tmp/checkpoint_sismos_usgs_g01`). Cada grupo debe actualizar los nombres correspondientes en los comandos y las variables `KAFKA_TOPIC` y `SPARK_CHECKPOINT` de los scripts. En la Guía 1, sustituir `ventas` por el tópico asignado.
+Si varias personas comparten el broker, asignar identificadores por instancia de trabajo (por ejemplo, `ventas_g01`, `sismos_usgs_g01` y `/tmp/checkpoint_sismos_usgs_g01`). Cada participante debe actualizar los nombres correspondientes en los comandos y las variables `KAFKA_TOPIC` y `SPARK_CHECKPOINT` de los scripts. En la Guía 1, sustituir `ventas` por el tópico asignado.
 
 **Advertencia de compatibilidad:** los nombres del tópico deben coincidir entre productor y consumidor, y el checkpoint debe ser exclusivo de una consulta. El docente debe comunicar previamente si se utilizarán tópicos compartidos o independientes.
 
@@ -252,7 +252,7 @@ Marcar cada condición:
 - [ ] Spark informa la versión esperada y el conector Kafka está disponible o puede descargarse.
 - [ ] `productor_usgs.py` está guardado en Ubuntu.
 - [ ] `sismos_checkpoint.py` está disponible dentro de `spark-master`.
-- [ ] Se definió una política de tópicos y checkpoints para evitar interferencias entre equipos.
+- [ ] Se definió una política de tópicos y checkpoints para evitar interferencias entre instancias de trabajo.
 
 **Criterio de preparación:** si se cumplen los puntos, el laboratorio está listo para comenzar las prácticas. La ejecución completa del flujo y la observación de micro-lotes forman parte de la Guía 2, no de esta preparación.
 
