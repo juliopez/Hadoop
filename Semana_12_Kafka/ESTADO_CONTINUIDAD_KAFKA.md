@@ -78,3 +78,14 @@ Evidencia: ejecución continua de Spark Structured Streaming leyendo `sismos_usg
 - **Pendiente editorial prioritario:** sustituir íntegramente los cinco ejercicios de ventas de `Guia_Practica_2_Kafka_Spark.md` por cinco ejercicios basados en USGS; entregar scripts reproducibles y separar instrucciones docentes de consignas estudiantiles. El objetivo es cerrar la guía, no prolongar la depuración técnica.
 
 **Regla de trabajo vinculante:** antes de pedir una prueba, consultar esta bitácora y la guía; clasificar cada requisito como APROBADO, PENDIENTE o NO NECESARIO. No solicitar nuevamente evidencia de un requisito APROBADO. No anunciar «última comprobación» sin definir previamente el criterio de cierre.
+
+
+## Cierre documental de guías — 29-10-2026
+
+- **Infraestructura de referencia comprobada:** Kafka 3.9.0 en modo ZooKeeper (`KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181`), ZooKeeper 3.8, Spark 2.4.0, Scala 2.11.12, Java 8; contenedores Kafka y Spark en la misma red Docker. La integración funcional se probó previamente en este mismo entorno; no se requiere repetir pruebas por el uso de ZooKeeper.
+- **Permisos estudiantiles:** todos los comandos Docker de las guías 0, 1 y 2 se presentan sin `sudo`. El docente utiliza `sudo` solo en su equipo personal.
+- **Guía 0:** habilitación sobre instancias AWS existentes, sin reinstalar HDFS, Hive ni Spark; preparar Kafka, Python, conector y scripts.
+- **Guía 1:** cinco ejercicios de publicación, consumo, claves, particiones, offsets y grupos; revisión editorial terminada.
+- **Guía 2:** cinco ejercicios USGS → Kafka → Spark, con filtro y checkpoints; revisión editorial terminada. Los resultados reales pueden variar con el feed USGS.
+- **Validaciones técnicas conservadas:** publicación/consumo, conector Spark–Kafka, `from_json`, filtro, micro-lotes continuos y archivos de checkpoint. Los registros históricos anteriores describen el estado en cada momento, no requisitos pendientes actuales.
+- **Alcance del cierre:** documentación y material didáctico terminados en la rama `documentacion-kafka-parte-ii`. No se modificó Docker Compose, no se migró a KRaft y no se ejecutaron nuevas pruebas en instancias estudiantiles. El nombre/IP de `advertised.listeners` depende del despliegue y no debe copiarse desde el equipo docente.
