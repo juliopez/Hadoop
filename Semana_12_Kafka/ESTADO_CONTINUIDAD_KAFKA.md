@@ -42,3 +42,16 @@ La Guía 1 está aprobada. La Guía 2 debe ser de dificultad intermedia-alta, du
 ## Decisión y resultado adicional (29-10-2026)
 
 El docente aprobó definitivamente **USGS como fuente de datos real para los cinco ejercicios de la Guía 2 NRT**; reemplazar el caso ficticio de ventas en la siguiente revisión editorial. La prueba `spark-submit --packages ... --version` mostró Spark 2.4.0, Scala 2.11.12 y Java 8, pero **no constituye una prueba de resolución del conector**. La búsqueda `find /root/.ivy2 /root/.m2 -type f -name '*spark-sql-kafka*'` no encontró resultados. **Siguiente prueba:** ejecutar una aplicación mínima con `--packages` y revisar salida de Ivy/resolución, sin afirmar aún que Spark–Kafka funciona.
+
+
+## Actualización verificada — 29-10-2026, pruebas Spark–Kafka (posterior al registro anterior)
+
+**Prueba A — resolución efectiva de dependencias: APROBADA.** Desde el contenedor `spark-master`, se ejecutó `/spark/bin/spark-submit --master 'local[1]' --packages org.apache.spark:spark-sql-kafka-0-10_2.11:2.4.0 /tmp/prueba_kafka.py`. Ivy identificó y descargó desde Maven Central el conector `spark-sql-kafka-0-10_2.11:2.4.0` y dependencias (incluyendo `kafka-clients:2.0.0`). La aplicación terminó imprimiendo `Prueba de dependencias Spark-Kafka`. Esto supera la incertidumbre del registro anterior; la búsqueda previa sin JARs era anterior a la descarga.
+
+**Prueba B — creación de fuente Structured Streaming: APROBADA.** Se ejecutó una aplicación PySpark con `spark.readStream.format('kafka')`, `kafka.bootstrap.servers=kafka:9092`, `subscribe=sismos_usgs`, `startingOffsets=earliest`. La salida incluyó `FUENTE KAFKA CREADA CORRECTAMENTE` y el esquema Kafka con `key`, `value`, `topic`, `partition`, `offset`, `timestamp` y `timestampType`. Esta prueba validó creación de fuente, no aún consumo efectivo.
+
+**Prueba C — consumo efectivo USGS → Kafka → Spark: APROBADA.** Se ejecutó `/tmp/leer_sismos.py` con `spark-submit --master local[1] --packages org.apache.spark:spark-sql-kafka-0-10_2.11:2.4.0`. La consulta `writeStream.format('console').outputMode('append').trigger(once=True)` mostró `Batch: 0` y **cuatro eventos JSON reales** del tópico `sismos_usgs`: partición 1 offset 0 (magnitud 2.5); partición 0 offsets 0, 1 y 2 (magnitudes 0.81, 2.31 y 1.4). Se observaron `id_evento`, `magnitud`, `ubicacion`, `fecha_evento`, `longitud`, `latitud` y `profundidad_km`. La consulta terminó y volvió al prompt sin error visible.
+
+**Estado actualizado:** integración extremo a extremo **validada para un lote disponible**. No confundir `trigger(once=True)` con operación continua NRT. **Pendiente:** deserialización y tipado de JSON en Spark, transformaciones/filtros/agregaciones, streaming continuo, checkpoint persistente y recuperación; completar y actualizar los cinco ejercicios de Guía 2 basados exclusivamente en USGS. Mantener la guía teórica original intacta.
+
+**Próxima prueba única:** ejecutar Spark con `from_json` y esquema explícito sobre los mensajes `sismos_usgs`, mostrar columnas tipadas y un filtro por magnitud. Después validar continuidad y checkpoints.
