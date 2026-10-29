@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simulador interactivo de Kafka y Spark | Hadoop y Big Data</title>
+<meta name="description" content="Simulador educativo de Apache Kafka y Spark Structured Streaming: productores, particiones, offsets, micro-lotes y checkpoints.">
+<link rel="stylesheet" href="assets/css/styles.css">
+<style>
+:root{--ink:#182743;--accent:#2364e8;--line:#dce5f4;--bg:#f4f7fc}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,sans-serif}
+.khero{background:linear-gradient(115deg,#15223c,#254f91);color:white;text-align:center;padding:24px 16px}
+.khero h1{margin:0 0 7px;font-size:clamp(1.5rem,3vw,2.3rem)}.khero p{margin:0;opacity:.88}
+.shell{max-width:1150px;margin:20px auto;padding:0 16px 40px}
+.panel{background:white;border:1px solid var(--line);border-radius:15px;padding:18px;margin:14px 0;box-shadow:0 4px 15px #20305208}
+h2{font-size:1.17rem;margin:0 0 12px}h3{font-size:1rem;margin:0 0 9px}.muted{color:#566781;font-size:.92rem}
+.tabs,.controls,.stats{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+button{border:1px solid #c6d7f2;border-radius:8px;padding:10px 14px;background:#ecf3ff;color:#153f88;font-weight:650;cursor:pointer}
+button.primary,.tab[aria-selected=true]{background:#2763e8;color:white;border-color:#2763e8}
+button:disabled{opacity:.43;cursor:not-allowed}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #f7ad30;outline-offset:2px}
+label{font-size:.91rem;font-weight:650;display:block;margin-bottom:5px}
+input,select,textarea{font:inherit;max-width:100%;border:1px solid #ccd6e5;border-radius:8px;padding:9px;background:white;color:var(--ink)}
+input[type=number]{width:90px}input[type=range]{padding:0;vertical-align:middle}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(235px,1fr));gap:12px}
+.inline{display:flex;gap:8px;flex-wrap:wrap;align-items:end}.inputgroup{flex:1;min-width:135px}
+.callout{background:#ecf3ff;border-left:4px solid #2468eb;padding:11px 13px;border-radius:7px;line-height:1.5}
+.flow{display:flex;align-items:center;justify-content:space-between;gap:6px;flex-wrap:wrap}
+.node{border:1px solid #b7c8e7;background:#f2f6ff;border-radius:9px;padding:10px;flex:1;text-align:center;min-width:120px;font-weight:700}
+.arrow{color:#536e99;font-weight:800}
+.topic{border:1px solid #bbcbea;border-radius:10px;padding:12px;background:#f7faff}
+.partition{display:grid;grid-template-columns:120px 1fr;gap:8px;align-items:center;border-bottom:1px solid #e0e8f4;padding:9px 0}
+.partition:last-child{border:0}.cells{display:flex;flex-wrap:wrap;gap:5px;min-height:40px;align-items:center}
+.message{font-size:12px;padding:7px;border-radius:6px;background:#cddfff;border:1px solid #8db3ef;min-width:48px;text-align:center}
+.message.consumed{background:#c1ead9;border-color:#6ab59b}.message small{display:block}
+.stat{background:#f1f6ff;border-radius:10px;padding:11px 14px;flex:1;min-width:125px}.stat strong{display:block;font-size:1.35rem}
+pre{white-space:pre-wrap;word-break:break-word;background:#142036;color:#dbeafe;padding:13px;border-radius:8px;max-height:270px;overflow:auto;font-size:.82rem}
+table{width:100%;border-collapse:collapse;font-size:.89rem}th,td{text-align:left;padding:8px;border-bottom:1px solid #e5ebf4}th{background:#edf3ff}
+.hide{display:none!important}.pill{font-size:.8rem;border-radius:40px;background:#e8f1ff;padding:4px 9px}
+.note{font-size:.86rem;color:#536781;margin:8px 0}
+#status{min-height:23px;font-weight:650;color:#235a36}
+@media(max-width:680px){.partition{grid-template-columns:1fr}.flow{justify-content:center}.arrow{transform:rotate(90deg)}.panel{padding:12px}}
+</style></head>
+<body>
+<div class="khero"><h1>Simulador interactivo de Apache Kafka</h1><p>Producción y consumo de eventos · Kafka + Spark Structured Streaming</p></div>
+<main class="shell">
+<p><a href="simuladores.html">← Volver a simuladores</a></p>
+<section class="panel"><div class="tabs" role="tablist" aria-label="Modo de simulación">
+<button class="tab primary" id="tabKafka" role="tab" aria-selected="true" aria-controls="modeKafka">Modo 1 · Fundamentos de Kafka</button>
+<button class="tab" id="tabSpark" role="tab" aria-selected="false" aria-controls="modeSpark">Modo 2 · USGS → Kafka → Spark</button></div>
+<p class="note">Simulación conceptual ejecutada en el navegador. No instala ni se conecta a un broker Kafka o un clúster Spark reales. Utiliza un conjunto de eventos sísmicos ficticios representativos del formato USGS.</p>
+</section>
+<section id="modeKafka" role="tabpanel" aria-labelledby="tabKafka">
+<div class="panel"><h2>1. Configura y publica eventos</h2>
+<div class="inline">
+<div class="inputgroup"><label for="partitions">Particiones del tópico ventas</label><select id="partitions"><option>1</option><option selected>3</option><option>4</option><option>6</option></select></div>
+<div class="inputgroup"><label for="key">Clave (opcional)</label><input id="key" placeholder="Ej.: C-025"></div>
+<div class="inputgroup"><label for="value">Mensaje JSON o texto</label><input id="value" value='{"id_venta":"V001","monto":12000}'></div>
+<button class="primary" id="publish">Publicar evento</button>
+<button id="publishSeries">Publicar 5 ejemplos</button>
+<button id="clearKafka">Reiniciar modo</button>
+</div><p class="note">El reparto de mensajes sin clave se simula mediante round-robin. Para mensajes con clave se utiliza un hash didáctico estable, no el particionador exacto de un cliente Kafka real.</p>
+</div>
+<div class="panel"><h2>2. Observa el tópico y los offsets</h2><div id="topicKafka" class="topic" aria-live="polite"></div></div>
+<div class="panel"><h2>3. Consume mensajes y compara grupos</h2>
+<div class="inline"><div class="inputgroup"><label for="group">Grupo consumidor</label><select id="group"><option value="analitica">equipo-analitica</option><option value="auditoria">equipo-auditoria</option></select></div>
+<div class="inputgroup"><label for="consumers">Consumidores en el grupo</label><select id="consumers"><option>1</option><option selected>2</option><option>3</option><option>4</option></select></div>
+<button class="primary" id="consume">Consumir siguiente mensaje</button><button id="consumeAll">Consumir pendientes</button>
+<button id="resetGroup">Reiniciar offsets del grupo</button></div>
+<p class="note" id="groupExplain"></p><div class="stats" id="kStats"></div>
+<h3>Asignaciones y lecturas</h3><div id="assignments"></div>
+</div></section>
+<section id="modeSpark" class="hide" role="tabpanel" aria-labelledby="tabSpark">
+<div class="panel"><h2>1. Comprende la arquitectura</h2>
+<div class="flow"><div class="node">API REST USGS<br><small>GeoJSON</small></div><span class="arrow">→</span><div class="node">Productor Python<br><small>JSON + id_evento</small></div><span class="arrow">→</span><div class="node">Kafka<br><small>sismos_usgs</small></div><span class="arrow">→</span><div class="node">Spark<br><small>Micro-lotes</small></div></div>
+<p class="note">Una consulta HTTP obtiene una instantánea del feed. El productor la publica en Kafka y Spark lee los mensajes en micro-lotes. Publicar nuevamente el mismo feed puede generar duplicados.</p>
+</div>
+<div class="panel"><h2>2. Datos sísmicos de ejemplo y productor</h2>
+<div class="inline"><button class="primary" id="fetchUSGS">Consultar feed simulado</button><button id="publishUSGS" disabled>Publicar feed en Kafka</button><button id="resetSpark">Reiniciar simulación</button></div>
+<p id="feedText" class="note">Consulta el feed simulado para observar la estructura GeoJSON.</p><pre id="geojson" aria-label="Respuesta GeoJSON">Sin consulta todavía.</pre>
+<div class="stats" id="sStats"></div>
+</div>
+<div class="panel"><h2>3. Kafka: particiones y offsets del tópico sismos_usgs</h2>
+<div id="topicSpark" class="topic"></div><p class="note">Se conserva la clave <code>id_evento</code>. Un mismo ID puede publicarse más de una vez sin que Kafka lo elimine automáticamente.</p></div>
+<div class="panel"><h2>4. Spark Structured Streaming: micro-lotes y filtros</h2>
+<div class="inline">
+<div class="inputgroup"><label for="threshold">Filtro de magnitud ≥ <span id="thresholdLabel">2.0</span></label><input type="range" id="threshold" min="0" max="7" step=".5" value="2"></div>
+<button class="primary" id="runBatch">Procesar siguiente micro-lote</button><button id="runAll">Procesar pendientes</button>
+<button id="stopSpark">Detener consulta</button><button id="restartSpark">Reiniciar consulta</button></div>
+<p id="sparkInfo" class="callout">Aún no se han procesado eventos. Inicia con el feed y publica los mensajes.</p>
+<pre id="batchOutput">Salida de Spark: esperando micro-lotes...</pre>
+</div>
+<div class="panel"><h2>5. Checkpoint: progreso, reinicio y duplicados</h2>
+<div class="inline"><button id="checkpointView">Inspeccionar checkpoint</button><button id="checkpointDelete">Eliminar checkpoint simulado</button></div>
+<pre id="checkpointOut">Sin progreso registrado.</pre>
+<p class="note">Con un checkpoint válido, el reinicio recupera offsets. Sin checkpoint, esta simulación arranca desde earliest, como en la primera ejecución. En Spark real, la recuperación también depende de que el checkpoint sea compatible y que los offsets sigan disponibles en Kafka. Los checkpoints no deduplican eventos con el mismo ID.</p>
+</div></section>
+<section class="panel"><h2>Registro de ejecución</h2><p id="status" role="status" aria-live="polite"></p><pre id="log" aria-label="Registro de ejecución">Listo para comenzar.</pre>
+<div class="callout"><strong>Idea clave:</strong> Kafka conserva eventos organizados por tópico y partición; cada partición tiene offsets propios. Los consumidores y Spark avanzan leyendo mensajes, mientras las aplicaciones deciden cómo procesarlos.</div></section>
+</main>
+<script>
+(function(){
+"use strict";
+const $=id=>document.getElementById(id);
+const events=[{id:"usgs-101",mag:1.2,place:"Región A",time:1790000000000,coords:[-71.2,-33.1,12]},{id:"usgs-102",mag:2.7,place:"Región B",time:1790000120000,coords:[-70.4,-29.8,33]},{id:"usgs-103",mag:3.8,place:"Región C",time:1790000240000,coords:[-72.1,-36.5,18]},{id:"usgs-104",mag:0.9,place:"Región D",time:1790000360000,coords:[-69.6,-25.1,7]},{id:"usgs-105",mag:4.5,place:"Región E",time:1790000480000,coords:[-73.2,-39.2,24]}];
+let kafka,groups,spark,mode="kafka",logs=[];
+function initKafka(){kafka=Array.from({length:+$("partitions").value},()=>[]);groups={analitica:[],auditoria:[]};for(let g in groups)groups[g]=kafka.map(()=>0);renderKafka();}
+function initSpark(){spark={parts:[[],[],[]],feed:null,offsets:[0,0,0],checkpoint:null,batch:0,running:true,seen:[],outputs:[]};$("publishUSGS").disabled=true;$("geojson").textContent="Sin consulta todavía.";$("feedText").textContent="Consulta el feed simulado para observar la estructura GeoJSON.";$("batchOutput").textContent="Salida de Spark: esperando micro-lotes...";$("checkpointOut").textContent="Sin progreso registrado.";renderSpark();}
+function say(m){logs.unshift(new Date().toLocaleTimeString("es")+": "+m);$("log").textContent=logs.slice(0,55).join("\n");$("status").textContent=m;}
+function hash(s){let h=0;for(let i=0;i<s.length;i++)h=(Math.imul(h,31)+s.charCodeAt(i))|0;return h>>>0;}
+function publish(parts,key,value){const n=key?hash(String(key))%parts.length:parts.reduce((best,a,i,all)=>a.length<all[best].length?i:best,0);const offset=parts[n].length;const msg={key:key||null,value,partition:n,offset};parts[n].push(msg);return msg;}
+function showParts(parts,target,reads){target.textContent="";parts.forEach((list,i)=>{const r=document.createElement("div");r.className="partition";const name=document.createElement("strong");name.textContent="Partición "+i;const cells=document.createElement("div");cells.className="cells";list.forEach(m=>{const el=document.createElement("span");el.className="message"+(reads&&m.offset<reads[i]?" consumed":"");el.title="Clave: "+(m.key||"ninguna")+" · valor: "+JSON.stringify(m.value);const off=document.createElement("strong");off.textContent="offset "+m.offset;const val=document.createElement("small");val.textContent=m.key||"sin clave";el.append(off,val);cells.appendChild(el)});if(!list.length){const empty=document.createElement("span");empty.className="muted";empty.textContent="Sin eventos";cells.appendChild(empty)}r.append(name,cells);target.appendChild(r)})}
+function stats(el,items){el.textContent="";items.forEach(([l,v])=>{const d=document.createElement("div");d.className="stat";const title=document.createElement("small");title.textContent=l;const val=document.createElement("strong");val.textContent=v;d.append(title,val);el.append(d)})}
+function renderKafka(){const g=$("group").value,cs=+$("consumers").value,reads=groups[g];showParts(kafka,$("topicKafka"),reads);stats($("kStats"),[["Mensajes",kafka.reduce((n,p)=>n+p.length,0)],["Consumidos por "+g,reads.reduce((a,b)=>a+b,0)],["Pendientes",kafka.reduce((n,p,i)=>n+p.length-reads[i],0)]]);$("assignments").textContent="";for(let c=0;c<cs;c++){const d=document.createElement("p");const owned=kafka.map((_,i)=>i).filter(i=>i%cs===c);d.textContent="Consumidor "+(c+1)+": "+(owned.length?"particiones "+owned.join(", "):"sin particiones asignadas");$("assignments").append(d)}$("groupExplain").textContent="Cada partición se asigna a un solo consumidor dentro del grupo. Otros grupos mantienen sus propios offsets. Esta distribución es un rebalanceo conceptual simplificado.";}
+function nextConsume(all){let count=0,g=$("group").value,c=+$("consumers").value;const reads=groups[g];do {let found=false;for(let p=0;p<kafka.length;p++){const o=reads[p];if(o<kafka[p].length){reads[p]++;count++;found=true;say("Grupo "+g+" · consumidor "+((p%c)+1)+" leyó partición "+p+", offset "+o);if(!all)break}}if(!found||!all)break}while(true);if(!count)say("No hay mensajes pendientes para "+g);renderKafka();}
+function renderSpark(){showParts(spark.parts,$("topicSpark"),spark.offsets);stats($("sStats"),[["Eventos del feed",spark.feed?spark.feed.features.length:0],["Mensajes Kafka",spark.parts.reduce((n,p)=>n+p.length,0)],["Micro-lotes",spark.batch],["Offsets leídos",spark.offsets.reduce((a,b)=>a+b,0)]]);}
+function getFeed(){return {type:"FeatureCollection",features:events.map(e=>({type:"Feature",id:e.id,properties:{mag:e.mag,place:e.place,time:e.time},geometry:{type:"Point",coordinates:e.coords}}))};}
+function batch(){if(!spark.running){say("Consulta detenida. Reiníciala para procesar.");return false}let taken=[];for(let p=0;p<3;p++){let count=0;while(spark.offsets[p]<spark.parts[p].length&&count<2){taken.push(spark.parts[p][spark.offsets[p]++]);count++}}const limit=+$("threshold").value;const pass=taken.filter(m=>m.value.magnitud>=limit);const dup=taken.filter(m=>spark.seen.includes(m.value.id_evento));taken.forEach(m=>spark.seen.push(m.value.id_evento));let lines=["Batch: "+spark.batch,"Entradas: "+taken.length+" | Filtradas: "+pass.length+" | Umbral: "+limit.toFixed(1),"Offsets siguientes: "+JSON.stringify(spark.offsets),""];pass.forEach(m=>lines.push(m.value.id_evento+" | magnitud "+m.value.magnitud+" | "+m.value.ubicacion));if(!pass.length)lines.push("(micro-lote sin resultados)");if(dup.length)lines.push("AVISO: "+dup.length+" registros con ID ya observado; el checkpoint NO los elimina.");$("batchOutput").textContent=lines.join("\n")+"\n\n"+$("batchOutput").textContent.slice(0,5500);spark.checkpoint={offsets:spark.offsets.slice(),nextBatch:spark.batch+1};spark.batch++;$("sparkInfo").textContent="Micro-lote procesado: "+taken.length+" registros leídos; "+pass.length+" cumplen el filtro. "+(dup.length?"Se detectaron IDs repetidos.":"");say("Spark procesó Batch "+(spark.batch-1)+" ("+pass.length+" visibles).");renderSpark();return !!taken.length;}
+$("tabKafka").onclick=()=>switchMode("kafka");$("tabSpark").onclick=()=>switchMode("spark");
+function switchMode(to){mode=to;$("modeKafka").classList.toggle("hide",to!=="kafka");$("modeSpark").classList.toggle("hide",to!=="spark");$("tabKafka").setAttribute("aria-selected",to==="kafka");$("tabSpark").setAttribute("aria-selected",to==="spark");$("tabKafka").classList.toggle("primary",to==="kafka");$("tabSpark").classList.toggle("primary",to==="spark");say(to==="kafka"?"Modo fundamentos de Kafka activo.":"Modo USGS → Kafka → Spark activo.");}
+$("partitions").onchange=()=>{initKafka();say("Tópico ventas reiniciado con "+kafka.length+" particiones.");};
+$("publish").onclick=()=>{const m=publish(kafka,$("key").value.trim(),$("value").value);renderKafka();say("Publicado en partición "+m.partition+", offset "+m.offset);};
+$("publishSeries").onclick=()=>{for(let i=0;i<5;i++)publish(kafka,i%2?"C-025":"C-031",{id_venta:"V"+(i+1),monto:10000+i*3000});renderKafka();say("Cinco eventos de ejemplo publicados.");};
+$("clearKafka").onclick=()=>{initKafka();say("Modo Kafka reiniciado.");};
+$("group").onchange=renderKafka;$("consumers").onchange=()=>{renderKafka();say("Simulación de rebalanceo: "+$("consumers").value+" consumidores.");};
+$("consume").onclick=()=>nextConsume(false);$("consumeAll").onclick=()=>nextConsume(true);
+$("resetGroup").onclick=()=>{groups[$("group").value]=kafka.map(()=>0);renderKafka();say("Offsets simulados del grupo reiniciados al comienzo.");};
+$("fetchUSGS").onclick=()=>{spark.feed=getFeed();$("geojson").textContent=JSON.stringify(spark.feed,null,2);$("publishUSGS").disabled=false;$("feedText").textContent="HTTP 200 (simulado): FeatureCollection con "+spark.feed.features.length+" eventos. Es una instantánea, no un stream HTTP continuo.";renderSpark();say("Feed sísmico de ejemplo consultado.");};
+$("publishUSGS").onclick=()=>{if(!spark.feed)return;spark.feed.features.forEach(f=>{const p=f.properties,c=f.geometry.coordinates;publish(spark.parts,f.id,{id_evento:f.id,magnitud:p.mag,ubicacion:p.place,fecha_evento:p.time,longitud:c[0],latitud:c[1],profundidad_km:c[2]})});renderSpark();say("Se publicaron "+spark.feed.features.length+" eventos. Repetir la publicación genera mensajes con IDs repetidos.");};
+$("threshold").oninput=()=>{$("thresholdLabel").textContent=(+$("threshold").value).toFixed(1);};
+$("runBatch").onclick=()=>batch();$("runAll").onclick=()=>{for(let i=0;i<50;i++)if(!batch())break;};
+$("stopSpark").onclick=()=>{spark.running=false;say("Consulta Spark detenida. Checkpoint conservado.");};
+$("restartSpark").onclick=()=>{spark.running=true;if(spark.checkpoint){spark.offsets=spark.checkpoint.offsets.slice();spark.batch=spark.checkpoint.nextBatch;say("Spark retomó offsets desde el checkpoint.");}else{spark.offsets=[0,0,0];spark.batch=0;say("Sin checkpoint: nueva consulta desde earliest (simulado).");}renderSpark();};
+$("checkpointView").onclick=()=>{$("checkpointOut").textContent=spark.checkpoint?JSON.stringify({offsets:spark.checkpoint.offsets,commits:spark.checkpoint.nextBatch-1,siguiente_batch:spark.checkpoint.nextBatch},null,2):"No hay checkpoint: procesa al menos un micro-lote.";say("Estado del checkpoint inspeccionado.");};
+$("checkpointDelete").onclick=()=>{spark.checkpoint=null;$("checkpointOut").textContent="Checkpoint simulado eliminado. Reinicia la consulta para empezar desde earliest.";say("Checkpoint eliminado; los mensajes de Kafka permanecen.");};
+$("resetSpark").onclick=()=>{initSpark();say("Modo USGS → Kafka → Spark reiniciado.");};
+initKafka();initSpark();switchMode("kafka");
+})();
+</script></body></html>
