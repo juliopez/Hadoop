@@ -25,7 +25,7 @@ Guía 1: consola Kafka → tópico ventas → consumidores
 Guía 2: USGS → Python → tópico sismos_usgs → Spark Structured Streaming
 ```
 
-**Se reutiliza el entorno académico existente.** HDFS, Hive y Spark no forman parte de la instalación de esta guía. Kafka puede estar ya disponible o requerir habilitación mediante los recursos entregados para el curso. Si falta Kafka, se debe utilizar el despliegue institucional o las instrucciones específicas proporcionadas para esa instancia; no improvisar una instalación que altere los servicios anteriores.
+**Se reutiliza el entorno académico existente.** HDFS, Hive y Spark no forman parte de la instalación de esta guía. El repositorio del curso incluye Kafka y ZooKeeper en Docker Compose; verificar que esos servicios están activos en la instancia AWS. Si Kafka no está activo, utilizar el Compose ya empleado en el semestre y evitar acciones que afecten HDFS, Hive y Spark. No ejecutar `docker compose down -v`.
 
 ## 1. Reconocer los servicios existentes en la instancia AWS
 
@@ -39,25 +39,25 @@ docker ps
 
 **Interpretación:** Docker debe responder si el laboratorio usa contenedores. Identificar si existen `kafka` y `spark-master` (u otros nombres equivalentes). La existencia de Spark como servicio o instalación previa del semestre **no implica** que se llame `spark-master` ni que funcione en Docker; verificar antes de utilizar los comandos de ejemplo.
 
-Si Docker requiere privilegios, anteponer `sudo` a los comandos Docker de esta guía. No cambiar permisos del socket Docker indiscriminadamente.
+**Permisos del laboratorio:** los estudiantes ejecutan Docker sin `sudo` en sus instancias AWS. Si aparece un error de permisos, consultar la configuración de acceso entregada por el curso; no modificar permisos del socket Docker.
 
 **Solo si los contenedores ya existen y están detenidos**, pueden iniciarse:
 
 ```bash
-sudo docker start kafka spark-master
-sudo docker ps
+docker start kafka spark-master
+docker ps
 ```
 
 Si el nombre de los contenedores difiere, usar los nombres indicados en `docker ps` y reemplazarlos en los comandos posteriores.
 
-**Criterio de avance:** Kafka y Spark están identificados y accesibles mediante la modalidad real del laboratorio. Si Kafka aún no existe, solicitar o aplicar el despliegue específico del curso; no reinstalar Spark ni modificar HDFS/Hive.
+**Criterio de avance:** Kafka y Spark están identificados y accesibles mediante la modalidad real del laboratorio. El repositorio del curso ya incluye Kafka y ZooKeeper en Docker Compose; si faltan los contenedores, comprobar el despliegue existente y las instrucciones del README antes de actuar. No reinstalar Spark ni modificar HDFS/Hive.
 
 ## 2. Habilitar Kafka y preparar los tópicos de las prácticas
 
 Los siguientes comandos son para el caso en que Kafka está instalado **en un contenedor llamado `kafka`**. Si Kafka está instalado directamente en la instancia AWS o el contenedor tiene otro nombre, utilizar la ruta y el servicio correspondientes. Antes de crear los tópicos, confirmar que el broker funciona.
 
 ```bash
-sudo docker exec kafka bash -lc 'kafka-topics --bootstrap-server localhost:9092 --list'
+docker exec kafka bash -lc 'kafka-topics --bootstrap-server localhost:9092 --list'
 ```
 
 **Resultado esperado:** lista de tópicos o una lista vacía sin errores de conexión.
@@ -65,15 +65,15 @@ sudo docker exec kafka bash -lc 'kafka-topics --bootstrap-server localhost:9092 
 Crear los dos tópicos requeridos por las prácticas:
 
 ```bash
-sudo docker exec kafka bash -lc 'kafka-topics --bootstrap-server localhost:9092 --create --if-not-exists --topic ventas --partitions 3 --replication-factor 1'
-sudo docker exec kafka bash -lc 'kafka-topics --bootstrap-server localhost:9092 --create --if-not-exists --topic sismos_usgs --partitions 3 --replication-factor 1'
+docker exec kafka bash -lc 'kafka-topics --bootstrap-server localhost:9092 --create --if-not-exists --topic ventas --partitions 3 --replication-factor 1'
+docker exec kafka bash -lc 'kafka-topics --bootstrap-server localhost:9092 --create --if-not-exists --topic sismos_usgs --partitions 3 --replication-factor 1'
 ```
 
 Comprobar su configuración:
 
 ```bash
-sudo docker exec kafka bash -lc 'kafka-topics --bootstrap-server localhost:9092 --describe --topic ventas'
-sudo docker exec kafka bash -lc 'kafka-topics --bootstrap-server localhost:9092 --describe --topic sismos_usgs'
+docker exec kafka bash -lc 'kafka-topics --bootstrap-server localhost:9092 --describe --topic ventas'
+docker exec kafka bash -lc 'kafka-topics --bootstrap-server localhost:9092 --describe --topic sismos_usgs'
 ```
 
 **Resultado esperado:** ambos tópicos existen. En un laboratorio de broker único, el factor de replicación es 1. Si un tópico ya existía con otro número de particiones, no modificarlo sin instrucciones del curso.
@@ -93,25 +93,25 @@ sudo docker exec kafka bash -lc 'kafka-topics --bootstrap-server localhost:9092 
 Comprobar los puertos publicados:
 
 ```bash
-sudo docker port kafka
+docker port kafka
 ```
 
 Inspeccionar la configuración de listeners y red sin modificarla:
 
 ```bash
-sudo docker exec kafka bash -lc 'env | grep -E "KAFKA_.*LISTENER|ADVERTISED" || true'
-sudo docker inspect kafka --format '{{json .NetworkSettings.Networks}}'
-sudo docker inspect spark-master --format '{{json .NetworkSettings.Networks}}'
+docker exec kafka bash -lc 'env | grep -E "KAFKA_.*LISTENER|ADVERTISED" || true'
+docker inspect kafka --format '{{json .NetworkSettings.Networks}}'
+docker inspect spark-master --format '{{json .NetworkSettings.Networks}}'
 ```
 
-**Punto crítico:** un puerto TCP abierto no garantiza que el cliente Kafka funcione. Kafka devuelve metadatos con el host y puerto de `advertised.listeners`. Si anuncia un nombre que Ubuntu no puede resolver, Python puede fallar con `KafkaTimeoutError` o `DNS Resolution failure`, aunque el puerto 9092 responda.
+**Punto crítico de la infraestructura actual:** el archivo `docker-compose.yml` del repositorio fija `KAFKA_ADVERTISED_HOST_NAME: 172.27.1.16`. Es una dirección específica del despliegue y no se debe asumir válida en AWS. La configuración debe anunciar un nombre o dirección accesible para los clientes del laboratorio. Un puerto TCP abierto no garantiza que el cliente Kafka funcione. Kafka devuelve metadatos con el host y puerto de `advertised.listeners`. Si anuncia un nombre que Ubuntu no puede resolver, Python puede fallar con `KafkaTimeoutError` o `DNS Resolution failure`, aunque el puerto 9092 responda.
 
 **Solución correcta:** el responsable del laboratorio debe configurar listeners anunciados que sean resolubles desde cada red cliente, y asegurar que Spark y Kafka compartan una red Docker adecuada. La configuración exacta depende de la imagen y del despliegue institucional. **No copiar IP internas ni añadir nombres efímeros a `/etc/hosts` como solución general.**
 
 Para probar la resolución desde Spark:
 
 ```bash
-sudo docker exec spark-master bash -lc 'getent hosts kafka'
+docker exec spark-master bash -lc 'getent hosts kafka'
 ```
 
 **Resultado esperado:** se resuelve el nombre `kafka`. Esto verifica DNS, no por sí solo toda la conexión Kafka.
@@ -176,12 +176,12 @@ spark-submit --version
 Si Spark se ejecuta dentro de un contenedor llamado `spark-master`, usar en su lugar:
 
 ```bash
-sudo docker exec spark-master bash -lc '/spark/bin/spark-submit --version'
+docker exec spark-master bash -lc '/spark/bin/spark-submit --version'
 ```
 
 Si el ejecutable no está en el PATH, utilizar la ruta de Spark que se haya empleado durante las prácticas anteriores.
 
-**Entorno de referencia validado por el docente:** Spark **2.4.0**, Scala **2.11.12**, Java **8**. La instancia del estudiante puede tener otra versión. **No asumir que el conector siguiente sirve para cualquier Spark**: comprobar la versión real y seleccionar el artefacto compatible con Spark/Scala antes de ejecutar la Guía 2.
+**Entorno de referencia validado por el docente (29-10-2026): Kafka 3.9.0 con ZooKeeper 3.8;** Spark **2.4.0**, Scala **2.11.12** y Java **8**.\n\n**Versiones Spark:** La instancia del estudiante puede tener otra versión. **No asumir que el conector siguiente sirve para cualquier Spark**: comprobar la versión real y seleccionar el artefacto compatible con Spark/Scala antes de ejecutar la Guía 2.
 
 Conector correspondiente **únicamente al entorno de referencia Spark 2.4.0 / Scala 2.11**:
 
@@ -209,13 +209,13 @@ Guardar `productor_usgs.py` en `~/kafka_usgs/` utilizando el código completo de
 **Si Spark se ejecuta en el contenedor `spark-master`**, transferir el segundo archivo:
 
 ```bash
-sudo docker cp ~/kafka_usgs/sismos_checkpoint.py spark-master:/tmp/sismos_checkpoint.py
+docker cp ~/kafka_usgs/sismos_checkpoint.py spark-master:/tmp/sismos_checkpoint.py
 ```
 
 Verificar que existe:
 
 ```bash
-sudo docker exec spark-master bash -lc 'ls -lh /tmp/sismos_checkpoint.py'
+docker exec spark-master bash -lc 'ls -lh /tmp/sismos_checkpoint.py'
 ```
 
 **Resultado esperado:** el archivo aparece en `/tmp/`. Si Spark se ejecuta directamente en AWS, no utilizar `docker cp`: guardar el script en la ruta de trabajo y adaptar el comando `spark-submit` de la Guía 2. No es necesario ejecutar todavía el procesamiento de eventos; eso corresponde a la Guía 2.
@@ -276,4 +276,4 @@ Una vez completada esta preparación, desarrollar en orden:
 1. [Guía práctica 1 — Publicación y consumo de eventos con Apache Kafka](Guia_Practica_1_Kafka.md).
 2. [Guía práctica 2 — Procesamiento Near Real-Time de sismos con USGS, Kafka y Spark](Guia_Practica_2_Kafka_Spark.md).
 
-**Alcance:** la guía habilita Kafka y su integración con el Spark existente en AWS. Los comandos Docker reflejan una modalidad concreta del laboratorio; no deben ejecutarse ciegamente en instancias que usan servicios nativos. Si Kafka no está desplegado, el curso debe proporcionar su configuración de instalación compatible con la instancia ya utilizada. No se requiere volver a desplegar HDFS, Hive ni Spark.
+**Alcance:** la guía habilita Kafka y su integración con el Spark existente en AWS. Los comandos Docker reflejan una modalidad concreta del laboratorio; no deben ejecutarse ciegamente en instancias que usan servicios nativos. Kafka y ZooKeeper están definidos en el Compose del repositorio; la preparación consiste en comprobarlos y resolver la conectividad, no en crear un clúster nuevo. No se requiere volver a desplegar HDFS, Hive ni Spark.
