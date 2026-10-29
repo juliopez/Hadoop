@@ -65,3 +65,16 @@ En el contenedor `spark-master`, se ejecutó `/tmp/procesar_sismos.py` con `/spa
 ### Validación 29-10-2026 17:33 — Streaming continuo confirmado
 
 Evidencia: ejecución continua de Spark Structured Streaming leyendo `sismos_usgs` y aplicando filtro `magnitud >= 2.0`. `Batch: 0`: dos eventos (2.50 Alaska, 2.31 Tennessee); `Batch: 1`: salida vacía; `Batch: 2`: tres eventos nuevos publicados después de iniciar Spark: `aka2026vlnbyd` (4.80, Alaska), `nc75459472` (2.09, California), `nn00926416` (2.05, Nevada). La publicación Python USGS de nueve eventos se completó sin errores de publicación; avisos de deprecación de serializers pendientes de revisión. **Estado: procesamiento continuo extremo a extremo APROBADO.** Próximo paso: detener ordenadamente la consulta, configurar `checkpointLocation` persistente y verificar reanudación sin reprocesamiento de offsets ya confirmados. No confundir checkpoint con garantía universal de exactamente una vez para cualquier sink.
+
+
+### Actualización de continuidad — 29-10-2026, evidencias posteriores a las 17:33
+
+**Fuente:** capturas de terminal aportadas por el docente durante la sesión. Esta sección prevalece sobre los apartados antiguos que aún dicen que streaming continuo o checkpoint están pendientes.
+
+- **Streaming continuo: APROBADO.** Spark mostró varios micro-lotes y procesó nuevos mensajes de `sismos_usgs` después de nuevas ejecuciones de `productor_usgs.py`. Se observaron lotes vacíos intermedios, comportamiento normal cuando no hay mensajes nuevos.
+- **Checkpoint generado: APROBADO.** Se modificó el script de procesamiento continuo para añadir `.option("checkpointLocation", "/tmp/checkpoint_sismos_usgs")` a `writeStream`; la validación sintáctica `python -m py_compile` no mostró errores. Se inspeccionó dentro de `spark-master` el directorio `/tmp/checkpoint_sismos_usgs` con `metadata`, `offsets`, `commits` y `sources`. Se observaron archivos numerados 0–4 en `offsets` y `commits`. **Esto valida persistencia del estado de progreso en el contenedor; no prueba todavía reinicio y recuperación.** Al estar bajo `/tmp` dentro del contenedor, no se debe llamar persistencia durable ante recreación del contenedor.
+- **Filtrado continuo: APROBADO.** Capturas posteriores mostraron lotes con sismos de magnitud >= 2.0, incluidos `us7000tu3j` (5.0), `nc75459472` (2.09) y `nn00926416` (2.05). El productor publicó nueve eventos en una ejecución posterior; los mensajes aparecieron con nuevos offsets.
+- **No confirmado:** recuperación exacta tras detener y reiniciar Spark con el mismo checkpoint; no atribuirle esa propiedad a la prueba de existencia de archivos. No es necesario repetir ninguna prueba ya aprobada.
+- **Pendiente editorial prioritario:** sustituir íntegramente los cinco ejercicios de ventas de `Guia_Practica_2_Kafka_Spark.md` por cinco ejercicios basados en USGS; entregar scripts reproducibles y separar instrucciones docentes de consignas estudiantiles. El objetivo es cerrar la guía, no prolongar la depuración técnica.
+
+**Regla de trabajo vinculante:** antes de pedir una prueba, consultar esta bitácora y la guía; clasificar cada requisito como APROBADO, PENDIENTE o NO NECESARIO. No solicitar nuevamente evidencia de un requisito APROBADO. No anunciar «última comprobación» sin definir previamente el criterio de cierre.
