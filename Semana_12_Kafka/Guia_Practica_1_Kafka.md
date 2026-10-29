@@ -1,6 +1,6 @@
 # Guía práctica 1. Publicación y consumo de eventos con Apache Kafka
 
-**Asignatura:** Big Data · **Duración estimada:** 60 minutos · **Dificultad:** intermedia · **Modalidad:** trabajo individual o en parejas
+**Asignatura:** Big Data · **Dificultad:** intermedia
 
 ## Propósito
 
@@ -12,7 +12,7 @@ Aplicar los conceptos de tópicos, productores, consumidores, claves, particione
 
 **Requisitos previos:** haber completado la [Guía 0](Guia_0_Preparacion_Entorno_Kafka_Spark.md); Kafka y ZooKeeper iniciados; acceso a Docker; lectura de los apartados 2.1–2.5 del [libro](Apache_Kafka_Obra_Consolidada_Revision.md). Los comandos se ejecutan **dentro del contenedor Kafka**, salvo indicación contraria. Según la imagen Docker, las utilidades pueden llevar el sufijo `.sh` (por ejemplo, `kafka-topics.sh`). El broker `localhost:9092` de los ejemplos se refiere al interior del contenedor Kafka, no necesariamente al equipo anfitrión.
 
-## Ejercicio 1 — Verificar el broker y crear el tópico (10 min)
+## Ejercicio 1 — Verificar el broker y crear el tópico
 En el equipo anfitrión:
 ```bash
 docker ps
@@ -26,7 +26,7 @@ kafka-topics --bootstrap-server localhost:9092 --describe --topic ventas
 ```
 **Consigna:** identifique el número de particiones y explique por qué el factor de replicación es 1 en un laboratorio de broker único. Si `ventas` ya existía, no modifique su configuración: registre sus particiones reales.
 
-## Ejercicio 2 — Publicar mensajes desde consola (10 min)
+## Ejercicio 2 — Publicar mensajes desde consola
 En una terminal del contenedor:
 ```bash
 kafka-console-producer --bootstrap-server localhost:9092 --topic ventas
@@ -35,14 +35,14 @@ Ingrese tres líneas, por ejemplo `venta V001 12000`, `venta V002 18000` y `vent
 
 **Consigna:** explique qué representa cada línea y por qué el texto libre resulta menos conveniente que JSON para un consumidor automatizado.
 
-## Ejercicio 3 — Consumir eventos y reconocer offsets (10 min)
+## Ejercicio 3 — Consumir eventos y reconocer offsets
 En otra terminal del contenedor:
 ```bash
 kafka-console-consumer --bootstrap-server localhost:9092 --topic ventas --from-beginning --property print.partition=true --property print.offset=true
 ```
 Detenga con Ctrl+C tras observar los mensajes. **Consigna:** anote dos pares partición/offset y explique por qué los offsets no constituyen una secuencia global única para todo el tópico.
 
-## Ejercicio 4 — Publicar JSON con claves (15 min)
+## Ejercicio 4 — Publicar JSON con claves
 Ejecute:
 ```bash
 kafka-console-producer --bootstrap-server localhost:9092 --topic ventas --property parse.key=true --property key.separator=:
@@ -59,7 +59,7 @@ kafka-console-consumer --bootstrap-server localhost:9092 --topic ventas --from-b
 ```
 **Consigna:** identifique clave y valor; explique qué ventaja tiene utilizar `id_cliente` como clave. No suponga que el orden entre particiones es global.
 
-## Ejercicio 5 — Comparar grupos de consumidores (15 min)
+## Ejercicio 5 — Comparar grupos de consumidores
 Abra dos terminales del contenedor y ejecute en cada una:
 ```bash
 kafka-console-consumer --bootstrap-server localhost:9092 --topic ventas --group equipo-analitica
