@@ -35,3 +35,23 @@
 ## Criterio de preservación
 
 Los once documentos fuente permanecen sin modificar. La versión consolidada es independiente y se debe usar como base de revisión hasta concluir las verificaciones pendientes.
+
+
+## Revisión de cierre — guías y rama de trabajo
+
+**Alcance:** auditoría editorial y de estructura de los archivos publicados en `documentacion-kafka-parte-ii`. No se ejecutaron nuevas pruebas de infraestructura ni se modificó Docker Compose.
+
+### Guías
+
+- **Guía 0:** 10 secciones de preparación para instancias AWS ya existentes; referencias a Guías 1 y 2 verificadas; comandos Docker sin `sudo`. Se retiraron menciones innecesarias al historial de pruebas y fechas de validación.
+- **Guía 1:** 5 ejercicios, tiempos 10 + 10 + 10 + 15 + 15 = 60 minutos; enlaces internos a Guía 0 y libro teórico presentes; sin comandos Docker con `sudo`.
+- **Guía 2:** 5 ejercicios, tiempos 10 + 15 + 10 + 15 + 10 = 60 minutos; enlace a Guía 0 presente; scripts `productor_usgs.py` y `sismos_checkpoint.py` incluidos; sin comandos Docker con `sudo`.
+- **Libro teórico:** archivo consolidado presente; los 10 archivos `Parte_II_2.1.md` a `Parte_II_2.10.md`, `Semana_12_KAFKA_con_figuras.md` y las 75 figuras SVG se mantienen separados e intactos.
+
+### Diferencias frente a la rama principal
+
+- **Rama principal real del repositorio: `master`, no `main`.** La rama `documentacion-kafka-parte-ii` se encuentra 84 commits por delante y 0 por detrás de `master` al momento de la consulta.
+- **Archivos cambiados:** `README.md` modificado y 93 archivos nuevos en `Semana_12_Kafka/` (3 guías, libro, 11 documentos de fuente/desarrollo, 75 SVG y 2 documentos internos). No se identificaron modificaciones en `docker-compose.yml` ni `hadoop-hive.env` dentro de la comparación.
+- **Documentación interna identificada:** `ESTADO_CONTINUIDAD_KAFKA.md` y `AUDITORIA_EDITORIAL_KAFKA.md` son bitácoras de trabajo, no guías para estudiantes. Se conservan como trazabilidad, sin integrarlas al cuerpo de los materiales académicos.
+
+**Resultado:** revisión editorial y de estructura completada. La integración a `master` queda expresamente reservada al propietario del repositorio. No se ha realizado merge ni creado una solicitud de integración.
