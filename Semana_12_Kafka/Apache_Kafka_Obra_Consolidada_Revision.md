@@ -196,8 +196,6 @@ Este contexto favoreció el desarrollo de tecnologías especializadas en el tran
 
 #### 1.2.2. El nacimiento de Kafka en LinkedIn
 
-[The Scaling Journey of LinkedIn - ByteByteGo Newsletter](https://images.openai.com/static-rsc-4/zYscGS-6qGAc2oi__XRnPbJ62QBauRN-jnVvqgumqlaABLKCL-zHUr42y-J9y_i6uZeiOndkKlzj6sW0VIk4J7owjBPaIxGhlKuGAz622jkU4qrGOimCdyU_tcAKqfGgbtZemQyKwnh_QQCqGcWFDjuyKSTJdyBQz6fxLz7qxPM?purpose=inline)
-
 Apache Kafka surgió en LinkedIn, la red social orientada al ámbito profesional.
 
 Alrededor de 2010, sus ingenieros necesitaban una infraestructura capaz de recopilar y distribuir grandes cantidades de eventos generados por la actividad de los usuarios y los sistemas internos.
@@ -2182,7 +2180,7 @@ Tercero, facilita comprender las funciones de productores, tópicos y consumidor
 
 Finalmente, permite establecer una relación directa con las transformaciones y agregaciones que ya conocemos de PySpark.
 
-Debemos recordar que este documento corresponde al material teórico del curso. La implementación detallada se desarrollará posteriormente en dos guías prácticas independientes, una para cada sesión destinada al trabajo con Kafka.
+Este libro presenta los fundamentos conceptuales y operativos de Apache Kafka. Las actividades de aplicación se organizan en guías prácticas independientes, que permiten ejercitar progresivamente la publicación y el consumo de eventos, así como su procesamiento Near Real-Time.
 
 #### 1.8.9. Síntesis del apartado
 
@@ -5872,4 +5870,3 @@ El resultado es una secuencia formativa que conecta los fundamentos de Kafka con
 
 El estudiante no solamente conoce los componentes de la arquitectura, sino que dispone de una base metodológica para implementar integraciones, analizar su comportamiento y justificar decisiones técnicas.
 
-**El Volumen II queda así desarrollado en sus diez apartados, pendiente de la revisión editorial y técnica integral antes de considerarlo una versión definitiva.**
