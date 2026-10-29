@@ -40,6 +40,57 @@ table{width:100%;border-collapse:collapse;font-size:.89rem}th,td{text-align:left
 
 /* Visualización y orientación didáctica */
 .explainer{background:#f0f6ff;border:1px solid #cbdcf8;border-radius:12px;padding:14px 17px;margin:12px 0;line-height:1.55}.explainer h3{margin:0 0 6px}.explainer p{margin:5px 0}.help{display:inline-grid;place-items:center;border:1px solid #7da9e8;background:#edf5ff;color:#16468e;width:21px;height:21px;border-radius:50%;font-size:12px;padding:0;vertical-align:middle;margin-left:4px;cursor:help}.help:focus-visible{outline:3px solid orange}.helpbox{position:relative;display:inline-block}.tooltip{display:none;position:absolute;z-index:20;top:30px;left:0;min-width:220px;max-width:280px;background:#17243d;color:white;padding:10px 12px;border-radius:8px;font-size:.82rem;line-height:1.45;box-shadow:0 6px 20px #0003;font-weight:400}.helpbox:hover .tooltip,.helpbox:focus-within .tooltip{display:block}.stage{background:#f6f9ff;border:1px solid #ccdcf3;border-radius:12px;padding:14px;margin-top:12px}.stageFlow{display:flex;align-items:stretch;justify-content:space-around;gap:10px;flex-wrap:wrap}.stageNode{min-width:130px;flex:1;text-align:center;background:white;border:2px solid #c8d8ef;border-radius:12px;padding:13px 10px;transition:transform .22s,border-color .22s,box-shadow .22s}.stageNode.active{border-color:#2370ed;box-shadow:0 0 0 4px #2370ed20;transform:translateY(-2px)}.stageNode strong{display:block;margin:5px 0}.stageNode .glyph{font-size:29px;display:block}.stageNode small{display:block;color:#506581}.stageArrow{align-self:center;font-size:23px;color:#6380a8}.stageCaption{margin:12px 0 0;border-top:1px solid #d6e3f5;padding-top:10px;font-size:.9rem;color:#355374}.legend{display:flex;gap:10px;flex-wrap:wrap;margin:9px 0;font-size:.82rem;color:#415773}.legend span{padding:4px 8px;border:1px solid #d0ddf0;border-radius:20px}.logviz{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.logviz span{background:#e5efff;border:1px solid #b4caf2;border-radius:7px;padding:6px 9px;font-size:.82rem}.stepper{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:10px 0}.stepper button{background:white}.stepper strong{color:#174eae}.kguide{border-left:4px solid #20a27e;background:#eefaf5;padding:11px 13px;border-radius:7px;margin:12px 0}.kguide strong{display:block;margin-bottom:4px}@media(max-width:700px){.stageArrow{display:none}.stageNode{min-width:44%}.tooltip{left:auto;right:0}}
+
+/* Kafka Event Lab — identidad propia: grafito, ámbar, cian y verde */
+:root{--ink:#e9eef7;--accent:#fbbf24;--line:#334155;--bg:#0b111c}
+body{background:var(--bg);color:var(--ink)}
+.khero{background:radial-gradient(circle at 80% 10%,#42402a 0%,transparent 35%),linear-gradient(110deg,#0c121d,#172335);text-align:left;border-bottom:1px solid #46515f;padding:38px max(20px,calc((100vw - 1170px)/2))}
+.khero:before{content:"EVENT STREAMING / INTERACTIVE LAB";display:block;color:#fbbf24;letter-spacing:.17em;font-size:.71rem;font-weight:800;margin-bottom:13px}
+.khero h1{color:#fff;font-size:clamp(2rem,4vw,3.3rem);letter-spacing:-.035em}
+.khero p{color:#aab9cd;max-width:700px}
+.shell{max-width:1200px}
+.panel{background:#172130;border:1px solid #344154;box-shadow:none}
+h2,h3,strong,label{color:#f1f5f9}
+.muted,.note{color:#b6c4d7}
+button{background:#253346;border:1px solid #45566d;color:#e8f0fc}
+button.primary,.tab[aria-selected=true]{background:#f3b52a;border-color:#f3b52a;color:#151b23}
+button:hover:not(:disabled){filter:brightness(1.16)}
+input,select,textarea{background:#0f1725;border-color:#475569;color:#f8fafc}
+input::placeholder{color:#a7b4c6}
+.callout{background:#203241;border-left-color:#34d399;color:#dbeafe}
+.explainer{background:#1b2d3d;border-color:#3a5668;color:#e0ebfa}
+.kguide{background:#183b35;border-color:#34d399;color:#ddfff1}
+.stage,.topic{background:#101a28;border-color:#3a4d64}
+.stageNode,.node{background:#1c2c3d;border-color:#4d637f;color:#eff6ff}
+.stageNode.active{border-color:#fbbf24;box-shadow:0 0 0 4px #fbbf2425}
+.stageNode small,.stageCaption{color:#b4c8db}
+.stageCaption{border-color:#40546b}
+.partition{border-color:#364557}
+.message{background:#29475b;border-color:#5285a0;color:#eaf5ff;cursor:pointer}
+.message.consumed{background:#205443;border-color:#38ae86}
+.message:hover{outline:2px solid #fbbf24}
+.stat{background:#253244}
+.help{background:#344353;color:#fbbf24;border-color:#b48b3e}
+.tooltip{background:#050b14;border:1px solid #8ba2ba}
+pre{background:#090f19;border:1px solid #26374a;color:#c6f1ec}
+.stageArrow,.arrow{color:#fbbf24}
+.pill{background:#274252}
+a{color:#8dcbff}
+.lab-layout{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(280px,.8fr);gap:16px;align-items:start}
+.lab-layout>.panel{margin-top:0}
+.context-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.usecase{background:#111c2a;border:1px solid #425369;border-radius:12px;padding:16px;text-align:left;color:#eaf1f8}
+.usecase strong{display:block;font-size:1.07rem;margin:8px 0}.usecase .caseicon{font-size:1.65rem}
+.usecase[aria-pressed=true]{border-color:#fbbf24;box-shadow:0 0 0 2px #fbbf2430}
+#caseDetail{border-left:4px solid #fbbf24;background:#202c3a;padding:14px;margin-top:12px;border-radius:8px;line-height:1.6;color:#dbe7f4}
+.side-inspector{position:sticky;top:12px}
+.inspector-label{color:#fbbf24;text-transform:uppercase;letter-spacing:.12em;font-size:.72rem;font-weight:800}
+#inspector{min-height:180px}
+.message.selected{outline:2px solid #fbbf24;background:#594a2b}
+.stageFlow{gap:7px}
+.stageNode{min-width:115px}
+@media(max-width:900px){.lab-layout{grid-template-columns:1fr}.side-inspector{position:static}}
+@media(max-width:680px){.context-grid{grid-template-columns:1fr}.khero{padding:30px 18px}}
 </style></head>
 <body>
 <div class="khero"><h1>Simulador interactivo de Apache Kafka</h1><p>Producción y consumo de eventos · Kafka + Spark Structured Streaming</p></div>
@@ -50,7 +101,13 @@ table{width:100%;border-collapse:collapse;font-size:.89rem}th,td{text-align:left
 <button class="tab" id="tabSpark" role="tab" aria-selected="false" aria-controls="modeSpark">Modo 2 · USGS → Kafka → Spark</button></div>
 <p class="note">Simulación conceptual ejecutada en el navegador. No instala ni se conecta a un broker Kafka o un clúster Spark reales. Utiliza un conjunto de eventos sísmicos ficticios representativos del formato USGS.</p>
 </section>
-<section class="panel"><h2>¿Qué aprenderás en esta simulación?</h2><p>Kafka recibe eventos de los productores y los conserva en un <strong>registro distribuido</strong> organizado en particiones. Los consumidores leen esos registros a su ritmo; Spark puede interpretarlos y procesarlos en micro-lotes.</p><div class="explainer"><strong>Cómo utilizar la herramienta:</strong> realiza una acción, observa el diagrama y revisa la explicación que aparece debajo. Los botones <span aria-hidden="true">ⓘ</span> explican los términos técnicos. Puedes reiniciar cada modo y repetir los experimentos sin instalar software.</div></section><section id="modeKafka" role="tabpanel" aria-labelledby="tabKafka">
+<section class="panel" id="contextos"><p class="inspector-label">01 / La decisión tecnológica</p><h2>¿Cuándo tiene sentido utilizar Apache Kafka?</h2><p>Kafka es una plataforma de streaming de eventos. Resulta especialmente útil cuando muchos eventos deben ser recibidos, conservados temporalmente y procesados por varios sistemas de forma independiente. No es obligatorio usarlo para cualquier integración de datos.</p>
+<div class="context-grid">
+<button class="usecase" data-case="retail" aria-pressed="true"><span class="caseicon" aria-hidden="true">🛒</span><strong>Comercio electrónico</strong><span>Compras → inventario, pagos, envíos y analítica</span></button>
+<button class="usecase" data-case="iot" aria-pressed="false"><span class="caseicon" aria-hidden="true">🏭</span><strong>IoT industrial</strong><span>Sensores → monitoreo y alertas continuas</span></button>
+<button class="usecase" data-case="sismos" aria-pressed="false"><span class="caseicon" aria-hidden="true">🌍</span><strong>Monitoreo sísmico</strong><span>API USGS → productor → Kafka → Spark</span></button>
+</div><div id="caseDetail" aria-live="polite"><strong>Problema:</strong> Una compra necesita actualizar diversos sistemas sin que todos dependan de una única llamada síncrona.<p><strong>Aporte de Kafka:</strong> publica un evento de venta que pueden leer sistemas independientes a su propio ritmo, con capacidad de relectura según la retención.</p><p><strong>Precaución:</strong> Kafka no sustituye automáticamente la base transaccional ni garantiza que los pagos ocurran una sola vez.</p></div>
+<div class="kguide"><strong>¿Cuándo NO utilizar Kafka?</strong> Cuando el volumen es reducido, existe un único consumidor y una consulta directa, una tarea programada o una cola sencilla resuelve el problema sin añadir complejidad operativa. La arquitectura debe justificarse por sus requisitos, no por popularidad.</div></section><section class="panel"><h2>¿Qué aprenderás en esta simulación?</h2><p>Kafka recibe eventos de los productores y los conserva en un <strong>registro distribuido</strong> organizado en particiones. Los consumidores leen esos registros a su ritmo; Spark puede interpretarlos y procesarlos en micro-lotes.</p><div class="explainer"><strong>Cómo utilizar la herramienta:</strong> realiza una acción, observa el diagrama y revisa la explicación que aparece debajo. Los botones <span aria-hidden="true">ⓘ</span> explican los términos técnicos. Puedes reiniciar cada modo y repetir los experimentos sin instalar software.</div></section><section class="lab-layout" id="labWorkspace"><div id="workArea"><section id="modeKafka" role="tabpanel" aria-labelledby="tabKafka">
 <div class="stage" aria-label="Diagrama interactivo del recorrido de eventos"><div class="stageFlow"><div class="stageNode" id="visualProducer"><span class="glyph" aria-hidden="true">📝</span><strong>Producer</strong><small>Publica mensajes</small></div><span class="stageArrow">→</span><div class="stageNode" id="visualBroker"><span class="glyph" aria-hidden="true">📦</span><strong>Topic ventas</strong><small>Particiones y offsets</small></div><span class="stageArrow">→</span><div class="stageNode" id="visualConsumer"><span class="glyph" aria-hidden="true">💻</span><strong>Consumer group</strong><small>Lee a su ritmo</small></div></div><div class="stageCaption" id="visualCaption" role="status">Comienza publicando un evento. Observa cómo aparece en una partición y cómo su offset identifica su posición.</div></div><div class="panel"><h2>1. Configura y publica eventos</h2><div class="explainer"><h3>¿Qué hace el productor?</h3><p>El productor envía eventos al tópico <strong>ventas</strong>. Cada mensaje queda almacenado en una partición. Si el mensaje tiene clave, el particionador utiliza esa clave para escoger una partición; así es posible mantener el orden de los eventos de una misma clave dentro de esa partición.</p></div>
 <div class="inline">
 <div class="inputgroup"><label for="partitions">Particiones del tópico ventas <span class="helpbox"><button class="help" type="button" aria-label="Ayuda sobre particiones">i</button><span class="tooltip" role="tooltip">Cada partición es un registro ordenado independiente. Más particiones permiten distribuir el trabajo, pero no crean un orden global entre todas ellas.</span></span></label><select id="partitions"><option>1</option><option selected>3</option><option>4</option><option>6</option></select></div>
@@ -95,7 +152,7 @@ table{width:100%;border-collapse:collapse;font-size:.89rem}th,td{text-align:left
 <pre id="checkpointOut">Sin progreso registrado.</pre>
 <p class="note">Con un checkpoint válido, el reinicio recupera offsets. Sin checkpoint, esta simulación arranca desde earliest, como en la primera ejecución. En Spark real, la recuperación también depende de que el checkpoint sea compatible y que los offsets sigan disponibles en Kafka. Los checkpoints no deduplican eventos con el mismo ID.</p>
 </div></section>
-<section class="panel"><h2>Registro de ejecución</h2><p id="status" role="status" aria-live="polite"></p><pre id="log" aria-label="Registro de ejecución">Listo para comenzar.</pre>
+</div><aside class="panel side-inspector"><span class="inspector-label">Inspector de eventos</span><h2>Detalle de un mensaje</h2><p class="note">Selecciona cualquier bloque de las particiones para ver su clave, valor y posición.</p><pre id="inspector">Aún no se ha seleccionado un mensaje.</pre><div class="kguide"><strong>¿Por qué importa?</strong> Un offset es la posición dentro de una partición; no representa una numeración global de todo el tópico.</div></aside></section><section class="panel"><h2>Registro de ejecución</h2><p id="status" role="status" aria-live="polite"></p><pre id="log" aria-label="Registro de ejecución">Listo para comenzar.</pre>
 <div class="callout"><strong>Idea clave:</strong> Kafka conserva eventos organizados por tópico y partición; cada partición tiene offsets propios. Los consumidores y Spark avanzan leyendo mensajes, mientras las aplicaciones deciden cómo procesarlos.</div></section>
 </main>
 <script>
@@ -135,6 +192,14 @@ $("restartSpark").onclick=()=>{spark.running=true;if(spark.checkpoint){spark.off
 $("checkpointView").onclick=()=>{$("checkpointOut").textContent=spark.checkpoint?JSON.stringify({offsets:spark.checkpoint.offsets,commits:spark.checkpoint.nextBatch-1,siguiente_batch:spark.checkpoint.nextBatch},null,2):"No hay checkpoint: procesa al menos un micro-lote.";say("Estado del checkpoint inspeccionado.");};
 $("checkpointDelete").onclick=()=>{spark.checkpoint=null;$("checkpointOut").textContent="Checkpoint simulado eliminado. Reinicia la consulta para empezar desde earliest.";say("Checkpoint eliminado; los mensajes de Kafka permanecen.");};
 $("resetSpark").onclick=()=>{initSpark();say("Modo USGS → Kafka → Spark reiniciado.");};
+
+const examples={
+ retail:'<strong>Problema:</strong> Una compra debe actualizar inventario, pagos, envíos y analítica sin que todos los sistemas dependan de una única llamada síncrona.<p><strong>Aporte de Kafka:</strong> un evento de venta puede ser leído por varios sistemas a ritmos independientes, con relectura según la retención.</p><p><strong>Precaución:</strong> Kafka no sustituye la base transaccional ni garantiza por sí mismo pagos exactamente una vez.</p>',
+ iot:'<strong>Problema:</strong> Miles de sensores generan mediciones frecuentes que distintas aplicaciones necesitan analizar.<p><strong>Aporte de Kafka:</strong> desacopla la recepción de telemetría del análisis, almacenamiento y detección de anomalías; las particiones permiten paralelismo.</p><p><strong>Precaución:</strong> se requieren políticas de retención, claves y capacidad acordes a las tasas de eventos.</p>',
+ sismos:'<strong>Problema:</strong> la consulta periódica de un feed REST devuelve instantáneas, mientras distintos procesos necesitan recibir y analizar los registros publicados.<p><strong>Aporte de Kafka:</strong> desacopla la consulta y publicación en Python del procesamiento en Spark, que puede recuperar posiciones de lectura.</p><p><strong>Precaución:</strong> republicar el mismo sismo puede duplicarlo; el feed REST no es un flujo de eventos continuo.</p>'
+};
+document.querySelectorAll(".usecase").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll(".usecase").forEach(x=>x.setAttribute("aria-pressed",String(x===b)));$("caseDetail").innerHTML=examples[b.dataset.case];if(b.dataset.case==="sismos")switchMode("spark");}));
+document.addEventListener("click",e=>{const m=e.target.closest(".message");if(!m)return;const parent=m.closest(".topic");if(!parent)return;const parts=parent.id==="topicSpark"?spark.parts:kafka;const row=m.closest(".partition");const pi=[...row.parentNode.children].indexOf(row);const mi=[...m.parentNode.children].indexOf(m);const data=parts[pi]?.[mi];if(data){document.querySelectorAll(".message.selected").forEach(x=>x.classList.remove("selected"));m.classList.add("selected");$("inspector").textContent=JSON.stringify({topic:parent.id==="topicSpark"?"sismos_usgs":"ventas",partition:data.partition,offset:data.offset,key:data.key,value:data.value},null,2);}});
 initKafka();initSpark();switchMode("kafka");illuminate("visualProducer","Comienza escribiendo y publicando un evento. Los controles modifican el estado de la simulación.");
 })();
 </script></body></html>
