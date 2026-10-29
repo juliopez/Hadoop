@@ -1,6 +1,6 @@
 # Guía práctica 2 — Procesamiento Near Real-Time de sismos con USGS, Apache Kafka y Spark
 
-**Asignatura:** Big Data · **Dificultad:** intermedia-alta · **Caso:** datos reales de sismos del USGS.
+**Tema:** Kafka y Spark Structured Streaming · **Dificultad:** intermedia-alta · **Caso:** datos reales de sismos del USGS.
 
 ## Propósito y resultados de aprendizaje
 
@@ -8,26 +8,26 @@ Construir, ejecutar e interpretar un flujo de eventos cercano al tiempo real (**
 
 **API REST USGS → productor Python → tópico Kafka `sismos_usgs` → Spark Structured Streaming → resultados filtrados.**
 
-Al terminar, el estudiante podrá explicar la diferencia entre consultar una API y transmitir eventos; reconocer tópico, partición y offset; interpretar micro-lotes de Spark; aplicar un esquema explícito y un filtro de magnitud; y describir qué información conserva un checkpoint y qué limitaciones tiene.
+Al finalizar, se podrá explicar la diferencia entre consultar una API y transmitir eventos; reconocer tópico, partición y offset; interpretar micro-lotes de Spark; aplicar un esquema explícito y un filtro de magnitud; y describir qué información conserva un checkpoint y qué limitaciones tiene.
 
-> **Importante:** USGS publica información que cambia con el tiempo. La cantidad de eventos, sus identificadores, magnitudes y offsets no tienen por qué coincidir con las capturas del docente. Un micro-lote vacío no significa necesariamente un error.
+> **Importante:** USGS publica información que cambia con el tiempo. La cantidad de eventos, sus identificadores, magnitudes y offsets no tienen por qué coincidir con los ejemplos mostrados. Un micro-lote vacío no significa necesariamente un error.
 
 ## Antes de comenzar
 
-La actividad se desarrolla en la instancia AWS utilizada durante el semestre para HDFS, Hive y Spark. Los comandos Docker se ejecutan **sin `sudo`**. Antes de comenzar, completar la [Guía 0](Guia_0_Preparacion_Entorno_Kafka_Spark.md). Las siguientes condiciones deben estar disponibles antes de comenzar:
+La práctica utiliza como referencia la infraestructura Docker Compose de este repositorio, que puede ejecutarse localmente o en un servidor remoto. Los comandos Docker requieren permisos adecuados; la necesidad de `sudo` depende de cada instalación. Antes de comenzar, completar la [Guía 0](Guia_0_Preparacion_Entorno_Kafka_Spark.md). Las siguientes condiciones deben estar disponibles antes de comenzar:
 
-- Kafka 3.9.0 en modo ZooKeeper en el laboratorio de referencia, accesible desde Python del anfitrión y desde Spark; tópico `sismos_usgs` existente, con **3 particiones**. En esta configuración, Spark utiliza `kafka:9092`; la conexión desde Ubuntu utiliza la dirección del broker facilitada para el laboratorio.
+- Kafka 3.9.0 en modo ZooKeeper en el despliegue de referencia, accesible desde Python del anfitrión y desde Spark; tópico `sismos_usgs` existente, con **3 particiones**. En esta configuración, Spark utiliza `kafka:9092`; la conexión desde el anfitrión debe utilizar una dirección anunciada por el broker y accesible desde ese equipo.
 - Contenedor Docker `spark-master` con `/spark/bin/spark-submit`, **Spark 2.4.0, Scala 2.11 y Java 8**. Conector requerido: `org.apache.spark:spark-sql-kafka-0-10_2.11:2.4.0`. Sus dependencias deben estar precargadas o disponibles desde Maven Central.
-- Python del anfitrión con `requests` y `kafka-python`, preferiblemente en un entorno virtual. El productor se ejecuta en Ubuntu; el script Spark se ejecuta dentro del contenedor.
+- Python del anfitrión con `requests` y `kafka-python`, preferiblemente en un entorno virtual. En la configuración de referencia, el productor se ejecuta en el anfitrión Linux y el script Spark dentro del contenedor.
 - Se utilizan los archivos `productor_usgs.py` y `sismos_checkpoint.py`, cuyos códigos se incluyen en esta guía. Pueden entregarse preparados para concentrar el trabajo en su ejecución e interpretación.
 - **Checkpoint:** `/tmp/checkpoint_sismos_usgs` dentro de `spark-master` sirve para la demostración y persiste entre ejecuciones mientras el contenedor y su sistema de archivos se conserven. **No es durable ante la recreación del contenedor**. Para conservar el checkpoint entre recreaciones del contenedor, es necesario utilizar un volumen persistente.
-- Si varias personas trabajan simultáneamente en un broker compartido, cada instancia de trabajo debe utilizar un tópico y un checkpoint independientes, según las indicaciones del laboratorio.
+- Si varias personas trabajan simultáneamente en un broker compartido, cada instancia de trabajo debe utilizar un tópico y un checkpoint independientes, según la configuración elegida.
 
 ## Ejercicio 1 — Consultar la API real del USGS
 
 **Objetivo:** reconocer el origen REST y el formato GeoJSON antes de transmitir eventos.
 
-En Ubuntu, ejecutar:
+En el equipo anfitrión, ejecutar:
 
 ```bash
 python - <<'PY'
@@ -54,7 +54,7 @@ PY
 
 **Objetivo:** transformar registros GeoJSON en mensajes JSON y observar la confirmación de publicación.
 
-Guardar el siguiente código como `productor_usgs.py` en Ubuntu, o utilizar el archivo facilitado para la actividad:
+Guardar el siguiente código como `productor_usgs.py` en el anfitrión, o utilizar el archivo facilitado para la actividad:
 
 ```python
 import json
@@ -133,7 +133,7 @@ python productor_usgs.py
 
 **Objetivo:** comprobar que los eventos existen en el tópico independientemente del productor.
 
-Desde Ubuntu, ejecutar:
+Desde el equipo anfitrión, ejecutar:
 
 ```bash
 docker exec kafka bash -lc '
@@ -145,7 +145,7 @@ kafka-console-consumer \
 '
 ```
 
-El comando supone que el contenedor se llama `kafka` y dispone de `kafka-console-consumer` en el PATH. Utilizar los nombres y rutas indicados para el laboratorio.
+El comando supone que el contenedor se llama `kafka` y dispone de `kafka-console-consumer` en el PATH. Adaptar los nombres y rutas a cada instalación.
 
 **Consignas:** (a) localizar al menos un mensaje con `id_evento`, `magnitud` y `ubicacion`; (b) contrastar su ID con el productor; (c) explicar por qué los offsets son **por partición** y no un contador global del tópico. Para identificar partición y offset utilizar la confirmación impresa en el ejercicio 2; el consumidor de consola mostrado aquí imprime el contenido, no esos metadatos.
 
@@ -213,7 +213,7 @@ finally:
     spark.stop()
 ```
 
-Ejecutar desde Ubuntu:
+Ejecutar desde el equipo anfitrión:
 
 ```bash
 docker exec spark-master bash -lc '
@@ -263,4 +263,4 @@ Entregar **un único archivo breve**, con cinco evidencias numeradas:
 
 Si el feed no contiene eventos de magnitud ≥ 2.0 durante la sesión, registrar la ausencia y explicar qué condición impidió observarlos. El análisis debe basarse en los resultados efectivamente observados.
 
-**Criterio de logro:** el estudiante interpreta correctamente el flujo API → Kafka → Spark, identifica sus metadatos y reconoce las limitaciones de la entrega NRT y del checkpoint.
+**Criterio de logro:** se interpreta correctamente el flujo API → Kafka → Spark, identifica sus metadatos y reconoce las limitaciones de la entrega NRT y del checkpoint.
