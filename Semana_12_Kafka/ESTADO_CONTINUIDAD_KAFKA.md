@@ -55,3 +55,8 @@ El docente aprobó definitivamente **USGS como fuente de datos real para los cin
 **Estado actualizado:** integración extremo a extremo **validada para un lote disponible**. No confundir `trigger(once=True)` con operación continua NRT. **Pendiente:** deserialización y tipado de JSON en Spark, transformaciones/filtros/agregaciones, streaming continuo, checkpoint persistente y recuperación; completar y actualizar los cinco ejercicios de Guía 2 basados exclusivamente en USGS. Mantener la guía teórica original intacta.
 
 **Próxima prueba única:** ejecutar Spark con `from_json` y esquema explícito sobre los mensajes `sismos_usgs`, mostrar columnas tipadas y un filtro por magnitud. Después validar continuidad y checkpoints.
+
+
+### Prueba validada 29-10-2026 17:29 — JSON tipado y filtro Spark
+
+En el contenedor `spark-master`, se ejecutó `/tmp/procesar_sismos.py` con `/spark/bin/spark-submit --master 'local[1]' --packages org.apache.spark:spark-sql-kafka-0-10_2.11:2.4.0`. Se leyó `sismos_usgs` con Structured Streaming, se convirtió `value` de JSON a un esquema explícito (`id_evento`, `magnitud`, `ubicacion`, `fecha_evento`, `longitud`, `latitud`, `profundidad_km`) usando `from_json`, y se aplicó `filter(col('magnitud') >= 2.0)`. El resultado de `Batch: 0` presentó exactamente dos registros: `aka2026vlkyrn`, magnitud 2.5, Alaska; y `nm60628806`, magnitud 2.31, Tennessee. La ejecución volvió al prompt sin error visible. **Aprobado: deserialización, tipado y filtrado.** El modo usado fue `trigger(once=True)`; **pendiente**: streaming continuo, checkpoints persistentes y recuperación. Próxima prueba: lectura continua con un nuevo evento y detención controlada.
