@@ -38,3 +38,7 @@ La Guía 1 está aprobada. La Guía 2 debe ser de dificultad intermedia-alta, du
 ## Prompt de reanudación sugerido
 
 > Continúa el proyecto INACAP Big Data / Semana 12 Apache Kafka en el repositorio `juliopez/Hadoop`, rama `documentacion-kafka-parte-ii`. Lee primero `Semana_12_Kafka/ESTADO_CONTINUIDAD_KAFKA.md` y `Semana_12_Kafka/Guia_Practica_2_Kafka_Spark.md`. Respeta los ejercicios ya aprobados y las fuentes originales. Estamos validando la integración Spark 2.4.0 / Scala 2.11 con el tópico `sismos_usgs` alimentado por la API real USGS. Maven Central respondió HTTP 200 para el POM del conector; falta verificar descarga y ejecución. Propón una sola comprobación por turno, interpreta la salida y actualiza el registro en GitHub conforme avancemos.
+
+## Decisión y resultado adicional (29-10-2026)
+
+El docente aprobó definitivamente **USGS como fuente de datos real para los cinco ejercicios de la Guía 2 NRT**; reemplazar el caso ficticio de ventas en la siguiente revisión editorial. La prueba `spark-submit --packages ... --version` mostró Spark 2.4.0, Scala 2.11.12 y Java 8, pero **no constituye una prueba de resolución del conector**. La búsqueda `find /root/.ivy2 /root/.m2 -type f -name '*spark-sql-kafka*'` no encontró resultados. **Siguiente prueba:** ejecutar una aplicación mínima con `--packages` y revisar salida de Ivy/resolución, sin afirmar aún que Spark–Kafka funciona.
