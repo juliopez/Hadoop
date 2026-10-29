@@ -90,3 +90,20 @@ Un único archivo breve con: (1) respuesta de la API; (2) confirmación de publi
 **Criterio de logro:** el estudiante verifica el flujo de extremo a extremo, interpreta sus resultados y distingue el avance del consumidor de la unicidad de los eventos.
 
 **Nota docente:** la guía requiere una preparación previa del entorno y dependencias. Si Spark no dispone del conector o la red entre contenedores no permite alcanzar Kafka, no debe atribuirse ese problema a la comprensión conceptual del estudiante.
+
+
+---
+
+## Registro de validación docente — 29 de octubre de 2026 (en desarrollo)
+
+> **Estado:** pruebas en entorno Hadoop del docente; esta sección documenta hallazgos y no sustituye todavía los cinco ejercicios de la versión publicada. El flujo USGS es un caso real alternativo al caso de ventas, pendiente de integración editorial definitiva.
+
+**Validado:** consulta a la API pública USGS (feed `all_hour.geojson`); creación del tópico `sismos_usgs` con tres particiones y factor de replicación 1; publicación desde Python de cuatro eventos sísmicos JSON, con confirmación de partición y offset; lectura de los mismos cuatro eventos desde `KafkaConsumer`, con recuperación de ID, magnitud, partición y offset. La cantidad de eventos depende del momento de consulta. Se verificó que el orden global de lectura puede diferir entre particiones.
+
+**Incidencia de conectividad resuelta solo en el entorno docente:** el broker Kafka anunció `505b7c6c3bcb:9092` (ID 101). Aunque el puerto 9092 era accesible por TCP, el cliente Python no podía resolver ese nombre al consultar metadatos. Una entrada local en `/etc/hosts` que vinculó ese nombre con `172.27.1.16` permitió recuperar 93 tópicos y publicar/consumir eventos. **No utilizar esta entrada como instrucción para estudiantes:** IP y nombre del contenedor son variables; se requiere una configuración reproducible de `advertised.listeners` y DNS/listeners adecuados antes de distribuir la guía.
+
+**Entorno Python:** `kafka-python` se instaló en un entorno virtual independiente `~/kafka_usgs/.venv`, fuera de la carpeta del repositorio Hadoop por restricciones locales de permisos. El productor y consumidor funcionaron, aunque aparecieron advertencias `DeprecationWarning` relacionadas con `key_serializer`, `value_serializer` y `value_deserializer`. Revisar versión de biblioteca y serialización antes de cerrar la guía; no confundir estas advertencias con errores de publicación.
+
+**Spark pendiente:** contenedores `spark-master` y `spark-worker` activos; `spark-submit` localizado en `/spark/bin/spark-submit` (no en el `PATH` de la sesión de prueba). Se confirmó Spark **2.4.0**, Scala **2.11.12** y Java **8**. No se encontró `spark-sql-kafka-0-10` ni `kafka-clients` en `/spark/jars`. Candidato de conector compatible: `org.apache.spark:spark-sql-kafka-0-10_2.11:2.4.0`; aún no instalado ni probado. La prueba de conectividad a Maven Central **no se ejecutó** porque el `python` del contenedor rechazó `import urllib.request` (`ImportError: No module named request`), compatible con un intérprete Python 2; comprobar la versión antes de repetirla. **No se ha validado aún Spark Structured Streaming ni checkpoints.**
+
+**Criterio editorial:** mantener cinco ejercicios y 60 minutos. Antes de cerrar la versión para estudiantes, decidir si se reemplaza el ejemplo local de ventas por USGS; entregar scripts listos para ejecutar y preconfigurar conectores y listeners, sin trasladar la depuración de infraestructura al estudiante.
