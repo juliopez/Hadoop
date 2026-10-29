@@ -1,17 +1,19 @@
-# Guía 0 — Preparación del laboratorio Apache Kafka y Spark
+# Guía 0 — Habilitación de Apache Kafka e integración con Spark en AWS
 
-**Asignatura:** Big Data · **Modalidad:** preparación autónoma previa a las prácticas · **Entorno de referencia:** Ubuntu con Docker y contenedores Kafka/Spark del curso.
+**Asignatura:** Big Data · **Modalidad:** preparación autónoma previa a las prácticas · **Entorno de referencia:** instancia AWS utilizada durante el semestre para HDFS, Hive y Apache Spark.
 
 ## Propósito
 
-Preparar y verificar el entorno necesario para realizar, sin interrupciones por dependencias, la [Guía práctica 1 — Kafka](Guia_Practica_1_Kafka.md) y la [Guía práctica 2 — USGS, Kafka y Spark](Guia_Practica_2_Kafka_Spark.md).
+**Aprovechar la instancia AWS y los servicios Hadoop/Spark utilizados en las semanas anteriores** para habilitar únicamente los componentes adicionales requeridos por Kafka y la integración con Spark. Preparar y verificar el entorno necesario para realizar, sin interrupciones por dependencias, la [Guía práctica 1 — Kafka](Guia_Practica_1_Kafka.md) y la [Guía práctica 2 — USGS, Kafka y Spark](Guia_Practica_2_Kafka_Spark.md).
 
-**Esta guía se realiza antes de los 60 minutos asignados a cada práctica.** No requiere repetir sus ejercicios. Su producto es un laboratorio funcional y una lista de comprobación completada.
+**Esta guía se realiza antes de los 60 minutos asignados a cada práctica.** No requiere repetir los ejercicios anteriores de HDFS, Hive o Spark ni reinstalar sus servicios. Su producto es la habilitación de Kafka, sus dependencias y una lista de comprobación completada.
 
-## Arquitectura del laboratorio
+**Punto de partida:** cada estudiante continúa trabajando en su instancia AWS habitual, accediendo mediante el procedimiento del curso. No crear otra instancia ni reconstruir Hadoop o Spark. La instancia puede contener servicios Docker ya desplegados; comprobarlo antes de instalar nada. Los nombres `kafka` y `spark-master` corresponden al laboratorio de referencia y deben ajustarse si la instancia del estudiante utiliza otros nombres.
+
+## Arquitectura de integración sobre la instancia AWS existente
 
 ```text
-Ubuntu (anfitrión)
+Instancia AWS del estudiante (Ubuntu / entorno del curso)
 ├── Docker
 │   ├── contenedor kafka       → broker Kafka, tópicos ventas y sismos_usgs
 │   └── contenedor spark-master → Spark 2.4.0 / Scala 2.11 / Java 8
@@ -23,11 +25,11 @@ Guía 1: consola Kafka → tópico ventas → consumidores
 Guía 2: USGS → Python → tópico sismos_usgs → Spark Structured Streaming
 ```
 
-La configuración de referencia **presupone que los contenedores del curso ya fueron entregados o desplegados**. Si todavía no existen, solicitar el archivo Docker Compose o la imagen institucional del laboratorio. Esta guía no sustituye la instalación de un clúster Hadoop/Spark desde cero: hacerlo con versiones arbitrarias podría invalidar la compatibilidad del conector Kafka.
+**Se reutiliza el entorno académico existente.** HDFS, Hive y Spark no forman parte de la instalación de esta guía. Kafka puede estar ya disponible o requerir habilitación mediante los recursos entregados para el curso. Si falta Kafka, se debe utilizar el despliegue institucional o las instrucciones específicas proporcionadas para esa instancia; no improvisar una instalación que altere los servicios anteriores.
 
-## 1. Comprobar Ubuntu y Docker
+## 1. Reconocer los servicios existentes en la instancia AWS
 
-Abrir una terminal de Ubuntu:
+Conectarse a la instancia AWS habitual y abrir una terminal. Primero identificar los servicios existentes:
 
 ```bash
 docker --version
@@ -35,11 +37,11 @@ docker compose version
 docker ps
 ```
 
-**Resultado esperado:** Docker responde y se observan los contenedores `kafka` y `spark-master` en estado activo. El contenedor `spark-worker` puede existir, aunque los ejercicios de Spark usan `local[1]`.
+**Interpretación:** Docker debe responder si el laboratorio usa contenedores. Identificar si existen `kafka` y `spark-master` (u otros nombres equivalentes). La existencia de Spark como servicio o instalación previa del semestre **no implica** que se llame `spark-master` ni que funcione en Docker; verificar antes de utilizar los comandos de ejemplo.
 
 Si Docker requiere privilegios, anteponer `sudo` a los comandos Docker de esta guía. No cambiar permisos del socket Docker indiscriminadamente.
 
-Si los contenedores existen pero están detenidos:
+**Solo si los contenedores ya existen y están detenidos**, pueden iniciarse:
 
 ```bash
 sudo docker start kafka spark-master
@@ -48,11 +50,11 @@ sudo docker ps
 
 Si el nombre de los contenedores difiere, usar los nombres indicados en `docker ps` y reemplazarlos en los comandos posteriores.
 
-**Criterio de avance:** ambos contenedores están activos. Si faltan, detener la preparación y obtener la infraestructura del curso; no instalar contenedores incompatibles por cuenta propia.
+**Criterio de avance:** Kafka y Spark están identificados y accesibles mediante la modalidad real del laboratorio. Si Kafka aún no existe, solicitar o aplicar el despliegue específico del curso; no reinstalar Spark ni modificar HDFS/Hive.
 
-## 2. Comprobar el broker Kafka y preparar los tópicos
+## 2. Habilitar Kafka y preparar los tópicos de las prácticas
 
-Los siguientes comandos se ejecutan desde Ubuntu, pero las utilidades Kafka se invocan **dentro del contenedor**.
+Los siguientes comandos son para el caso en que Kafka está instalado **en un contenedor llamado `kafka`**. Si Kafka está instalado directamente en la instancia AWS o el contenedor tiene otro nombre, utilizar la ruta y el servicio correspondientes. Antes de crear los tópicos, confirmar que el broker funciona.
 
 ```bash
 sudo docker exec kafka bash -lc 'kafka-topics --bootstrap-server localhost:9092 --list'
@@ -78,7 +80,7 @@ sudo docker exec kafka bash -lc 'kafka-topics --bootstrap-server localhost:9092 
 
 **Compatibilidad de comandos:** algunas imágenes utilizan `kafka-topics.sh` en lugar de `kafka-topics`. Utilizar la variante disponible en la imagen institucional.
 
-## 3. Verificar las dos rutas de conexión a Kafka
+## 3. Verificar la conectividad en la instancia AWS
 
 **No confundir estas direcciones:**
 
@@ -114,9 +116,9 @@ sudo docker exec spark-master bash -lc 'getent hosts kafka'
 
 **Resultado esperado:** se resuelve el nombre `kafka`. Esto verifica DNS, no por sí solo toda la conexión Kafka.
 
-## 4. Preparar Python en Ubuntu
+## 4. Preparar dependencias Python en la instancia AWS
 
-Comprobar que Python 3 está disponible:
+Usar Python 3 de la instancia AWS, sin modificar el intérprete utilizado por Spark. Comprobar que está disponible:
 
 ```bash
 python3 --version
@@ -163,17 +165,25 @@ PY
 
 **Resultado esperado:** HTTP 200, formato `FeatureCollection` y una cantidad de eventos que puede variar, incluso ser cero. Si hay error HTTP, DNS o TLS, verificar la conectividad a Internet antes de avanzar.
 
-## 6. Verificar Spark y la compatibilidad del conector Kafka
+## 6. Reutilizar Spark existente y verificar el conector Kafka
 
-Desde Ubuntu:
+**No reinstalar Spark.** Primero consultar la versión de la instalación ya utilizada en el curso:
+
+```bash
+spark-submit --version
+```
+
+Si Spark se ejecuta dentro de un contenedor llamado `spark-master`, usar en su lugar:
 
 ```bash
 sudo docker exec spark-master bash -lc '/spark/bin/spark-submit --version'
 ```
 
-**Entorno de referencia validado:** Spark **2.4.0**, Scala **2.11.12**, Java **8**. No sustituir por una versión distinta sin revisar la compatibilidad de dependencias.
+Si el ejecutable no está en el PATH, utilizar la ruta de Spark que se haya empleado durante las prácticas anteriores.
 
-Conector correspondiente:
+**Entorno de referencia validado por el docente:** Spark **2.4.0**, Scala **2.11.12**, Java **8**. La instancia del estudiante puede tener otra versión. **No asumir que el conector siguiente sirve para cualquier Spark**: comprobar la versión real y seleccionar el artefacto compatible con Spark/Scala antes de ejecutar la Guía 2.
+
+Conector correspondiente **únicamente al entorno de referencia Spark 2.4.0 / Scala 2.11**:
 
 ```text
 org.apache.spark:spark-sql-kafka-0-10_2.11:2.4.0
@@ -185,7 +195,7 @@ La primera ejecución de `spark-submit --packages` puede descargar el conector y
 
 El contenedor de referencia usa una instalación antigua de Spark/PySpark y puede disponer de Python 2.7. **No actualizar Python dentro del contenedor ni instalar PySpark moderno** sin una evaluación de compatibilidad: el productor Python 3 se ejecuta en Ubuntu y el proceso Spark se ejecuta con el entorno proporcionado.
 
-## 7. Preparar los archivos de trabajo de la Guía 2
+## 7. Preparar los archivos en la instancia AWS
 
 La Guía 2 incluye el código de estos dos archivos:
 
@@ -196,7 +206,7 @@ La Guía 2 incluye el código de estos dos archivos:
 
 Guardar `productor_usgs.py` en `~/kafka_usgs/` utilizando el código completo del **Ejercicio 2 de la Guía 2**. Guardar `sismos_checkpoint.py` en Ubuntu con el código completo del **Ejercicio 4 de la Guía 2**.
 
-Desde Ubuntu, transferir el segundo archivo al contenedor:
+**Si Spark se ejecuta en el contenedor `spark-master`**, transferir el segundo archivo:
 
 ```bash
 sudo docker cp ~/kafka_usgs/sismos_checkpoint.py spark-master:/tmp/sismos_checkpoint.py
@@ -208,7 +218,7 @@ Verificar que existe:
 sudo docker exec spark-master bash -lc 'ls -lh /tmp/sismos_checkpoint.py'
 ```
 
-**Resultado esperado:** el archivo aparece en `/tmp/`. No es necesario ejecutar todavía el procesamiento de eventos; eso corresponde a la Guía 2.
+**Resultado esperado:** el archivo aparece en `/tmp/`. Si Spark se ejecuta directamente en AWS, no utilizar `docker cp`: guardar el script en la ruta de trabajo y adaptar el comando `spark-submit` de la Guía 2. No es necesario ejecutar todavía el procesamiento de eventos; eso corresponde a la Guía 2.
 
 **Checkpoint:** el script utiliza `/tmp/checkpoint_sismos_usgs` dentro de Spark. Para un laboratorio temporal es suficiente si se conserva el mismo contenedor. Si se necesita recuperar el estado después de recrearlo, se requiere un volumen Docker persistente. No borrar ni compartir un mismo checkpoint entre consultas independientes.
 
@@ -226,11 +236,12 @@ Para varias parejas, asignar identificadores por equipo (por ejemplo, `ventas_g0
 
 **Advertencia de compatibilidad:** los nombres del tópico deben coincidir entre productor y consumidor, y el checkpoint debe ser exclusivo de una consulta. El docente debe comunicar previamente si se utilizarán tópicos compartidos o independientes.
 
-## 9. Lista de comprobación antes de iniciar las guías
+## 9. Lista de comprobación de habilitación sobre AWS
 
 Marcar cada condición:
 
-- [ ] Docker funciona y los contenedores `kafka` y `spark-master` están activos.
+- [ ] Se accede correctamente a la instancia AWS habitual y los servicios HDFS, Hive y Spark existentes no se han alterado.
+- [ ] Se identificó cómo se ejecutan Kafka y Spark (Docker o instalación directa) y ambos están disponibles.
 - [ ] Kafka responde a la consulta de tópicos.
 - [ ] Existen los tópicos `ventas` y `sismos_usgs` (o los nombres asignados).
 - [ ] Ubuntu y Spark disponen de rutas de conexión a Kafka configuradas para sus respectivas redes.
@@ -241,7 +252,7 @@ Marcar cada condición:
 - [ ] `sismos_checkpoint.py` está disponible dentro de `spark-master`.
 - [ ] Se definió una política de tópicos y checkpoints para evitar interferencias entre equipos.
 
-**Criterio de preparación:** si se cumplen los diez puntos, el laboratorio está listo para comenzar las prácticas. La ejecución completa del flujo y la observación de micro-lotes forman parte de la Guía 2, no de esta preparación.
+**Criterio de preparación:** si se cumplen los puntos, el laboratorio está listo para comenzar las prácticas. La ejecución completa del flujo y la observación de micro-lotes forman parte de la Guía 2, no de esta preparación.
 
 ## 10. Diagnóstico breve de incidencias frecuentes
 
@@ -265,4 +276,4 @@ Una vez completada esta preparación, desarrollar en orden:
 1. [Guía práctica 1 — Publicación y consumo de eventos con Apache Kafka](Guia_Practica_1_Kafka.md).
 2. [Guía práctica 2 — Procesamiento Near Real-Time de sismos con USGS, Kafka y Spark](Guia_Practica_2_Kafka_Spark.md).
 
-**Alcance:** esta guía documenta el entorno de referencia y sus dependencias, pero no proporciona un despliegue Docker Compose desde cero. La autonomía completa de estudiantes sin contenedores preinstalados requiere distribuir también la infraestructura institucional reproducible.
+**Alcance:** la guía habilita Kafka y su integración con el Spark existente en AWS. Los comandos Docker reflejan una modalidad concreta del laboratorio; no deben ejecutarse ciegamente en instancias que usan servicios nativos. Si Kafka no está desplegado, el curso debe proporcionar su configuración de instalación compatible con la instancia ya utilizada. No se requiere volver a desplegar HDFS, Hive ni Spark.
