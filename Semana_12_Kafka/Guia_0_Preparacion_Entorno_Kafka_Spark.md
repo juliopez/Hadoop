@@ -1,6 +1,6 @@
 # Guía 0 — Habilitación de Apache Kafka e integración con Spark
 
-**Propósito:** preparación del entorno antes de las prácticas · **Entorno de referencia:** despliegue Docker Compose de este repositorio, en un equipo local o servidor remoto.
+**Propósito:** preparación del entorno antes de las prácticas · **Entorno de referencia:** Linux (preferentemente Ubuntu), habitualmente en una máquina virtual AWS EC2, con Docker Compose. También puede utilizarse un servidor Linux local o remoto. Los comandos de terminal están escritos para Linux.
 
 ## Propósito
 
