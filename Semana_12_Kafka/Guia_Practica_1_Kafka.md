@@ -1,16 +1,16 @@
 # Guía práctica 1. Publicación y consumo de eventos con Apache Kafka
 
-**Asignatura:** Big Data · **Dificultad:** intermedia
+**Tema:** Apache Kafka · **Dificultad:** intermedia
 
 ## Propósito
 
-Aplicar los conceptos de tópicos, productores, consumidores, claves, particiones y offsets mediante operaciones verificables en el entorno Docker del curso.
+Aplicar los conceptos de tópicos, productores, consumidores, claves, particiones y offsets mediante operaciones verificables en el entorno Docker de referencia.
 
 ## Antes de comenzar
 
-**Entorno:** instancia AWS del curso, con Docker accesible sin `sudo`, Kafka 3.9.0 en modo ZooKeeper y los servicios del repositorio ya desplegados.
+**Entorno de referencia:** infraestructura Docker Compose de este repositorio, con Kafka 3.9.0 en modo ZooKeeper. Se requiere acceso autorizado a Docker; según el sistema, los comandos podrían requerir `sudo` o una configuración de permisos equivalente.
 
-**Requisitos previos:** haber completado la [Guía 0](Guia_0_Preparacion_Entorno_Kafka_Spark.md); Kafka y ZooKeeper iniciados; acceso a Docker; lectura de los apartados 2.1–2.5 del [libro](Apache_Kafka_Obra_Consolidada_Revision.md). Los comandos se ejecutan **dentro del contenedor Kafka**, salvo indicación contraria. Según la imagen Docker, las utilidades pueden llevar el sufijo `.sh` (por ejemplo, `kafka-topics.sh`). El broker `localhost:9092` de los ejemplos se refiere al interior del contenedor Kafka, no necesariamente al equipo anfitrión.
+**Requisitos previos:** haber completado la [Guía 0](Guia_0_Preparacion_Entorno_Kafka_Spark.md); Kafka y ZooKeeper iniciados en este despliegue; acceso a Docker. Como lectura complementaria, se sugieren los apartados 2.1–2.5 del [material de referencia](Apache_Kafka_Obra_Consolidada_Revision.md). Los comandos se ejecutan **dentro del contenedor Kafka**, salvo indicación contraria. Según la imagen Docker, las utilidades pueden llevar el sufijo `.sh` (por ejemplo, `kafka-topics.sh`). El broker `localhost:9092` de los ejemplos se refiere al interior del contenedor Kafka, no necesariamente al equipo anfitrión.
 
 ## Ejercicio 1 — Verificar el broker y crear el tópico
 En el equipo anfitrión:
@@ -74,4 +74,4 @@ kafka-console-consumer --bootstrap-server localhost:9092 --topic ventas --group 
 
 Un único archivo PDF o Markdown breve con: (1) salida de descripción del tópico; (2) dos pares partición/offset; (3) un ejemplo JSON con clave; (4) respuestas a las consignas de los ejercicios 4 y 5. **No se requiere informe extenso.**
 
-**Criterio de logro:** el estudiante publica y consume eventos y justifica correctamente el papel de las particiones, claves, offsets y grupos. Los resultados exactos pueden variar según el estado previo del tópico y la distribución de particiones.
+**Criterio de logro:** se publican y consumen eventos y justifica correctamente el papel de las particiones, claves, offsets y grupos. Los resultados exactos pueden variar según el estado previo del tópico y la distribución de particiones.
