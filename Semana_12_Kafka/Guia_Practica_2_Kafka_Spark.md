@@ -14,7 +14,7 @@ Al finalizar, se podrá explicar la diferencia entre consultar una API y transmi
 
 ## Antes de comenzar
 
-La práctica utiliza como referencia la infraestructura Docker Compose de este repositorio, que puede ejecutarse localmente o en un servidor remoto. Los comandos Docker requieren permisos adecuados; la necesidad de `sudo` depende de cada instalación. Antes de comenzar, completar la [Guía 0](Guia_0_Preparacion_Entorno_Kafka_Spark.md). Las siguientes condiciones deben estar disponibles antes de comenzar:
+La práctica utiliza como referencia una instancia Linux (preferentemente Ubuntu), habitualmente alojada en AWS EC2, con la infraestructura Docker Compose de este repositorio. También puede ejecutarse en un servidor Linux local o remoto. Todos los comandos de terminal están pensados para Linux: distinguir el anfitrión, el contenedor `kafka` y el contenedor `spark-master`. Los comandos Docker requieren permisos adecuados; la necesidad de `sudo` depende de cada instalación. Antes de comenzar, completar la [Guía 0](Guia_0_Preparacion_Entorno_Kafka_Spark.md). Las siguientes condiciones deben estar disponibles antes de comenzar:
 
 - Kafka 3.9.0 en modo ZooKeeper en el despliegue de referencia, accesible desde Python del anfitrión y desde Spark; tópico `sismos_usgs` existente, con **3 particiones**. En esta configuración, Spark utiliza `kafka:9092`; la conexión desde el anfitrión debe utilizar una dirección anunciada por el broker y accesible desde ese equipo.
 - Contenedor Docker `spark-master` con `/spark/bin/spark-submit`, **Spark 2.4.0, Scala 2.11 y Java 8**. Conector requerido: `org.apache.spark:spark-sql-kafka-0-10_2.11:2.4.0`. Sus dependencias deben estar precargadas o disponibles desde Maven Central.
