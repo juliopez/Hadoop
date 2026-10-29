@@ -119,3 +119,8 @@ Un único archivo breve con: (1) respuesta de la API; (2) confirmación de publi
 4. **Pendiente de validación:** `from_json` con esquema explícito, filtrado y agregación de magnitudes, lectura continua, directorio de checkpoint persistente y reinicio con recuperación de offsets. `trigger(once=True)` no equivale a una sesión NRT continua.
 
 **Decisión vigente:** reemplazar los cinco ejercicios de ventas por cinco ejercicios USGS NRT en la versión definitiva. Este bloque es un registro de laboratorio docente; las consignas anteriores de ventas aún deben reescribirse y no se consideran aprobadas para publicación. Evitar exigir al estudiante resolver DNS, versiones de Spark o descarga de conectores durante los 60 minutos.
+
+
+### Prueba validada 29-10-2026 17:29 — JSON tipado y filtro Spark
+
+En el contenedor `spark-master`, se ejecutó `/tmp/procesar_sismos.py` con `/spark/bin/spark-submit --master 'local[1]' --packages org.apache.spark:spark-sql-kafka-0-10_2.11:2.4.0`. Se leyó `sismos_usgs` con Structured Streaming, se convirtió `value` de JSON a un esquema explícito (`id_evento`, `magnitud`, `ubicacion`, `fecha_evento`, `longitud`, `latitud`, `profundidad_km`) usando `from_json`, y se aplicó `filter(col('magnitud') >= 2.0)`. El resultado de `Batch: 0` presentó exactamente dos registros: `aka2026vlkyrn`, magnitud 2.5, Alaska; y `nm60628806`, magnitud 2.31, Tennessee. La ejecución volvió al prompt sin error visible. **Aprobado: deserialización, tipado y filtrado.** El modo usado fue `trigger(once=True)`; **pendiente**: streaming continuo, checkpoints persistentes y recuperación. Próxima prueba: lectura continua con un nuevo evento y detención controlada.
