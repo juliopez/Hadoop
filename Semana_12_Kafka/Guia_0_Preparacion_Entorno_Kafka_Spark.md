@@ -1,0 +1,268 @@
+# Guía 0 — Preparación del laboratorio Apache Kafka y Spark
+
+**Asignatura:** Big Data · **Modalidad:** preparación autónoma previa a las prácticas · **Entorno de referencia:** Ubuntu con Docker y contenedores Kafka/Spark del curso.
+
+## Propósito
+
+Preparar y verificar el entorno necesario para realizar, sin interrupciones por dependencias, la [Guía práctica 1 — Kafka](Guia_Practica_1_Kafka.md) y la [Guía práctica 2 — USGS, Kafka y Spark](Guia_Practica_2_Kafka_Spark.md).
+
+**Esta guía se realiza antes de los 60 minutos asignados a cada práctica.** No requiere repetir sus ejercicios. Su producto es un laboratorio funcional y una lista de comprobación completada.
+
+## Arquitectura del laboratorio
+
+```text
+Ubuntu (anfitrión)
+├── Docker
+│   ├── contenedor kafka       → broker Kafka, tópicos ventas y sismos_usgs
+│   └── contenedor spark-master → Spark 2.4.0 / Scala 2.11 / Java 8
+└── Python 3 + entorno virtual
+    ├── requests               → consulta HTTP a USGS
+    └── kafka-python           → productor de eventos JSON
+
+Guía 1: consola Kafka → tópico ventas → consumidores
+Guía 2: USGS → Python → tópico sismos_usgs → Spark Structured Streaming
+```
+
+La configuración de referencia **presupone que los contenedores del curso ya fueron entregados o desplegados**. Si todavía no existen, solicitar el archivo Docker Compose o la imagen institucional del laboratorio. Esta guía no sustituye la instalación de un clúster Hadoop/Spark desde cero: hacerlo con versiones arbitrarias podría invalidar la compatibilidad del conector Kafka.
+
+## 1. Comprobar Ubuntu y Docker
+
+Abrir una terminal de Ubuntu:
+
+```bash
+docker --version
+docker compose version
+docker ps
+```
+
+**Resultado esperado:** Docker responde y se observan los contenedores `kafka` y `spark-master` en estado activo. El contenedor `spark-worker` puede existir, aunque los ejercicios de Spark usan `local[1]`.
+
+Si Docker requiere privilegios, anteponer `sudo` a los comandos Docker de esta guía. No cambiar permisos del socket Docker indiscriminadamente.
+
+Si los contenedores existen pero están detenidos:
+
+```bash
+sudo docker start kafka spark-master
+sudo docker ps
+```
+
+Si el nombre de los contenedores difiere, usar los nombres indicados en `docker ps` y reemplazarlos en los comandos posteriores.
+
+**Criterio de avance:** ambos contenedores están activos. Si faltan, detener la preparación y obtener la infraestructura del curso; no instalar contenedores incompatibles por cuenta propia.
+
+## 2. Comprobar el broker Kafka y preparar los tópicos
+
+Los siguientes comandos se ejecutan desde Ubuntu, pero las utilidades Kafka se invocan **dentro del contenedor**.
+
+```bash
+sudo docker exec kafka bash -lc 'kafka-topics --bootstrap-server localhost:9092 --list'
+```
+
+**Resultado esperado:** lista de tópicos o una lista vacía sin errores de conexión.
+
+Crear los dos tópicos requeridos por las prácticas:
+
+```bash
+sudo docker exec kafka bash -lc 'kafka-topics --bootstrap-server localhost:9092 --create --if-not-exists --topic ventas --partitions 3 --replication-factor 1'
+sudo docker exec kafka bash -lc 'kafka-topics --bootstrap-server localhost:9092 --create --if-not-exists --topic sismos_usgs --partitions 3 --replication-factor 1'
+```
+
+Comprobar su configuración:
+
+```bash
+sudo docker exec kafka bash -lc 'kafka-topics --bootstrap-server localhost:9092 --describe --topic ventas'
+sudo docker exec kafka bash -lc 'kafka-topics --bootstrap-server localhost:9092 --describe --topic sismos_usgs'
+```
+
+**Resultado esperado:** ambos tópicos existen. En un laboratorio de broker único, el factor de replicación es 1. Si un tópico ya existía con otro número de particiones, no modificarlo sin instrucciones del curso.
+
+**Compatibilidad de comandos:** algunas imágenes utilizan `kafka-topics.sh` en lugar de `kafka-topics`. Utilizar la variante disponible en la imagen institucional.
+
+## 3. Verificar las dos rutas de conexión a Kafka
+
+**No confundir estas direcciones:**
+
+| Origen de la conexión | Broker de referencia |
+|---|---|
+| Herramientas dentro del contenedor Kafka | `localhost:9092` |
+| Python ejecutado en Ubuntu | `localhost:9092` **solo si** el puerto está publicado y el broker anuncia una dirección resoluble desde Ubuntu |
+| Spark ejecutado dentro de `spark-master` | `kafka:9092` **solo si** ambos contenedores comparten red Docker y el broker anuncia una dirección accesible |
+
+Comprobar los puertos publicados:
+
+```bash
+sudo docker port kafka
+```
+
+Inspeccionar la configuración de listeners y red sin modificarla:
+
+```bash
+sudo docker exec kafka bash -lc 'env | grep -E "KAFKA_.*LISTENER|ADVERTISED" || true'
+sudo docker inspect kafka --format '{{json .NetworkSettings.Networks}}'
+sudo docker inspect spark-master --format '{{json .NetworkSettings.Networks}}'
+```
+
+**Punto crítico:** un puerto TCP abierto no garantiza que el cliente Kafka funcione. Kafka devuelve metadatos con el host y puerto de `advertised.listeners`. Si anuncia un nombre que Ubuntu no puede resolver, Python puede fallar con `KafkaTimeoutError` o `DNS Resolution failure`, aunque el puerto 9092 responda.
+
+**Solución correcta:** el responsable del laboratorio debe configurar listeners anunciados que sean resolubles desde cada red cliente, y asegurar que Spark y Kafka compartan una red Docker adecuada. La configuración exacta depende de la imagen y del despliegue institucional. **No copiar IP internas ni añadir nombres efímeros a `/etc/hosts` como solución general.**
+
+Para probar la resolución desde Spark:
+
+```bash
+sudo docker exec spark-master bash -lc 'getent hosts kafka'
+```
+
+**Resultado esperado:** se resuelve el nombre `kafka`. Esto verifica DNS, no por sí solo toda la conexión Kafka.
+
+## 4. Preparar Python en Ubuntu
+
+Comprobar que Python 3 está disponible:
+
+```bash
+python3 --version
+python3 -m venv --help
+```
+
+Crear un directorio de trabajo y un entorno virtual:
+
+```bash
+mkdir -p ~/kafka_usgs
+cd ~/kafka_usgs
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install requests kafka-python
+```
+
+Comprobar las dependencias:
+
+```bash
+python -c 'import requests; import kafka; print("Dependencias Python disponibles")'
+```
+
+**Resultado esperado:** aparece `Dependencias Python disponibles` sin `ModuleNotFoundError`.
+
+Si falla `python3 -m venv`, puede faltar el paquete `python3-venv` de Ubuntu. Instalarlo mediante el gestor de paquetes de la distribución y repetir la creación del entorno virtual. Mantener el entorno activado al ejecutar el productor de la Guía 2.
+
+## 5. Verificar el acceso a la API USGS
+
+Con el entorno virtual activado:
+
+```bash
+python - <<'PY'
+import requests
+url = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_hour.geojson"
+r = requests.get(url, timeout=20)
+r.raise_for_status()
+datos = r.json()
+print("HTTP:", r.status_code)
+print("Formato:", datos.get("type"))
+print("Eventos disponibles:", len(datos.get("features", [])))
+PY
+```
+
+**Resultado esperado:** HTTP 200, formato `FeatureCollection` y una cantidad de eventos que puede variar, incluso ser cero. Si hay error HTTP, DNS o TLS, verificar la conectividad a Internet antes de avanzar.
+
+## 6. Verificar Spark y la compatibilidad del conector Kafka
+
+Desde Ubuntu:
+
+```bash
+sudo docker exec spark-master bash -lc '/spark/bin/spark-submit --version'
+```
+
+**Entorno de referencia validado:** Spark **2.4.0**, Scala **2.11.12**, Java **8**. No sustituir por una versión distinta sin revisar la compatibilidad de dependencias.
+
+Conector correspondiente:
+
+```text
+org.apache.spark:spark-sql-kafka-0-10_2.11:2.4.0
+```
+
+La primera ejecución de `spark-submit --packages` puede descargar el conector y sus dependencias desde Maven Central. En el entorno de referencia, esa descarga fue verificada; el laboratorio estudiantil debe contar con acceso a Maven o con las dependencias precargadas.
+
+**Importante:** `spark-submit --version` comprueba la versión de Spark, **no** descarga el conector. La descarga efectiva ocurre al ejecutar una aplicación con `--packages`, como se hace en la Guía 2.
+
+El contenedor de referencia usa una instalación antigua de Spark/PySpark y puede disponer de Python 2.7. **No actualizar Python dentro del contenedor ni instalar PySpark moderno** sin una evaluación de compatibilidad: el productor Python 3 se ejecuta en Ubuntu y el proceso Spark se ejecuta con el entorno proporcionado.
+
+## 7. Preparar los archivos de trabajo de la Guía 2
+
+La Guía 2 incluye el código de estos dos archivos:
+
+| Archivo | Ubicación de ejecución |
+|---|---|
+| `productor_usgs.py` | Ubuntu, en `~/kafka_usgs/` |
+| `sismos_checkpoint.py` | Contenedor `spark-master`, en `/tmp/` |
+
+Guardar `productor_usgs.py` en `~/kafka_usgs/` utilizando el código completo del **Ejercicio 2 de la Guía 2**. Guardar `sismos_checkpoint.py` en Ubuntu con el código completo del **Ejercicio 4 de la Guía 2**.
+
+Desde Ubuntu, transferir el segundo archivo al contenedor:
+
+```bash
+sudo docker cp ~/kafka_usgs/sismos_checkpoint.py spark-master:/tmp/sismos_checkpoint.py
+```
+
+Verificar que existe:
+
+```bash
+sudo docker exec spark-master bash -lc 'ls -lh /tmp/sismos_checkpoint.py'
+```
+
+**Resultado esperado:** el archivo aparece en `/tmp/`. No es necesario ejecutar todavía el procesamiento de eventos; eso corresponde a la Guía 2.
+
+**Checkpoint:** el script utiliza `/tmp/checkpoint_sismos_usgs` dentro de Spark. Para un laboratorio temporal es suficiente si se conserva el mismo contenedor. Si se necesita recuperar el estado después de recrearlo, se requiere un volumen Docker persistente. No borrar ni compartir un mismo checkpoint entre consultas independientes.
+
+## 8. Preparación para trabajo simultáneo
+
+Si todo el curso comparte un único broker, **los tópicos y checkpoints comunes pueden producir interferencias** entre parejas. La configuración mínima para un laboratorio individual es:
+
+```text
+Tópico Guía 1: ventas
+Tópico Guía 2: sismos_usgs
+Checkpoint Spark: /tmp/checkpoint_sismos_usgs
+```
+
+Para varias parejas, asignar identificadores por equipo (por ejemplo, `ventas_g01`, `sismos_usgs_g01` y `/tmp/checkpoint_sismos_usgs_g01`). Cada grupo debe actualizar los nombres correspondientes en los comandos y las variables `KAFKA_TOPIC` y `SPARK_CHECKPOINT` de los scripts. En la Guía 1, sustituir `ventas` por el tópico asignado.
+
+**Advertencia de compatibilidad:** los nombres del tópico deben coincidir entre productor y consumidor, y el checkpoint debe ser exclusivo de una consulta. El docente debe comunicar previamente si se utilizarán tópicos compartidos o independientes.
+
+## 9. Lista de comprobación antes de iniciar las guías
+
+Marcar cada condición:
+
+- [ ] Docker funciona y los contenedores `kafka` y `spark-master` están activos.
+- [ ] Kafka responde a la consulta de tópicos.
+- [ ] Existen los tópicos `ventas` y `sismos_usgs` (o los nombres asignados).
+- [ ] Ubuntu y Spark disponen de rutas de conexión a Kafka configuradas para sus respectivas redes.
+- [ ] El entorno virtual Python 3 funciona y dispone de `requests` y `kafka-python`.
+- [ ] USGS responde con un GeoJSON válido.
+- [ ] Spark informa la versión esperada y el conector Kafka está disponible o puede descargarse.
+- [ ] `productor_usgs.py` está guardado en Ubuntu.
+- [ ] `sismos_checkpoint.py` está disponible dentro de `spark-master`.
+- [ ] Se definió una política de tópicos y checkpoints para evitar interferencias entre equipos.
+
+**Criterio de preparación:** si se cumplen los diez puntos, el laboratorio está listo para comenzar las prácticas. La ejecución completa del flujo y la observación de micro-lotes forman parte de la Guía 2, no de esta preparación.
+
+## 10. Diagnóstico breve de incidencias frecuentes
+
+| Síntoma | Causa probable | Acción |
+|---|---|---|
+| `Cannot connect to the Docker daemon` | Docker detenido o permisos insuficientes | Comprobar el servicio Docker y los permisos del usuario |
+| `No such container` | Nombre diferente o contenedor no creado | Revisar `docker ps -a` y el despliegue del curso |
+| `kafka-topics: command not found` | Utilidad con otra ruta o sufijo `.sh` | Localizar la utilidad dentro de la imagen Kafka |
+| `KafkaTimeoutError` o error DNS | `advertised.listeners` inaccesible | Corregir listeners y resolución de red, no fijar IP efímeras |
+| `No module named requests` o `kafka` | Entorno virtual no activado o dependencia ausente | Activar `.venv` e instalar dependencias |
+| Error HTTP al consultar USGS | Sin Internet, DNS o problema temporal de API | Revisar conectividad y volver a consultar |
+| `Failed to find data source: kafka` | Conector Spark–Kafka ausente o incompatible | Usar `--packages` con versión correspondiente a Spark/Scala |
+| Spark no resuelve `kafka` | Contenedores en redes distintas | Revisar red Docker y nombre de servicio |
+| Archivo Spark no encontrado | Script no copiado al contenedor | Repetir `docker cp` y comprobar la ruta |
+| Checkpoint inaccesible | Ruta sin permisos o estado compartido | Usar una ruta escribible y exclusiva para la consulta |
+
+## Continuación del trabajo
+
+Una vez completada esta preparación, desarrollar en orden:
+
+1. [Guía práctica 1 — Publicación y consumo de eventos con Apache Kafka](Guia_Practica_1_Kafka.md).
+2. [Guía práctica 2 — Procesamiento Near Real-Time de sismos con USGS, Kafka y Spark](Guia_Practica_2_Kafka_Spark.md).
+
+**Alcance:** esta guía documenta el entorno de referencia y sus dependencias, pero no proporciona un despliegue Docker Compose desde cero. La autonomía completa de estudiantes sin contenedores preinstalados requiere distribuir también la infraestructura institucional reproducible.
