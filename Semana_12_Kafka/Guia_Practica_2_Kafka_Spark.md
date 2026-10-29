@@ -109,3 +109,13 @@ Un único archivo breve con: (1) respuesta de la API; (2) confirmación de publi
 **Criterio editorial:** mantener cinco ejercicios y 60 minutos. Antes de cerrar la versión para estudiantes, decidir si se reemplaza el ejemplo local de ventas por USGS; entregar scripts listos para ejecutar y preconfigurar conectores y listeners, sin trasladar la depuración de infraestructura al estudiante.
 
 **Decisión editorial posterior (29-10-2026):** el docente confirma que la versión final de los cinco ejercicios debe utilizar la API real de sismos USGS para un flujo NRT, no la API ficticia de ventas. La sustitución completa de las consignas y scripts está pendiente de la validación Spark–Kafka. La prueba `spark-submit --packages ... --version` solo confirmó versiones, y la búsqueda de JARs del conector en `/root/.ivy2` y `/root/.m2` no encontró archivos.
+
+
+### Validación adicional del caso USGS — 29-10-2026 (pruebas aprobadas)
+
+1. **Dependencias:** la ejecución real de `spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.11:2.4.0` resolvió y descargó el conector y dependencias de Maven Central; el script de prueba imprimió `Prueba de dependencias Spark-Kafka`.
+2. **Fuente Kafka en Spark:** PySpark creó correctamente `readStream.format('kafka')` sobre `kafka:9092` y el tópico `sismos_usgs`, mostrando el esquema con `key`, `value`, `topic`, `partition`, `offset`, `timestamp` y `timestampType`.
+3. **Lectura efectiva:** `writeStream.format('console').outputMode('append').trigger(once=True)` imprimió el `Batch: 0` con cuatro sismos USGS en JSON: partición 1 offset 0 y partición 0 offsets 0–2. Campos observados: `id_evento`, `magnitud`, `ubicacion`, `fecha_evento`, `longitud`, `latitud`, `profundidad_km`. No hubo excepción visible. **La integración API USGS → productor Python → Kafka → Spark Structured Streaming está validada para lectura puntual.**
+4. **Pendiente de validación:** `from_json` con esquema explícito, filtrado y agregación de magnitudes, lectura continua, directorio de checkpoint persistente y reinicio con recuperación de offsets. `trigger(once=True)` no equivale a una sesión NRT continua.
+
+**Decisión vigente:** reemplazar los cinco ejercicios de ventas por cinco ejercicios USGS NRT en la versión definitiva. Este bloque es un registro de laboratorio docente; las consignas anteriores de ventas aún deben reescribirse y no se consideran aprobadas para publicación. Evitar exigir al estudiante resolver DNS, versiones de Spark o descarga de conectores durante los 60 minutos.
