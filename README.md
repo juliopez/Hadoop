@@ -364,23 +364,15 @@ cd /spark/bin
 
 ------------------------------------------------------------------------
 
-## Estado técnico de Kafka y Spark para las prácticas (29 de octubre de 2026)
+## Material práctico de Apache Kafka
 
-La infraestructura docente conserva una arquitectura heredada, deliberadamente mantenida durante el semestre para evitar cambios disruptivos en los laboratorios AWS:
+El entorno Docker Compose del repositorio incluye Apache Kafka y ZooKeeper, junto con Apache Spark, para desarrollar actividades de mensajería distribuida y procesamiento de eventos. Las guías de la asignatura **Big Data** aprovechan esta infraestructura y se realizan en las instancias AWS utilizadas durante el semestre.
 
-- **Kafka 3.9.0** en modo **ZooKeeper**, confirmado mediante `kafka-topics --version` y `KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181`.
-- **ZooKeeper 3.8** en ejecución; el archivo Compose declara la imagen `zookeeper:3.8.7`.
-- **Spark 2.4.0**, **Scala 2.11.12**, **Java 8**, verificados en `spark-master`.
-- Los contenedores `kafka` y `spark-master` comparten la red Docker del laboratorio. La red concreta observada en el equipo docente fue `2026-2_net_pet`; el nombre puede variar por proyecto Compose o instancia AWS.
-- El repositorio incluye Kafka mediante `landoop/fast-data-dev:latest`, una etiqueta **no fijada a una versión**; la versión 3.9.0 es la observada en el entorno docente, no una garantía para cualquier despliegue futuro.
+- [Guía 0 — Preparación del entorno Kafka y Spark](Semana_12_Kafka/Guia_0_Preparacion_Entorno_Kafka_Spark.md): comprobación de servicios, dependencias y archivos necesarios.
+- [Guía práctica 1 — Publicación y consumo de eventos con Kafka](Semana_12_Kafka/Guia_Practica_1_Kafka.md): tópicos, productores, consumidores, particiones, claves y offsets.
+- [Guía práctica 2 — Procesamiento de sismos USGS con Kafka y Spark](Semana_12_Kafka/Guia_Practica_2_Kafka_Spark.md): integración de API REST, productor Python y Spark Structured Streaming.
 
-**Advertencia de conectividad:** el Compose actual declara `KAFKA_ADVERTISED_HOST_NAME: 172.27.1.16`. Esa dirección depende del entorno y **no debe copiarse a instancias AWS de estudiantes**. Los listeners anunciados deben resolverse tanto desde los clientes en la instancia como desde Spark. Esta configuración requiere revisión específica antes de considerar el despliegue reproducible entre distintas instancias.
-
-**Evolución tecnológica:** Kafka 4.x opera con KRaft y ya no admite ZooKeeper. La migración del repositorio debe planificarse por separado, sin modificar los entornos de los estudiantes durante estas prácticas. Las guías de la semana 12 documentan el laboratorio actual y no exigen migración.
-
-**Comandos de las guías estudiantiles:** se presentan **sin `sudo`**, de acuerdo con los permisos configurados en sus instancias AWS. El uso de `sudo` en comandos generales del README corresponde a otros escenarios de administración.
-
-[Guía 0 — Habilitación del entorno](Semana_12_Kafka/Guia_0_Preparacion_Entorno_Kafka_Spark.md) · [Guía práctica 1 — Kafka](Semana_12_Kafka/Guia_Practica_1_Kafka.md) · [Guía práctica 2 — Kafka y Spark](Semana_12_Kafka/Guia_Practica_2_Kafka_Spark.md)
+Las guías incluyen instrucciones para el entorno académico existente. La configuración de Kafka y sus conexiones de red debe corresponder al despliegue de cada instancia; no se deben reutilizar direcciones internas de otros equipos.
 
 ------------------------------------------------------------------------
 
