@@ -8,7 +8,7 @@ Aplicar los conceptos de tópicos, productores, consumidores, claves, particione
 
 ## Antes de comenzar
 
-**Entorno de referencia:** infraestructura Docker Compose de este repositorio, con Kafka 3.9.0 en modo ZooKeeper. Se requiere acceso autorizado a Docker; según el sistema, los comandos podrían requerir `sudo` o una configuración de permisos equivalente.
+**Entorno de referencia:** instancia Linux (preferentemente Ubuntu), habitualmente alojada en AWS EC2, con la infraestructura Docker Compose de este repositorio y Kafka 3.9.0 en modo ZooKeeper. También es válida una instalación Linux local o en otro servidor. Los comandos se ejecutan desde una terminal Linux; se requiere acceso autorizado a Docker y, según la configuración, puede ser necesario `sudo`.
 
 **Requisitos previos:** haber completado la [Guía 0](Guia_0_Preparacion_Entorno_Kafka_Spark.md); Kafka y ZooKeeper iniciados en este despliegue; acceso a Docker. Como lectura complementaria, se sugieren los apartados 2.1–2.5 del [material de referencia](Apache_Kafka_Obra_Consolidada_Revision.md). Los comandos se ejecutan **dentro del contenedor Kafka**, salvo indicación contraria. Según la imagen Docker, las utilidades pueden llevar el sufijo `.sh` (por ejemplo, `kafka-topics.sh`). El broker `localhost:9092` de los ejemplos se refiere al interior del contenedor Kafka, no necesariamente al equipo anfitrión.
 
