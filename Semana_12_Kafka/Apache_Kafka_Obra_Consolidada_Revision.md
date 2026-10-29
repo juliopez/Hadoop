@@ -26,9 +26,11 @@
 - **2.9.** Integración de Kafka con Apache Spark Structured Streaming
 - **2.10.** Validación, monitoreo y tratamiento básico de errores
 
-## 1.1. Del procesamiento batch al procesamiento de eventos
+## Parte I. Fundamentos, contexto y arquitectura de Apache Kafka
 
-### 1.1.1. El punto de partida: lo que ya conocemos
+### 1.1. Del procesamiento batch al procesamiento de eventos
+
+#### 1.1.1. El punto de partida: lo que ya conocemos
 
 Durante las semanas anteriores hemos trabajado con tecnologías que permiten almacenar, organizar, consultar y procesar grandes volúmenes de información. En particular, hemos utilizado HDFS, Apache Hive y Apache Spark dentro de una infraestructura desplegada mediante Docker.
 
@@ -44,7 +46,7 @@ Este enfoque corresponde al procesamiento por lotes, conocido habitualmente como
 
 Figura 1. Flujo de procesamiento batch conocido por los estudiantes
 
-![Figura 1: Flujo de procesamiento batch conocido por los estudiantes](imagenes/figura_01.svg)
+<img src="imagenes/figura_01.svg" alt="Figura 1: Flujo de procesamiento batch conocido por los estudiantes" width="760">
 
 En este modelo, Spark puede leer el archivo, aplicar filtros, agrupar registros, calcular indicadores y almacenar los resultados nuevamente en HDFS, por ejemplo, utilizando Parquet.
 
@@ -52,7 +54,7 @@ El procesamiento batch continúa siendo fundamental en las organizaciones. Se ut
 
 Sin embargo, no todas las necesidades de información pueden resolverse esperando a que se complete un archivo o a que se ejecute un proceso programado.
 
-### 1.1.2. ¿Qué ocurre cuando los datos se generan continuamente?
+#### 1.1.2. ¿Qué ocurre cuando los datos se generan continuamente?
 
 Consideremos una empresa comercializadora que registra las ventas de sus sucursales.
 
@@ -77,7 +79,7 @@ Si la organización espera hasta el final del día para consolidar y procesar to
 
 Surge así una nueva necesidad: recibir y utilizar los datos mientras se generan, sin esperar a que finalice un período de recopilación.
 
-### 1.1.3. Del registro almacenado al evento
+#### 1.1.3. Del registro almacenado al evento
 
 Para comprender esta transición necesitamos introducir un concepto fundamental: el evento.
 
@@ -113,7 +115,7 @@ En el procesamiento de eventos, los registros pueden llegar individualmente y de
 
 Esto no significa que los datos dejen de almacenarse. Significa que ahora podemos incorporarlos a un flujo de información antes de consolidarlos en archivos o tablas históricas.
 
-### 1.1.4. ¿Por qué necesitamos una nueva arquitectura?
+#### 1.1.4. ¿Por qué necesitamos una nueva arquitectura?
 
 Supongamos que la empresa comercializadora cuenta con tres sistemas interesados en recibir las nuevas transacciones:
 
@@ -129,7 +131,7 @@ Una arquitectura orientada a eventos introduce un componente intermediario que p
 
 Figura 2. Distribución de eventos hacia múltiples sistemas
 
-![Figura 2: Distribución de eventos hacia múltiples sistemas](imagenes/figura_02.svg)
+<img src="imagenes/figura_02.svg" alt="Figura 2: Distribución de eventos hacia múltiples sistemas" width="760">
 
 Representación conceptual de una arquitectura orientada a eventos. La plataforma permite distribuir información a distintos consumidores.
 
@@ -139,7 +141,7 @@ Este mecanismo facilita el desacoplamiento: el productor no necesita conocer dir
 
 Apache Kafka es una tecnología diseñada precisamente para apoyar este tipo de arquitectura.
 
-### 1.1.5. ¿El procesamiento de eventos reemplaza al procesamiento batch?
+#### 1.1.5. ¿El procesamiento de eventos reemplaza al procesamiento batch?
 
 No. Ambos enfoques responden a necesidades diferentes y pueden complementarse.
 
@@ -159,7 +161,7 @@ Por ejemplo, una arquitectura integrada podría recibir transacciones mediante K
 
 De esta manera, las tecnologías que ya conocemos no desaparecen: adquieren nuevas posibilidades de integración.
 
-### 1.1.6. Síntesis del apartado
+#### 1.1.6. Síntesis del apartado
 
 Hasta ahora hemos aprendido a trabajar con información que se encuentra almacenada. HDFS, Hive y Spark nos han permitido construir procesos de consulta, transformación y análisis de datos.
 
@@ -169,9 +171,9 @@ El procesamiento orientado a eventos responde a esta necesidad mediante arquitec
 
 Apache Kafka será la tecnología que estudiaremos para comprender cómo se implementa esta nueva forma de trabajar con los datos y cómo puede integrarse con la infraestructura Big Data que ya conocemos.
 
-## 1.2. Historia, origen y evolución de Apache Kafka
+### 1.2. Historia, origen y evolución de Apache Kafka
 
-### 1.2.1. El contexto tecnológico que dio origen a Kafka
+#### 1.2.1. El contexto tecnológico que dio origen a Kafka
 
 Para comprender el surgimiento de Apache Kafka debemos situarnos a finales de la década de 2000, cuando las grandes plataformas digitales comenzaron a experimentar un crecimiento acelerado en la cantidad de información generada por sus usuarios.
 
@@ -192,7 +194,7 @@ Si cada sistema debía conectarse directamente con todos los demás, la arquitec
 
 Este contexto favoreció el desarrollo de tecnologías especializadas en el transporte y distribución de flujos de información.
 
-### 1.2.2. El nacimiento de Kafka en LinkedIn
+#### 1.2.2. El nacimiento de Kafka en LinkedIn
 
 [The Scaling Journey of LinkedIn - ByteByteGo Newsletter](https://images.openai.com/static-rsc-4/zYscGS-6qGAc2oi__XRnPbJ62QBauRN-jnVvqgumqlaABLKCL-zHUr42y-J9y_i6uZeiOndkKlzj6sW0VIk4J7owjBPaIxGhlKuGAz622jkU4qrGOimCdyU_tcAKqfGgbtZemQyKwnh_QQCqGcWFDjuyKSTJdyBQz6fxLz7qxPM?purpose=inline)
 
@@ -220,7 +222,7 @@ Kafka fue publicado como proyecto de código abierto en 2011 y posteriormente pa
 
 Su nombre proviene del escritor Franz Kafka. La elección respondió principalmente a una preferencia por un nombre breve y distintivo, no a una relación técnica con la literatura.
 
-### 1.2.3. De un sistema interno a una plataforma de código abierto
+#### 1.2.3. De un sistema interno a una plataforma de código abierto
 
 El desarrollo inicial de Kafka respondía a necesidades concretas de LinkedIn. Sin embargo, los problemas que intentaba resolver no eran exclusivos de esa organización.
 
@@ -230,7 +232,7 @@ La publicación de Kafka como software de código abierto permitió que diferent
 
 Figura 3. Principales hitos de la evolución de Apache Kafka
 
-![Figura 3: Principales hitos de la evolución de Apache Kafka](imagenes/figura_03.svg)
+<img src="imagenes/figura_03.svg" alt="Figura 3: Principales hitos de la evolución de Apache Kafka" width="760">
 
 1. 2010 — Desarrollo en LinkedIn
 
@@ -258,7 +260,7 @@ La evolución de Kafka muestra un cambio importante: dejó de ser principalmente
 
 Actualmente puede utilizarse para integrar aplicaciones, alimentar sistemas analíticos, distribuir transacciones y construir soluciones de procesamiento continuo.
 
-### 1.2.4. La evolución del concepto de mensajería
+#### 1.2.4. La evolución del concepto de mensajería
 
 Antes de Kafka ya existían sistemas de mensajería que permitían comunicar aplicaciones. Entre ellos se encontraban tecnologías basadas en colas de mensajes, donde una aplicación enviaba información y otra la recuperaba.
 
@@ -272,7 +274,7 @@ En Kafka, los eventos se incorporan a un registro ordenado dentro de cada partic
 
 Figura 4. Registro de eventos y lectura mediante offsets
 
-![Figura 4: Registro de eventos y lectura mediante offsets](imagenes/figura_04.svg)
+<img src="imagenes/figura_04.svg" alt="Figura 4: Registro de eventos y lectura mediante offsets" width="760">
 
 Esta característica permite que distintos consumidores procesen los mismos eventos de manera independiente.
 
@@ -282,7 +284,7 @@ También es posible volver a leer eventos anteriores, siempre que continúen dis
 
 Este mecanismo constituye una de las principales diferencias conceptuales entre Kafka y muchos sistemas tradicionales de mensajería.
 
-### 1.2.5. ZooKeeper y la evolución hacia KRaft
+#### 1.2.5. ZooKeeper y la evolución hacia KRaft
 
 Durante buena parte de su historia, Kafka utilizó Apache ZooKeeper para coordinar determinados aspectos del funcionamiento del clúster.
 
@@ -333,7 +335,7 @@ Por lo tanto, aunque estudiaremos la evolución hacia KRaft, los ejemplos operat
 
 Esto permitirá comprender tanto la arquitectura tradicional que utilizamos en el laboratorio como el modelo moderno que caracteriza a las versiones recientes de Kafka.
 
-### 1.2.6. Kafka y la evolución de las arquitecturas Big Data
+#### 1.2.6. Kafka y la evolución de las arquitecturas Big Data
 
 El surgimiento de Kafka también puede entenderse como parte de una transformación más amplia de las arquitecturas de datos.
 
@@ -358,7 +360,7 @@ Por ejemplo, una empresa podría utilizar Kafka para recibir nuevas transaccione
 
 De esta manera, Kafka no reemplaza las tecnologías anteriores, sino que contribuye a conectar los sistemas que producen información con aquellos que la procesan y almacenan.
 
-### 1.2.7. Síntesis del apartado
+#### 1.2.7. Síntesis del apartado
 
 Apache Kafka surgió como respuesta a los desafíos que enfrentaban las grandes plataformas digitales al necesitar capturar y distribuir información generada continuamente.
 
@@ -370,9 +372,9 @@ Para nuestro curso, comprender esta evolución resulta importante porque permite
 
 El siguiente paso será analizar qué es exactamente Apache Kafka, cuáles son sus capacidades y qué problemas concretos permite resolver.
 
-## 1.3. ¿Qué es Apache Kafka y qué problemas resuelve?
+### 1.3. ¿Qué es Apache Kafka y qué problemas resuelve?
 
-### 1.3.1. Definición de Apache Kafka
+#### 1.3.1. Definición de Apache Kafka
 
 Apache Kafka es una plataforma distribuida de transmisión de eventos (event streaming) que permite publicar, almacenar y consumir flujos de información de manera continua.
 
@@ -390,7 +392,7 @@ Cuando utilizábamos Spark para procesar un archivo CSV almacenado en HDFS, norm
 
 Sin embargo, Kafka no sustituye a Spark, HDFS ni Hive. Su función principal es facilitar el flujo de eventos entre los sistemas que generan información y aquellos que necesitan utilizarla.
 
-### 1.3.2. ¿Qué significa transmitir eventos?
+#### 1.3.2. ¿Qué significa transmitir eventos?
 
 En informática, un evento representa un hecho ocurrido en un momento determinado.
 
@@ -419,7 +421,7 @@ Otros sistemas pueden entonces consumir esa información para diferentes propós
 
 Figura 5. Transmisión de un evento comercial
 
-![Figura 5: Transmisión de un evento comercial](imagenes/figura_05.svg)
+<img src="imagenes/figura_05.svg" alt="Figura 5: Transmisión de un evento comercial" width="760">
 
 Un mismo evento puede ser utilizado por distintos sistemas, sin que el productor deba establecer una conexión específica con cada uno.
 
@@ -429,7 +431,7 @@ La ventaja es que cada sistema puede utilizar los eventos de acuerdo con sus nec
 
 Es importante comprender que Kafka no realiza automáticamente todos estos análisis. Kafka permite que los eventos estén disponibles; las aplicaciones consumidoras se encargan de interpretarlos y procesarlos.
 
-### 1.3.3. Primer problema: la integración entre múltiples sistemas
+#### 1.3.3. Primer problema: la integración entre múltiples sistemas
 
 Uno de los principales desafíos que resuelve Kafka es la comunicación entre aplicaciones.
 
@@ -446,13 +448,13 @@ Si cada productor debe comunicarse directamente con cada consumidor, el número 
 
 Figura 6. Integración mediante conexiones directas
 
-![Figura 6: Integración mediante conexiones directas](imagenes/figura_06.svg)
+<img src="imagenes/figura_06.svg" alt="Figura 6: Integración mediante conexiones directas" width="760">
 
 Ejemplo conceptual: múltiples integraciones punto a punto entre productores y consumidores.
 
 Figura 7. Integración mediante Apache Kafka
 
-![Figura 7: Integración mediante Apache Kafka](imagenes/figura_07.svg)
+<img src="imagenes/figura_07.svg" alt="Figura 7: Integración mediante Apache Kafka" width="760">
 
 Los sistemas intercambian eventos mediante una plataforma común, reduciendo las dependencias directas.
 
@@ -462,7 +464,7 @@ Un tópico puede entenderse inicialmente como una categoría o flujo identificad
 
 En el apartado 1.4 estudiaremos con mayor profundidad este concepto.
 
-### 1.3.4. Segundo problema: el crecimiento del volumen de información
+#### 1.3.4. Segundo problema: el crecimiento del volumen de información
 
 Las organizaciones no generan siempre la misma cantidad de eventos.
 
@@ -486,7 +488,7 @@ Kafka utiliza mecanismos como las particiones para distribuir los datos y facili
 
 No obstante, agregar servidores no garantiza por sí solo un aumento automático del rendimiento. La distribución de particiones, la configuración y las características de los productores y consumidores también influyen en la capacidad efectiva.
 
-### 1.3.5. Tercer problema: conservar los eventos para diferentes consumidores
+#### 1.3.5. Tercer problema: conservar los eventos para diferentes consumidores
 
 Una característica especialmente importante de Kafka es que los eventos publicados pueden permanecer almacenados durante un período configurable.
 
@@ -510,7 +512,7 @@ Esto no significa que Kafka conserve indefinidamente todos los mensajes. La dura
 
 Tampoco significa que Kafka reemplace a HDFS como repositorio histórico. Ambas tecnologías tienen propósitos diferentes y pueden utilizarse conjuntamente.
 
-### 1.3.6. Cuarto problema: la necesidad de información oportuna
+#### 1.3.6. Cuarto problema: la necesidad de información oportuna
 
 En determinados procesos, disponer de información varias horas después de que se produce puede ser insuficiente.
 
@@ -532,7 +534,7 @@ Por tanto, utilizar Kafka no garantiza automáticamente que una solución funcio
 
 Esta distinción será especialmente importante cuando estudiemos las implementaciones real-time y Near Real-Time en el apartado 1.6.
 
-### 1.3.7. ¿Qué puede hacer Kafka y qué no hace por sí solo?
+#### 1.3.7. ¿Qué puede hacer Kafka y qué no hace por sí solo?
 
 Para evitar confusiones, resulta conveniente identificar sus capacidades y limitaciones.
 
@@ -554,7 +556,7 @@ También podríamos utilizar una herramienta de integración como Apache NiFi, q
 
 En ambos casos, Kafka recibe los eventos publicados por un componente externo; no es el broker quien realiza directamente la solicitud HTTP a la API.
 
-### 1.3.8. Kafka dentro de nuestra infraestructura Big Data
+#### 1.3.8. Kafka dentro de nuestra infraestructura Big Data
 
 En el repositorio [juliopez/Hadoop](https://github.com/juliopez/Hadoop) disponemos de una arquitectura que integra Hadoop/HDFS, Hive, Spark, Kafka y otros servicios.
 
@@ -564,7 +566,7 @@ La incorporación de Kafka permite extender esa arquitectura hacia el tratamient
 
 Figura 8. Ejemplo conceptual de integración con las tecnologías del curso
 
-![Figura 8: Ejemplo conceptual de integración con las tecnologías del curso](imagenes/figura_08.svg)
+<img src="imagenes/figura_08.svg" alt="Figura 8: Ejemplo conceptual de integración con las tecnologías del curso" width="760">
 
 Esquema ilustrativo de integración. No implica que todas estas conexiones estén actualmente implementadas en el entorno Docker.
 
@@ -582,7 +584,7 @@ Fuentes de eventos → Kafka → Procesamiento → Almacenamiento y análisis.
 
 Ambos modelos pueden coexistir dentro de una misma organización.
 
-### 1.3.9. Síntesis del apartado
+#### 1.3.9. Síntesis del apartado
 
 Apache Kafka es una plataforma distribuida orientada a la transmisión de eventos que facilita la comunicación entre sistemas productores y consumidores de información.
 
@@ -592,7 +594,7 @@ Su principal aporte consiste en permitir que los acontecimientos generados por d
 
 En nuestro curso, Kafka complementará las capacidades de HDFS, Hive y Spark, permitiéndonos comprender cómo evolucionar desde procesos basados principalmente en archivos hacia arquitecturas que incorporan flujos continuos de información.
 
-## 1.4. Conceptos fundamentales: eventos, productores, consumidores, tópicos y brokers
+### 1.4. Conceptos fundamentales: eventos, productores, consumidores, tópicos y brokers
 
 En el apartado anterior comprendimos qué es Apache Kafka y cuáles son los problemas que permite resolver. Ahora necesitamos conocer los componentes que hacen posible su funcionamiento.
 
@@ -600,7 +602,7 @@ Para ello, utilizaremos un ejemplo que nos acompañará durante el resto del mat
 
 El propósito de este apartado es comprender cómo se comunican los componentes de Kafka y qué función cumple cada uno, antes de estudiar su arquitectura distribuida en mayor profundidad.
 
-### 1.4.1. Una primera aproximación al funcionamiento de Kafka
+#### 1.4.1. Una primera aproximación al funcionamiento de Kafka
 
 Imaginemos que una empresa dispone de un sistema informático que registra las transacciones comerciales.
 
@@ -616,13 +618,13 @@ Kafka permite organizar esta comunicación mediante una arquitectura compuesta p
 
 Figura 9. Flujo básico de información en Apache Kafka
 
-![Figura 9: Flujo básico de información en Apache Kafka](imagenes/figura_09.svg)
+<img src="imagenes/figura_09.svg" alt="Figura 9: Flujo básico de información en Apache Kafka" width="760">
 
 Esquema simplificado del intercambio de eventos. Kafka actúa como intermediario entre las aplicaciones productoras y consumidoras.
 
 Aunque el esquema parece sencillo, cada componente tiene responsabilidades específicas. Comprenderlas será fundamental para interpretar correctamente los ejemplos y las guías prácticas.
 
-### 1.4.2. Evento: la unidad básica de información
+#### 1.4.2. Evento: la unidad básica de información
 
 Un evento es un registro que representa un acontecimiento ocurrido en un sistema.
 
@@ -662,7 +664,7 @@ Un aspecto importante: Kafka no exige que los eventos estén escritos en JSON. L
 
 En nuestro curso utilizaremos principalmente JSON porque facilita la lectura y comprensión de los ejemplos.
 
-### 1.4.3. Productor: la aplicación que publica eventos
+#### 1.4.3. Productor: la aplicación que publica eventos
 
 Un productor (producer) es una aplicación que envía registros a Kafka.
 
@@ -676,7 +678,7 @@ Su responsabilidad principal consiste en publicar correctamente el evento en el 
 
 Figura 10. Publicación de eventos por un productor
 
-![Figura 10: Publicación de eventos por un productor](imagenes/figura_10.svg)
+<img src="imagenes/figura_10.svg" alt="Figura 10: Publicación de eventos por un productor" width="760">
 
 Un productor puede ser desarrollado utilizando diferentes lenguajes de programación, entre ellos Java, Python, Go o JavaScript.
 
@@ -702,7 +704,7 @@ Lo importante, por ahora, es comprender la relación:
 
 El productor genera o recibe información y la publica en Kafka.
 
-### 1.4.4. Tópico: la organización de los eventos
+#### 1.4.4. Tópico: la organización de los eventos
 
 Un tópico (topic) es una categoría identificada por un nombre en la que Kafka organiza los registros publicados.
 
@@ -732,7 +734,7 @@ Además, un tópico puede dividirse en particiones, que constituyen una caracter
 
 Estudiaremos las particiones con mayor profundidad en el apartado 1.5.
 
-### 1.4.5. Broker: el servidor que almacena y entrega eventos
+#### 1.4.5. Broker: el servidor que almacena y entrega eventos
 
 Un broker es un servidor Kafka encargado de recibir, almacenar y servir registros a los clientes.
 
@@ -746,7 +748,7 @@ Un clúster es un conjunto de servidores que colaboran para ofrecer un servicio 
 
 Figura 11. Representación conceptual de un clúster Kafka
 
-![Figura 11: Representación conceptual de un clúster Kafka](imagenes/figura_11.svg)
+<img src="imagenes/figura_11.svg" alt="Figura 11: Representación conceptual de un clúster Kafka" width="760">
 
 Esquema ilustrativo de un clúster de tres brokers. La distribución real depende de las particiones, réplicas y configuración.
 
@@ -764,7 +766,7 @@ Conviene distinguir dos conceptos: el contenedor Docker es el entorno donde se e
 
 En nuestra configuración educativa, el servicio utiliza una imagen que integra herramientas adicionales. Por eso no debemos asumir que todos los archivos o comandos estarán ubicados en las mismas rutas que en otras distribuciones de Kafka.
 
-### 1.4.6. Consumidor: la aplicación que recupera eventos
+#### 1.4.6. Consumidor: la aplicación que recupera eventos
 
 Un consumidor (consumer) es una aplicación que lee registros desde uno o varios tópicos Kafka.
 
@@ -778,7 +780,7 @@ Todos ellos pueden utilizar eventos publicados en el mismo tópico, siempre que 
 
 Figura 12. Un tópico y múltiples aplicaciones consumidoras
 
-![Figura 12: Un tópico y múltiples aplicaciones consumidoras](imagenes/figura_12.svg)
+<img src="imagenes/figura_12.svg" alt="Figura 12: Un tópico y múltiples aplicaciones consumidoras" width="760">
 
 Una característica relevante es que el consumidor mantiene una posición de lectura respecto de las particiones del tópico.
 
@@ -790,7 +792,7 @@ Por ahora, basta con comprender que los consumidores no necesitan recibir exclus
 
 Pueden recuperar registros disponibles en Kafka según su configuración y las políticas de retención.
 
-### 1.4.7. ¿Qué ocurre cuando existen varios consumidores?
+#### 1.4.7. ¿Qué ocurre cuando existen varios consumidores?
 
 Consideremos dos situaciones diferentes.
 
@@ -814,7 +816,7 @@ Por tanto, la cantidad de particiones influye en el paralelismo que puede alcanz
 
 No profundizaremos todavía en estos mecanismos, porque corresponden al apartado 1.5, dedicado a la arquitectura distribuida.
 
-### 1.4.8. Relación entre los componentes de Kafka y las tecnologías conocidas
+#### 1.4.8. Relación entre los componentes de Kafka y las tecnologías conocidas
 
 Para facilitar la comprensión, podemos establecer algunas relaciones con las herramientas estudiadas anteriormente.
 
@@ -832,7 +834,7 @@ Estas relaciones son útiles como punto de partida, pero no deben interpretarse 
 
 Por ejemplo, aunque un evento pueda contener los mismos campos que una fila CSV, su significado dentro de una arquitectura orientada a eventos es diferente: representa un acontecimiento que puede publicarse y consumirse conforme ocurre.
 
-### 1.4.9. Ejemplo integrador: una venta desde su origen hasta su consumo
+#### 1.4.9. Ejemplo integrador: una venta desde su origen hasta su consumo
 
 Reunamos ahora los conceptos estudiados.
 
@@ -850,7 +852,7 @@ La primera actualiza un indicador comercial. La segunda conserva el registro par
 
 Figura 13. Recorrido de una transacción comercial
 
-![Figura 13: Recorrido de una transacción comercial](imagenes/figura_13.svg)
+<img src="imagenes/figura_13.svg" alt="Figura 13: Recorrido de una transacción comercial" width="760">
 
 1. Se produce el acontecimiento.
 
@@ -872,7 +874,7 @@ Este ejemplo muestra cómo Kafka se incorpora a una arquitectura Big Data sin re
 
 También permite comprender que la transmisión de eventos constituye una etapa distinta del análisis y almacenamiento de la información.
 
-### 1.4.10. Síntesis del apartado
+#### 1.4.10. Síntesis del apartado
 
 El funcionamiento de Apache Kafka se comprende inicialmente mediante cinco conceptos fundamentales:
 
@@ -890,7 +892,7 @@ En nuestro curso utilizaremos estos conceptos para comprender cómo una transacc
 
 En el siguiente apartado profundizaremos en la arquitectura distribuida de Kafka, incorporando conceptos como particiones, offsets, replicación y grupos de consumidores.
 
-## 1.5. Arquitectura distribuida de Kafka: particiones, offsets, replicación y grupos de consumidores
+### 1.5. Arquitectura distribuida de Kafka: particiones, offsets, replicación y grupos de consumidores
 
 En el apartado anterior estudiamos los cinco conceptos fundamentales de Apache Kafka: eventos, productores, tópicos, brokers y consumidores. Comprendimos cómo una aplicación puede publicar una transacción comercial y cómo otras aplicaciones pueden recuperar esa información para distintos propósitos.
 
@@ -902,7 +904,7 @@ Para responderlas, necesitamos comprender cuatro mecanismos de su arquitectura d
 
 Continuaremos utilizando el caso de nuestra empresa comercializadora y estableceremos relaciones con HDFS y Spark, tecnologías que ya conocemos.
 
-### 1.5.1. ¿Por qué Kafka utiliza una arquitectura distribuida?
+#### 1.5.1. ¿Por qué Kafka utiliza una arquitectura distribuida?
 
 Imaginemos que nuestra empresa comercializadora comienza con una sola sucursal que genera aproximadamente 100 transacciones diarias.
 
@@ -928,7 +930,7 @@ Este enfoque nos resulta familiar porque HDFS también utiliza una arquitectura 
 
 La comparación nos ayuda a comprender la idea general de distribución, pero una partición Kafka no equivale a un bloque HDFS. Sus mecanismos de lectura, escritura y organización son distintos.
 
-### 1.5.2. Particiones: cómo se organiza un tópico
+#### 1.5.2. Particiones: cómo se organiza un tópico
 
 En el apartado anterior definimos un tópico como un flujo de registros identificado por un nombre.
 
@@ -940,7 +942,7 @@ Por ejemplo, el tópico `ventas` podría estar dividido en tres particiones.
 
 Figura 14. Tópico `ventas` organizado en tres particiones
 
-![Figura 14: Tópico `ventas` organizado en tres particiones](imagenes/figura_14.svg)
+<img src="imagenes/figura_14.svg" alt="Figura 14: Tópico `ventas` organizado en tres particiones" width="760">
 
 Representación simplificada. Los eventos de una partición mantienen su propio orden; no existe necesariamente un orden global entre todas las particiones.
 
@@ -966,7 +968,7 @@ Sin embargo, aumentar la cantidad de particiones también introduce costos de ad
 
 Por eso, la cantidad de particiones debe responder a las necesidades del sistema y no elegirse simplemente buscando el número más alto posible.
 
-### 1.5.3. ¿Cómo decide Kafka a qué partición enviar un evento?
+#### 1.5.3. ¿Cómo decide Kafka a qué partición enviar un evento?
 
 Cuando un productor publica un registro, Kafka necesita determinar la partición de destino.
 
@@ -995,7 +997,7 @@ Esto permite conservar el orden de los eventos asociados a esa sucursal dentro d
 
 Figura 15. Distribución ilustrativa mediante claves
 
-![Figura 15: Distribución ilustrativa mediante claves](imagenes/figura_15.svg)
+<img src="imagenes/figura_15.svg" alt="Figura 15: Distribución ilustrativa mediante claves" width="760">
 
 No debemos interpretar que Kafka asigna automáticamente una partición distinta a cada sucursal. Diferentes claves pueden terminar en una misma partición, y la distribución depende de la estrategia de particionamiento utilizada.
 
@@ -1003,7 +1005,7 @@ Además, cambiar la cantidad de particiones puede modificar el destino de nuevos
 
 Cuando un productor no proporciona una clave, el cliente Kafka utiliza su estrategia de particionamiento correspondiente, que puede variar según la versión y la biblioteca empleada.
 
-### 1.5.4. Offset: la posición de un registro dentro de una partición
+#### 1.5.4. Offset: la posición de un registro dentro de una partición
 
 Cada registro almacenado en una partición recibe un identificador numérico denominado offset.
 
@@ -1025,7 +1027,7 @@ Por lo tanto, un offset no identifica por sí solo un evento dentro de todo Kafk
 
 Figura 16. Offsets dentro de una partición
 
-![Figura 16: Offsets dentro de una partición](imagenes/figura_16.svg)
+<img src="imagenes/figura_16.svg" alt="Figura 16: Offsets dentro de una partición" width="760">
 
 #### ¿Por qué son importantes los offsets?
 
@@ -1046,7 +1048,7 @@ Esta distinción es importante porque leer un mensaje no implica necesariamente 
 
 El momento en que se confirma el offset influye en el comportamiento del sistema frente a fallos y posibles reprocesamientos.
 
-### 1.5.5. Replicación: protección frente a fallos
+#### 1.5.5. Replicación: protección frente a fallos
 
 Hasta ahora hemos explicado cómo Kafka distribuye los registros entre particiones.
 
@@ -1060,7 +1062,7 @@ La réplica líder es responsable de atender las operaciones ordinarias de lectu
 
 Figura 17. Replicación de una partición entre tres brokers
 
-![Figura 17: Replicación de una partición entre tres brokers](imagenes/figura_17.svg)
+<img src="imagenes/figura_17.svg" alt="Figura 17: Replicación de una partición entre tres brokers" width="760">
 
 Ejemplo con factor de replicación 3. La cantidad de réplicas debe ser compatible con los brokers disponibles.
 
@@ -1092,7 +1094,7 @@ La finalidad general es semejante: evitar que la falla de una máquina implique 
 
 Sin embargo, las unidades de almacenamiento y los mecanismos internos son distintos.
 
-### 1.5.6. Grupos de consumidores: procesamiento colaborativo
+#### 1.5.6. Grupos de consumidores: procesamiento colaborativo
 
 Un grupo de consumidores (consumer group) es un conjunto de consumidores que colaboran para leer y procesar los registros de uno o varios tópicos.
 
@@ -1108,7 +1110,7 @@ Kafka distribuye las particiones del tópico entre los miembros del grupo, de mo
 
 Figura 18. Distribución de particiones dentro de un grupo de consumidores
 
-![Figura 18: Distribución de particiones dentro de un grupo de consumidores](imagenes/figura_18.svg)
+<img src="imagenes/figura_18.svg" alt="Figura 18: Distribución de particiones dentro de un grupo de consumidores" width="760">
 
 Ejemplo con tres particiones y tres consumidores pertenecientes al mismo grupo.
 
@@ -1133,7 +1135,7 @@ Por ejemplo:
 
 La asignación puede variar según la estrategia utilizada y los demás tópicos a los que esté suscrito el grupo.
 
-### 1.5.7. ¿Qué ocurre si existen varios grupos de consumidores?
+#### 1.5.7. ¿Qué ocurre si existen varios grupos de consumidores?
 
 Hasta ahora hemos estudiado varios consumidores colaborando dentro de un mismo grupo.
 
@@ -1149,7 +1151,7 @@ Cada grupo mantiene su propia posición de consumo y puede procesar los eventos 
 
 Figura 19. Diferentes grupos consumiendo un mismo tópico
 
-![Figura 19: Diferentes grupos consumiendo un mismo tópico](imagenes/figura_19.svg)
+<img src="imagenes/figura_19.svg" alt="Figura 19: Diferentes grupos consumiendo un mismo tópico" width="760">
 
 Esto representa una diferencia importante respecto de distribuir el trabajo entre consumidores de un mismo grupo.
 
@@ -1159,7 +1161,7 @@ Entre grupos diferentes, cada grupo puede leer independientemente los registros 
 
 Por lo tanto, una misma venta puede ser utilizada por varios sistemas sin que uno de ellos impida el acceso de los demás.
 
-### 1.5.8. Rebalanceo: adaptación a cambios en los consumidores
+#### 1.5.8. Rebalanceo: adaptación a cambios en los consumidores
 
 Los grupos de consumidores no permanecen necesariamente con la misma cantidad de integrantes.
 
@@ -1179,7 +1181,7 @@ El rebalanceo contribuye a la continuidad operativa, aunque puede provocar pausa
 
 Por eso, en sistemas productivos resulta importante monitorear la estabilidad de los grupos de consumidores.
 
-### 1.5.9. ¿Qué sucede si los consumidores procesan más lentamente que los productores?
+#### 1.5.9. ¿Qué sucede si los consumidores procesan más lentamente que los productores?
 
 Consideremos nuevamente nuestra empresa comercializadora.
 
@@ -1193,7 +1195,7 @@ El lag representa el retraso del consumidor respecto de los registros disponible
 
 Figura 20. Ejemplo conceptual de retraso de consumo
 
-![Figura 20: Ejemplo conceptual de retraso de consumo](imagenes/figura_20.svg)
+<img src="imagenes/figura_20.svg" alt="Figura 20: Ejemplo conceptual de retraso de consumo" width="760">
 
 El consumer lag es especialmente importante en arquitecturas de procesamiento Near Real-Time.
 
@@ -1201,7 +1203,7 @@ Si el retraso aumenta continuamente, la aplicación puede dejar de entregar info
 
 Por tanto, no basta con comprobar que los mensajes llegan a Kafka. También debemos verificar que los consumidores sean capaces de procesarlos con una velocidad adecuada.
 
-### 1.5.10. Nuestra infraestructura Docker: un entorno educativo de un broker
+#### 1.5.10. Nuestra infraestructura Docker: un entorno educativo de un broker
 
 Hasta ahora hemos presentado ejemplos de clústeres con varios brokers y particiones distribuidas.
 
@@ -1225,7 +1227,7 @@ Además, nuestra infraestructura utiliza ZooKeeper, mientras que las versiones m
 
 Por eso, cuando abordemos la operación de Kafka en la segunda parte del material, verificaremos las herramientas y comandos compatibles con la imagen Docker utilizada.
 
-### 1.5.11. Ejemplo integrador: procesamiento de ventas con varios consumidores
+#### 1.5.11. Ejemplo integrador: procesamiento de ventas con varios consumidores
 
 Reunamos los conceptos estudiados mediante un escenario completo.
 
@@ -1249,7 +1251,7 @@ Finalmente, si el sistema necesita tolerar la falla de brokers, deberá utilizar
 
 Este ejemplo permite comprender que los mecanismos de Kafka no funcionan de manera aislada: particiones, offsets, grupos de consumidores y replicación colaboran para distribuir, organizar y mantener disponible el flujo de eventos.
 
-### 1.5.12. Síntesis del apartado
+#### 1.5.12. Síntesis del apartado
 
 En este apartado estudiamos los principales mecanismos que sustentan la arquitectura distribuida de Apache Kafka.
 
@@ -1268,7 +1270,7 @@ También comprendimos una diferencia importante entre la arquitectura general de
 
 En el siguiente apartado estudiaremos una cuestión central para el curso: qué significa realmente procesar información en tiempo real, en Near Real-Time y mediante batch, y cómo se relacionan estos enfoques con Kafka y Spark.
 
-## 1.6. Tiempo real, Near Real-Time y procesamiento batch: diferencias y aplicaciones
+### 1.6. Tiempo real, Near Real-Time y procesamiento batch: diferencias y aplicaciones
 
 En los apartados anteriores estudiamos cómo Apache Kafka permite recibir, almacenar y distribuir eventos mediante productores, tópicos, brokers y consumidores. También comprendimos cómo las particiones y los grupos de consumidores facilitan el procesamiento paralelo.
 
@@ -1278,7 +1280,7 @@ La respuesta requiere distinguir tres enfoques: procesamiento por lotes (batch),
 
 Esta distinción es especialmente importante porque utilizar Kafka no convierte automáticamente una aplicación en un sistema de tiempo real.
 
-### 1.6.1. El tiempo como dimensión del procesamiento de datos
+#### 1.6.1. El tiempo como dimensión del procesamiento de datos
 
 Hasta ahora hemos trabajado principalmente con conjuntos de datos almacenados en HDFS, que posteriormente procesamos mediante Apache Spark.
 
@@ -1304,7 +1306,7 @@ Por ejemplo, si una venta ocurre a las 10:00:00 y aparece en un indicador a las 
 
 Esto no significa necesariamente que el sistema sea de tiempo real estricto. Para determinarlo necesitamos conocer los requisitos temporales de la aplicación.
 
-### 1.6.2. Procesamiento batch: trabajar con conjuntos de datos
+#### 1.6.2. Procesamiento batch: trabajar con conjuntos de datos
 
 El procesamiento por lotes o batch processing consiste en ejecutar operaciones sobre un conjunto de datos disponible para una tarea determinada.
 
@@ -1312,7 +1314,7 @@ Este enfoque es el que hemos utilizado principalmente durante las semanas anteri
 
 Figura 21. Procesamiento batch de transacciones comerciales
 
-![Figura 21: Procesamiento batch de transacciones comerciales](imagenes/figura_21.svg)
+<img src="imagenes/figura_21.svg" alt="Figura 21: Procesamiento batch de transacciones comerciales" width="760">
 
 Supongamos que el sistema comercial genera un archivo con 100.000 transacciones.
 
@@ -1328,7 +1330,7 @@ Si un informe se genera una vez al día, una transacción registrada inmediatame
 
 Sin embargo, debemos evitar una confusión: batch no significa necesariamente procesamiento lento. Un trabajo batch puede ejecutarse en pocos segundos. Lo que caracteriza al enfoque es su organización en ejecuciones sobre conjuntos de datos, no una duración mínima obligatoria.
 
-### 1.6.3. Near Real-Time: información con un pequeño retraso
+#### 1.6.3. Near Real-Time: información con un pequeño retraso
 
 El procesamiento Near Real-Time (NRT) busca que la información esté disponible poco después de producirse, aceptando una latencia limitada que resulta adecuada para la necesidad del negocio.
 
@@ -1350,7 +1352,7 @@ Una implementación NRT podría funcionar de la siguiente manera:
 
 Figura 22. Ejemplo de una arquitectura Near Real-Time
 
-![Figura 22: Ejemplo de una arquitectura Near Real-Time](imagenes/figura_22.svg)
+<img src="imagenes/figura_22.svg" alt="Figura 22: Ejemplo de una arquitectura Near Real-Time" width="760">
 
 Los diez segundos son una frecuencia ilustrativa de consulta, no una garantía de latencia total.
 
@@ -1370,7 +1372,7 @@ Si consultamos cada diez segundos, un evento podría permanecer varios segundos 
 
 Por lo tanto, una arquitectura NRT debe evaluarse considerando el recorrido completo de la información.
 
-### 1.6.4. Procesamiento en tiempo real: responder dentro de un plazo definido
+#### 1.6.4. Procesamiento en tiempo real: responder dentro de un plazo definido
 
 El concepto de tiempo real (real-time) suele utilizarse de manera amplia en la industria tecnológica.
 
@@ -1390,7 +1392,7 @@ Kafka puede formar parte de arquitecturas de baja latencia y transmisión contin
 
 En este curso, cuando hablemos de Kafka y real-time streaming, nos referiremos principalmente a flujos continuos de eventos y a sistemas diseñados para responder con baja latencia, distinguiéndolos de aquellos que requieren garantías temporales estrictas.
 
-### 1.6.5. Comparación entre batch, Near Real-Time y real-time
+#### 1.6.5. Comparación entre batch, Near Real-Time y real-time
 
 Los tres enfoques pueden utilizarse dentro de una misma organización.
 
@@ -1408,7 +1410,7 @@ Esta tabla debe interpretarse como una comparación conceptual, no como una clas
 
 Por ejemplo, un sistema que actualiza información cada segundo podría considerarse NRT si no ofrece garantías de cumplimiento de plazos. Del mismo modo, un sistema de tiempo real puede tener un plazo mayor, siempre que ese plazo esté claramente definido y garantizado bajo las condiciones requeridas.
 
-### 1.6.6. Streaming continuo y microbatch: dos formas de procesar eventos
+#### 1.6.6. Streaming continuo y microbatch: dos formas de procesar eventos
 
 Hasta ahora hemos utilizado los términos streaming y NRT, pero necesitamos distinguirlos.
 
@@ -1424,7 +1426,7 @@ Esta segunda estrategia se denomina microbatch.
 
 Figura 23. Procesamiento continuo y mediante microbatches
 
-![Figura 23: Procesamiento continuo y mediante microbatches](imagenes/figura_23.svg)
+<img src="imagenes/figura_23.svg" alt="Figura 23: Procesamiento continuo y mediante microbatches" width="760">
 
 Este concepto resulta especialmente relevante porque ya conocemos Apache Spark.
 
@@ -1436,7 +1438,7 @@ Esto significa que podemos aprovechar conocimientos previos como selección de c
 
 La diferencia es que, en lugar de trabajar solamente con un DataFrame obtenido desde un archivo cerrado, la aplicación puede operar sobre una fuente de datos que incorpora nuevos registros.
 
-### 1.6.7. Kafka y Spark: funciones diferentes dentro de una misma arquitectura
+#### 1.6.7. Kafka y Spark: funciones diferentes dentro de una misma arquitectura
 
 Es importante comprender que Kafka y Spark no realizan exactamente el mismo trabajo.
 
@@ -1452,7 +1454,7 @@ Posteriormente, los resultados podrían almacenarse en un repositorio o enviarse
 
 Figura 24. Integración conceptual de Kafka y Spark
 
-![Figura 24: Integración conceptual de Kafka y Spark](imagenes/figura_24.svg)
+<img src="imagenes/figura_24.svg" alt="Figura 24: Integración conceptual de Kafka y Spark" width="760">
 
 Arquitectura conceptual; la conexión concreta con Spark depende de la versión y de las bibliotecas disponibles.
 
@@ -1462,7 +1464,7 @@ Una organización puede utilizar Kafka y Spark Streaming para obtener informaci�
 
 En nuestro laboratorio, la infraestructura actual utiliza Spark 2.4.0. Por ello, antes de implementar la conexión entre Kafka y Spark Structured Streaming, será necesario verificar la compatibilidad de los conectores y dependencias correspondientes.
 
-### 1.6.8. Un mismo problema empresarial resuelto mediante tres enfoques
+#### 1.6.8. Un mismo problema empresarial resuelto mediante tres enfoques
 
 Para comparar los modelos, utilizaremos una misma pregunta:
 
@@ -1492,7 +1494,7 @@ El primero prioriza el procesamiento de información consolidada. El segundo bus
 
 La decisión tecnológica debe comenzar por la necesidad del negocio y no por la elección anticipada de una herramienta.
 
-### 1.6.9. ¿Qué determina la latencia de una arquitectura Kafka?
+#### 1.6.9. ¿Qué determina la latencia de una arquitectura Kafka?
 
 Supongamos que implementamos una solución NRT utilizando una API REST, un productor Python, Kafka y un consumidor.
 
@@ -1519,7 +1521,7 @@ Otro indicador importante es el consumer lag, estudiado en el apartado anterior.
 
 Si los consumidores procesan menos eventos de los que reciben, el retraso puede aumentar y afectar la oportunidad de los resultados.
 
-### 1.6.10. ¿Cuándo conviene utilizar cada enfoque?
+#### 1.6.10. ¿Cuándo conviene utilizar cada enfoque?
 
 No todas las aplicaciones necesitan procesamiento continuo.
 
@@ -1535,7 +1537,7 @@ El objetivo no es reemplazar todos los procesos batch por streaming, sino utiliz
 
 Esta idea será fundamental para comprender las arquitecturas integradas que estudiaremos posteriormente.
 
-### 1.6.11. Síntesis del apartado
+#### 1.6.11. Síntesis del apartado
 
 El procesamiento batch, Near Real-Time y real-time representan enfoques diferentes para gestionar la relación entre los datos y el tiempo.
 
@@ -1549,7 +1551,7 @@ Apache Kafka permite construir arquitecturas que reciben y distribuyen eventos c
 
 En nuestro curso, esta distinción nos permitirá comprender cómo ampliar la infraestructura basada en HDFS, Hive y Spark para incorporar nuevas fuentes de información y desarrollar soluciones de procesamiento cercano al tiempo real.
 
-## 1.7. Kafka en el ecosistema Big Data: relaciones con Hadoop, Spark, APIs y otros servicios
+### 1.7. Kafka en el ecosistema Big Data: relaciones con Hadoop, Spark, APIs y otros servicios
 
 En los apartados anteriores hemos estudiado qué es Apache Kafka, cómo funciona su arquitectura distribuida y cuáles son las diferencias entre procesamiento batch, Near Real-Time y tiempo real.
 
@@ -1559,7 +1561,7 @@ Este apartado tiene especial importancia para nuestro curso, porque no estamos c
 
 La incorporación de Kafka nos permitirá comprender cómo conectar esos procesos con sistemas que generan datos continuamente.
 
-### 1.7.1. Del ecosistema de almacenamiento al ecosistema de eventos
+#### 1.7.1. Del ecosistema de almacenamiento al ecosistema de eventos
 
 Durante las semanas anteriores hemos trabajado con una arquitectura centrada principalmente en datos almacenados.
 
@@ -1575,13 +1577,13 @@ Kafka puede cumplir esa función dentro del ecosistema Big Data.
 
 Figura 25. Evolución de una arquitectura Big Data hacia la incorporación de eventos
 
-![Figura 25: Evolución de una arquitectura Big Data hacia la incorporación de eventos](imagenes/figura_25.svg)
+<img src="imagenes/figura_25.svg" alt="Figura 25: Evolución de una arquitectura Big Data hacia la incorporación de eventos" width="760">
 
 Ambas arquitecturas pueden coexistir. Kafka incorpora una etapa de transmisión de eventos, mientras Spark, HDFS y Hive mantienen sus funciones de procesamiento, almacenamiento y consulta.
 
 La diferencia fundamental no consiste en abandonar los archivos o las bases de datos, sino en disponer de mecanismos para incorporar nueva información a medida que se genera.
 
-### 1.7.2. Relación entre Kafka y Hadoop/HDFS
+#### 1.7.2. Relación entre Kafka y Hadoop/HDFS
 
 Apache Hadoop proporciona un ecosistema de tecnologías orientadas al almacenamiento y procesamiento distribuido de grandes volúmenes de información.
 
@@ -1612,7 +1614,7 @@ Kafka no reemplaza a HDFS como sistema de almacenamiento histórico, aunque pued
 
 La decisión de almacenar permanentemente los datos en HDFS responde a necesidades de consulta, conservación, gobierno de datos y análisis posteriores.
 
-### 1.7.3. Relación entre Kafka y Apache Hive
+#### 1.7.3. Relación entre Kafka y Apache Hive
 
 Apache Hive permite trabajar con datos estructurados mediante consultas similares a SQL.
 
@@ -1636,11 +1638,11 @@ Kafka puede participar en una etapa anterior de esa arquitectura, recibiendo los
 
 Figura 26. Kafka como fuente de datos para análisis históricos
 
-![Figura 26: Kafka como fuente de datos para análisis históricos](imagenes/figura_26.svg)
+<img src="imagenes/figura_26.svg" alt="Figura 26: Kafka como fuente de datos para análisis históricos" width="760">
 
 En este escenario, Kafka facilita la disponibilidad de los eventos, mientras Hive proporciona capacidades de consulta sobre los datos almacenados.
 
-### 1.7.4. Relación entre Kafka y Apache Spark
+#### 1.7.4. Relación entre Kafka y Apache Spark
 
 La integración entre Kafka y Spark es especialmente relevante para nuestro curso.
 
@@ -1690,7 +1692,7 @@ Por tanto, no debemos copiar indiscriminadamente ejemplos desarrollados para ver
 
 Cuando implementemos la integración, tendremos que utilizar conectores compatibles con la versión instalada o evaluar explícitamente una actualización del entorno.
 
-### 1.7.5. Relación entre Kafka y las APIs REST
+#### 1.7.5. Relación entre Kafka y las APIs REST
 
 Hasta ahora hemos utilizado ejemplos en los que una aplicación genera eventos y los publica directamente en Kafka.
 
@@ -1718,7 +1720,7 @@ Ese componente podría ser una aplicación Python.
 
 Figura 27. Integración entre una API REST y Kafka
 
-![Figura 27: Integración entre una API REST y Kafka](imagenes/figura_27.svg)
+<img src="imagenes/figura_27.svg" alt="Figura 27: Integración entre una API REST y Kafka" width="760">
 
 La aplicación Python puede utilizar una biblioteca HTTP para consultar la API y un cliente Kafka para publicar los eventos.
 
@@ -1746,7 +1748,7 @@ Algunas entregan registros paginados, otras permiten consultar modificaciones de
 
 Por lo tanto, el diseño de la integración dependerá de las características del servicio externo.
 
-### 1.7.6. Relación entre Kafka y Apache NiFi
+#### 1.7.6. Relación entre Kafka y Apache NiFi
 
 Nuestra infraestructura Docker también incluye Apache NiFi.
 
@@ -1758,7 +1760,7 @@ Por ejemplo, podríamos utilizar NiFi para consultar una API REST, transformar s
 
 Figura 28. Integración conceptual mediante Apache NiFi
 
-![Figura 28: Integración conceptual mediante Apache NiFi](imagenes/figura_28.svg)
+<img src="imagenes/figura_28.svg" alt="Figura 28: Integración conceptual mediante Apache NiFi" width="760">
 
 Esta alternativa resulta interesante porque permite desarrollar integraciones mediante una interfaz visual.
 
@@ -1772,7 +1774,7 @@ Pueden utilizarse conjuntamente, pero ninguno reemplaza automáticamente todas l
 
 En nuestro curso priorizaremos comprender primero los productores y consumidores Kafka. Posteriormente podremos relacionar estos mecanismos con herramientas de integración como NiFi.
 
-### 1.7.7. Kafka Connect: integración mediante conectores
+#### 1.7.7. Kafka Connect: integración mediante conectores
 
 Kafka dispone de un componente denominado Kafka Connect, diseñado para facilitar la transferencia de datos entre Kafka y otros sistemas.
 
@@ -1784,7 +1786,7 @@ Un sink connector consume registros desde Kafka y los envía hacia un sistema de
 
 Figura 29. Funciones de Kafka Connect
 
-![Figura 29: Funciones de Kafka Connect](imagenes/figura_29.svg)
+<img src="imagenes/figura_29.svg" alt="Figura 29: Funciones de Kafka Connect" width="760">
 
 Por ejemplo, una organización podría utilizar un conector de origen para incorporar registros desde una base de datos y un conector de destino para almacenarlos en otro sistema.
 
@@ -1796,7 +1798,7 @@ En particular, la integración con APIs REST puede requerir conectores adicional
 
 Por ello, para nuestras primeras implementaciones utilizaremos productores y consumidores que permitan observar directamente cómo se publican y recuperan los eventos.
 
-### 1.7.8. Relación con las bases de datos tradicionales
+#### 1.7.8. Relación con las bases de datos tradicionales
 
 Hasta ahora hemos mencionado archivos, APIs y sistemas de procesamiento. Sin embargo, gran parte de la información empresarial se encuentra originalmente en bases de datos.
 
@@ -1816,7 +1818,7 @@ Esto facilita que otras aplicaciones reciban información sobre cambios reciente
 
 No obstante, CDC requiere herramientas y configuraciones específicas. Kafka, por sí solo, no inspecciona automáticamente las modificaciones de una base de datos.
 
-### 1.7.9. Arquitectura integrada: de una API REST al análisis histórico
+#### 1.7.9. Arquitectura integrada: de una API REST al análisis histórico
 
 Reunamos ahora las tecnologías estudiadas mediante un ejemplo completo.
 
@@ -1832,7 +1834,7 @@ Una arquitectura conceptual podría incluir las siguientes etapas:
 
 Figura 30. Arquitectura integrada de adquisición, procesamiento y almacenamiento
 
-![Figura 30: Arquitectura integrada de adquisición, procesamiento y almacenamiento](imagenes/figura_30.svg)
+<img src="imagenes/figura_30.svg" alt="Figura 30: Arquitectura integrada de adquisición, procesamiento y almacenamiento" width="760">
 
 Arquitectura conceptual de referencia. Las integraciones representadas deben implementarse y validarse; no corresponden necesariamente a servicios ya conectados en nuestro laboratorio.
 
@@ -1848,7 +1850,7 @@ Este ejemplo muestra que una arquitectura Big Data puede combinar componentes de
 
 También nos permite anticipar el trabajo que desarrollaremos en la segunda parte del documento, especialmente cuando construyamos un productor que consulte una API REST y publique eventos en Kafka.
 
-### 1.7.10. Consideraciones para nuestra infraestructura Docker
+#### 1.7.10. Consideraciones para nuestra infraestructura Docker
 
 Nuestro repositorio [juliopez/Hadoop](https://github.com/juliopez/Hadoop) reúne diversas tecnologías que permiten estudiar el ecosistema Big Data de manera integrada.
 
@@ -1864,7 +1866,7 @@ Cada integración requiere definir conexiones, formatos de datos, credenciales c
 
 Por ello, nuestras futuras guías prácticas avanzarán progresivamente desde la operación básica de Kafka hasta su integración con fuentes externas y Spark.
 
-### 1.7.11. Síntesis del apartado
+#### 1.7.11. Síntesis del apartado
 
 Apache Kafka ocupa un lugar importante dentro del ecosistema Big Data porque facilita la transmisión de eventos entre sistemas que generan, procesan y almacenan información.
 
@@ -1888,7 +1890,7 @@ En nuestro curso, esta integración representa la transición desde una arquitec
 
 En el siguiente apartado examinaremos aplicaciones concretas de Kafka en distintos sectores, incluyendo transacciones comerciales, Internet de las Cosas, monitoreo, registros de aplicaciones y otros escenarios de procesamiento de eventos.
 
-## 1.8. Casos de uso: transacciones comerciales, IoT, monitoreo, registros y eventos de aplicaciones
+### 1.8. Casos de uso: transacciones comerciales, IoT, monitoreo, registros y eventos de aplicaciones
 
 En los apartados anteriores estudiamos los fundamentos de Apache Kafka, su arquitectura distribuida y su relación con tecnologías como Hadoop, Hive, Spark y las APIs REST.
 
@@ -1898,7 +1900,7 @@ Kafka puede utilizarse en organizaciones de distintos sectores, como comercio, i
 
 En este apartado revisaremos cinco escenarios de aplicación, identificando el problema que enfrentan las organizaciones, el papel que desempeña Kafka y las tecnologías que pueden complementarlo.
 
-### 1.8.1. Transacciones comerciales: seguimiento continuo de ventas
+#### 1.8.1. Transacciones comerciales: seguimiento continuo de ventas
 
 Comenzaremos con el caso que hemos utilizado a lo largo del documento: una empresa comercializadora que registra transacciones en distintas sucursales.
 
@@ -1931,7 +1933,7 @@ Distintos consumidores pueden utilizar estos eventos de manera independiente.
 
 Figura 31. Arquitectura de eventos para transacciones comerciales
 
-![Figura 31: Arquitectura de eventos para transacciones comerciales](imagenes/figura_31.svg)
+<img src="imagenes/figura_31.svg" alt="Figura 31: Arquitectura de eventos para transacciones comerciales" width="760">
 
 Un consumidor puede alimentar un sistema de indicadores operacionales, otro puede identificar patrones inusuales y un tercero puede preparar los registros para su almacenamiento histórico.
 
@@ -1945,7 +1947,7 @@ La detección de anomalías, el cálculo de indicadores y la construcción de da
 
 Este caso será especialmente relevante para nuestras futuras actividades prácticas, porque permite relacionar Kafka con el procesamiento de datos comerciales que ya hemos desarrollado mediante PySpark.
 
-### 1.8.2. Internet de las Cosas (IoT): recepción de datos desde sensores
+#### 1.8.2. Internet de las Cosas (IoT): recepción de datos desde sensores
 
 El segundo escenario corresponde al Internet de las Cosas (Internet of Things, IoT).
 
@@ -1979,7 +1981,7 @@ Un consumidor puede analizar los valores y generar alertas, mientras otro conser
 
 Figura 32. Flujo de información desde sensores IoT
 
-![Figura 32: Flujo de información desde sensores IoT](imagenes/figura_32.svg)
+<img src="imagenes/figura_32.svg" alt="Figura 32: Flujo de información desde sensores IoT" width="760">
 
 En este escenario, Kafka facilita la recepción y distribución de grandes cantidades de mediciones.
 
@@ -1989,7 +1991,7 @@ Kafka puede participar en sistemas que generan alertas operacionales, pero no de
 
 Los sistemas de control con requisitos estrictos de respuesta deben diseñarse utilizando tecnologías y mecanismos apropiados para esas condiciones.
 
-### 1.8.3. Monitoreo de sistemas: observación continua del funcionamiento de aplicaciones
+#### 1.8.3. Monitoreo de sistemas: observación continua del funcionamiento de aplicaciones
 
 Las organizaciones utilizan numerosas aplicaciones, servidores y servicios que deben funcionar de manera coordinada.
 
@@ -2031,7 +2033,7 @@ No obstante, la visualización de métricas, la generación de alertas y la admi
 
 Kafka puede formar parte de la arquitectura de observabilidad, pero no constituye por sí mismo una plataforma completa de monitoreo.
 
-### 1.8.4. Registros de aplicaciones: recopilación y análisis de logs
+#### 1.8.4. Registros de aplicaciones: recopilación y análisis de logs
 
 Los sistemas informáticos generan continuamente registros de funcionamiento, conocidos como logs.
 
@@ -2053,13 +2055,13 @@ Kafka puede actuar como plataforma intermedia para recibir registros desde múlt
 
 Figura 33. Centralización de registros de aplicaciones
 
-![Figura 33: Centralización de registros de aplicaciones](imagenes/figura_33.svg)
+<img src="imagenes/figura_33.svg" alt="Figura 33: Centralización de registros de aplicaciones" width="760">
 
 Esta arquitectura permite que los registros de diferentes aplicaciones estén disponibles para múltiples consumidores.
 
 Debemos considerar que los logs pueden contener información sensible, como identificadores de usuarios o detalles internos de los sistemas. Por ello, su publicación y conservación requieren controles adecuados de acceso, protección de datos y políticas de retención.
 
-### 1.8.5. Eventos de aplicaciones: comunicación entre servicios
+#### 1.8.5. Eventos de aplicaciones: comunicación entre servicios
 
 Otro caso importante corresponde a las aplicaciones construidas mediante múltiples servicios.
 
@@ -2093,7 +2095,7 @@ Otro sistema puede conservar la información para análisis comercial.
 
 Figura 34. Comunicación entre servicios mediante eventos
 
-![Figura 34: Comunicación entre servicios mediante eventos](imagenes/figura_34.svg)
+<img src="imagenes/figura_34.svg" alt="Figura 34: Comunicación entre servicios mediante eventos" width="760">
 
 Este enfoque se relaciona con las arquitecturas orientadas a eventos (Event-Driven Architecture, EDA).
 
@@ -2111,7 +2113,7 @@ Por ejemplo, procesar dos veces un evento `pedido_creado` no debería provocar q
 
 Estos aspectos son especialmente importantes cuando Kafka participa en procesos empresariales que modifican información operacional.
 
-### 1.8.6. Comparación de los principales casos de uso
+#### 1.8.6. Comparación de los principales casos de uso
 
 Los escenarios anteriores muestran que Kafka puede participar en soluciones con propósitos diferentes.
 
@@ -2129,7 +2131,7 @@ Un sistema produce un acontecimiento, Kafka permite distribuirlo y una o más ap
 
 La forma específica de implementar cada solución dependerá de las necesidades de la organización, el volumen de información, la latencia requerida y los sistemas involucrados.
 
-### 1.8.7. ¿Cuándo Kafka aporta valor y cuándo podría no ser necesario?
+#### 1.8.7. ¿Cuándo Kafka aporta valor y cuándo podría no ser necesario?
 
 Hasta ahora hemos revisado diferentes aplicaciones de Kafka, pero es importante evitar la idea de que toda solución de datos necesita incorporar esta tecnología.
 
@@ -2156,7 +2158,7 @@ Criterios orientativos para evaluar Kafka
 
 Esta evaluación permite comprender que Kafka no es una solución universal, sino una tecnología especializada que debe incorporarse cuando sus capacidades justifican la complejidad adicional.
 
-### 1.8.8. El caso que utilizaremos como referencia en nuestro curso
+#### 1.8.8. El caso que utilizaremos como referencia en nuestro curso
 
 Para mantener la continuidad entre los fundamentos teóricos y las futuras actividades prácticas, utilizaremos principalmente el escenario de transacciones comerciales.
 
@@ -2166,7 +2168,7 @@ Posteriormente, estudiaremos cómo integrar esos eventos con Spark Structured St
 
 Figura 35. Arquitectura de referencia para la segunda parte del curso
 
-![Figura 35: Arquitectura de referencia para la segunda parte del curso](imagenes/figura_35.svg)
+<img src="imagenes/figura_35.svg" alt="Figura 35: Arquitectura de referencia para la segunda parte del curso" width="760">
 
 Flujo conceptual que servirá como referencia para comprender las implementaciones posteriores.
 
@@ -2182,7 +2184,7 @@ Finalmente, permite establecer una relación directa con las transformaciones y 
 
 Debemos recordar que este documento corresponde al material teórico del curso. La implementación detallada se desarrollará posteriormente en dos guías prácticas independientes, una para cada sesión destinada al trabajo con Kafka.
 
-### 1.8.9. Síntesis del apartado
+#### 1.8.9. Síntesis del apartado
 
 Apache Kafka puede utilizarse en diferentes contextos donde las organizaciones necesitan recibir y distribuir información generada continuamente.
 
@@ -2206,11 +2208,11 @@ La segunda parte estará orientada a comprender cómo se administran los tópico
 
 ---
 
-# Parte II. Operación, integración e implementación de Apache Kafka
+## Parte II. Operación, integración e implementación de Apache Kafka
 
-# 2.1. Preparación y verificación de Kafka en el entorno Docker
+### 2.1. Preparación y verificación de Kafka en el entorno Docker
 
-## 2.1.1. Del conocimiento conceptual al entorno de trabajo
+#### 2.1.1. Del conocimiento conceptual al entorno de trabajo
 
 En la Parte I estudiamos los fundamentos de Apache Kafka, su arquitectura distribuida y su relación con Hadoop, HDFS, Hive y Spark. Comprendimos cómo los productores publican eventos en tópicos, cómo los brokers almacenan registros y cómo los consumidores recuperan información.
 
@@ -2218,7 +2220,7 @@ Ahora relacionaremos estos conceptos con la infraestructura del curso de Big Dat
 
 En las semanas anteriores utilizamos esta infraestructura con HDFS, Hive y Spark. Ahora incorporamos Kafka a nuestros procedimientos de operación e integración. El primer objetivo no es publicar eventos inmediatamente, sino **comprobar que el servicio está disponible y comprender cómo acceder a él**.
 
-## 2.1.2. Kafka dentro de nuestra infraestructura Docker
+#### 2.1.2. Kafka dentro de nuestra infraestructura Docker
 
 El entorno docente se define en el repositorio [juliopez/Hadoop](https://github.com/juliopez/Hadoop), mediante `docker-compose.yml`. Entre los servicios disponibles se encuentran HDFS, Hive, Spark, Kafka, ZooKeeper, NiFi y MySQL.
 
@@ -2226,13 +2228,13 @@ El entorno docente se define en el repositorio [juliopez/Hadoop](https://github.
 
 Kafka utiliza el servicio `kafka` y ZooKeeper el servicio `zookeeper`. Nuestra instalación educativa corresponde a un broker único coordinado mediante ZooKeeper.
 
-![Figura 36. Kafka y ZooKeeper dentro del entorno Docker](imagenes/figura_36.svg)
+<img src="imagenes/figura_36.svg" alt="Figura 36. Kafka y ZooKeeper dentro del entorno Docker" width="760">
 
 *Figura 36. Kafka y ZooKeeper dentro del entorno Docker del curso. Esquema conceptual: no representa integración automática con los otros servicios.*
 
 Esta configuración difiere de las arquitecturas modernas basadas en KRaft. Los procedimientos deben corresponder a la versión realmente instalada y no simplemente a la documentación más reciente.
 
-## 2.1.3. Identificación de los componentes configurados
+#### 2.1.3. Identificación de los componentes configurados
 
 | Componente | Configuración del laboratorio |
 |---|---|
@@ -2258,7 +2260,7 @@ KAFKA_ADVERTISED_HOST_NAME: 172.27.1.16
 
 Esta dirección debe verificarse en el entorno donde efectivamente se ejecutan los contenedores.
 
-## 2.1.4. Verificación de los contenedores
+#### 2.1.4. Verificación de los contenedores
 
 ```bash
 docker ps
@@ -2274,7 +2276,7 @@ La opción `-a` muestra también los contenedores detenidos. `Exited` significa 
 
 Debemos distinguir entre **existencia del contenedor**, **ejecución del contenedor** y **disponibilidad funcional del servicio Kafka**.
 
-## 2.1.5. Acceso al contenedor Kafka
+#### 2.1.5. Acceso al contenedor Kafka
 
 ```bash
 docker exec -it kafka bash
@@ -2290,7 +2292,7 @@ docker exec -it kafka bash
 
 **Ingresar al contenedor no equivale a conectarse al broker mediante el protocolo Kafka.** Estamos accediendo al entorno del sistema donde se ejecutan los procesos y herramientas. Las rutas y utilidades pueden variar según la distribución instalada; debemos comprobar las disponibles en `landoop/fast-data-dev:latest`.
 
-## 2.1.6. Verificación de los registros del servicio
+#### 2.1.6. Verificación de los registros del servicio
 
 ```bash
 docker logs kafka
@@ -2302,7 +2304,7 @@ Estos comandos permiten consultar los registros completos, las últimas cincuent
 
 Una advertencia no significa necesariamente que Kafka haya dejado de funcionar; asimismo, la ausencia de errores evidentes no demuestra disponibilidad funcional. La lectura de registros debe complementarse con una prueba de comunicación.
 
-## 2.1.7. Comprobación de la disponibilidad del broker
+#### 2.1.7. Comprobación de la disponibilidad del broker
 
 Una operación administrativa de referencia es:
 
@@ -2316,7 +2318,7 @@ Según la distribución, el ejecutable puede denominarse `kafka-topics.sh` o ubi
 
 Una lista vacía de tópicos no implica necesariamente un error: podría indicar que todavía no existen tópicos de usuario.
 
-## 2.1.8. La interfaz web de Kafka
+#### 2.1.8. La interfaz web de Kafka
 
 La distribución del laboratorio expone el puerto `3030` para una interfaz web. Según la publicación de puertos y la conectividad, puede accederse mediante:
 
@@ -2326,7 +2328,7 @@ http://localhost:3030
 
 La disponibilidad depende de la configuración de red y del estado del contenedor. La interfaz facilita la observación, pero no reemplaza la comprensión de los comandos administrativos ni de los mecanismos de publicación y consumo.
 
-## 2.1.9. Problemas frecuentes de disponibilidad y conectividad
+#### 2.1.9. Problemas frecuentes de disponibilidad y conectividad
 
 | Situación | Posible explicación | Primera verificación |
 |---|---|---|
@@ -2339,15 +2341,15 @@ La disponibilidad depende de la configuración de red y del estado del contenedo
 
 No todos los problemas de conexión se originan en el broker. En Docker, `localhost` se refiere al entorno desde el que se ejecuta la aplicación: dentro de otro contenedor no identifica necesariamente al broker Kafka.
 
-## 2.1.10. Secuencia de verificación recomendada
+#### 2.1.10. Secuencia de verificación recomendada
 
-![Figura 37. Secuencia de verificación del entorno Kafka](imagenes/figura_37.svg)
+<img src="imagenes/figura_37.svg" alt="Figura 37. Secuencia de verificación del entorno Kafka" width="760">
 
 *Figura 37. Secuencia de verificación del entorno Kafka.*
 
 El procedimiento recomendado comienza con la revisión de Docker Compose, continúa con el estado de los contenedores y sus registros, y termina con la comprobación funcional del broker y de la interfaz web. Esta progresión permite reducir errores de diagnóstico.
 
-## 2.1.11. Síntesis del apartado
+#### 2.1.11. Síntesis del apartado
 
 Relacionamos los fundamentos de Kafka con nuestra infraestructura Docker, identificamos el broker único coordinado mediante ZooKeeper y distinguimos los niveles de verificación: contenedor, servicio y conectividad del cliente. Docker facilita el despliegue, pero no elimina la necesidad de revisar configuraciones, dependencias y direcciones de conexión.
 
@@ -2355,9 +2357,9 @@ En el apartado **2.2. Administración de tópicos, particiones y configuración 
 
 ---
 
-# 2.2. Administración de tópicos, particiones y configuración básica
+### 2.2. Administración de tópicos, particiones y configuración básica
 
-## 2.2.1. De la disponibilidad del broker a la organización de los eventos
+#### 2.2.1. De la disponibilidad del broker a la organización de los eventos
 
 En el apartado anterior estudiamos cómo identificar y verificar los servicios Kafka y ZooKeeper dentro de nuestra infraestructura Docker. Comprendimos que la ejecución de un contenedor no garantiza, por sí sola, la disponibilidad funcional del broker y que es necesario comprobar tanto su estado como la conectividad de los clientes.
 
@@ -2365,7 +2367,7 @@ Una vez establecido ese entorno, el siguiente paso consiste en comprender cómo 
 
 Para organizar estos flujos, Kafka utiliza **tópicos (*topics*)**, que representan categorías lógicas de eventos. Una empresa comercial podría generar eventos relacionados con ventas, pagos, inventario, despachos y devoluciones. En nuestro curso utilizaremos como ejemplo transversal una empresa que registra transacciones comerciales en tiempo real.
 
-## 2.2.2. El tópico como unidad lógica de organización
+#### 2.2.2. El tópico como unidad lógica de organización
 
 Un tópico es una categoría identificada mediante un nombre, en la cual los productores publican eventos y desde la cual los consumidores pueden recuperarlos.
 
@@ -2379,21 +2381,21 @@ Un tópico es una categoría identificada mediante un nombre, en la cual los pro
 
 Un tópico no es simplemente una carpeta que contiene archivos: Kafka administra sus registros mediante particiones, offsets y políticas de conservación. Un mismo tópico puede recibir eventos de múltiples productores y ser leído por diferentes aplicaciones consumidoras.
 
-![Figura 38. Organización de eventos comerciales mediante tópicos Kafka](imagenes/figura_38.svg)
+<img src="imagenes/figura_38.svg" alt="Figura 38. Organización de eventos comerciales mediante tópicos Kafka" width="760">
 
 *Figura 38. Organización de eventos comerciales mediante tópicos Kafka.*
 
-## 2.2.3. Las particiones y su función en la arquitectura de Kafka
+#### 2.2.3. Las particiones y su función en la arquitectura de Kafka
 
 Kafka almacena los eventos de cada tópico en una o varias **particiones (*partitions*)**. Cada partición es un registro ordenado y de solo anexado (*append-only log*). Supongamos que `ventas` dispone de tres particiones. Los eventos se distribuyen entre ellas según la configuración y el comportamiento del productor.
 
-![Figura 39. Tópico ventas dividido en tres particiones](imagenes/figura_39.svg)
+<img src="imagenes/figura_39.svg" alt="Figura 39. Tópico ventas dividido en tres particiones" width="760">
 
 *Figura 39. Tópico `ventas` dividido en tres particiones.*
 
 **Kafka garantiza el orden de los registros dentro de cada partición, pero no un orden total entre todas las particiones de un tópico.** Si una empresa necesita preservar el orden de las operaciones de un cliente, puede utilizar su identificador como clave de particionamiento. Bajo una estrategia consistente, los eventos asociados con esa clave se dirigirán a la misma partición. Modificar la cantidad de particiones puede alterar esa asignación para los eventos futuros.
 
-## 2.2.4. Los offsets: identificación de la posición de los eventos
+#### 2.2.4. Los offsets: identificación de la posición de los eventos
 
 Dentro de cada partición, Kafka asigna a los registros un identificador de posición denominado **offset**.
 
@@ -2408,7 +2410,7 @@ Dentro de cada partición, Kafka asigna a los registros un identificador de posi
 
 El offset 0 aparece en las tres particiones sin que exista duplicación de identificadores, porque cada offset pertenece a una partición diferente. Para identificar la posición de un evento se consideran tópico, partición y offset. Los consumidores mantienen posiciones de lectura independientes. Leer un evento no lo elimina: su permanencia depende de las políticas de conservación. Retención y compactación pueden provocar que algunos offsets antiguos ya no correspondan a registros recuperables.
 
-## 2.2.5. Creación de tópicos y parámetros básicos
+#### 2.2.5. Creación de tópicos y parámetros básicos
 
 Kafka proporciona herramientas para crear, describir, modificar y eliminar tópicos. Una operación de referencia es:
 
@@ -2432,7 +2434,7 @@ El factor de replicación 1 es coherente con el laboratorio de un único broker.
 
 **Compatibilidad:** la sintaxis basada en `--bootstrap-server` debe verificarse contra las herramientas efectivamente disponibles en la imagen `landoop/fast-data-dev:latest`. Algunas versiones antiguas utilizan parámetros asociados con ZooKeeper.
 
-## 2.2.6. Consulta y descripción de tópicos
+#### 2.2.6. Consulta y descripción de tópicos
 
 ```bash
 kafka-topics --bootstrap-server localhost:9092 --list
@@ -2446,17 +2448,17 @@ kafka-topics --bootstrap-server localhost:9092 \
 
 La descripción permite consultar cantidad de particiones, factor de replicación, líderes y réplicas asignadas. En nuestro laboratorio la distribución será sencilla; en entornos de producción, estos datos permiten analizar la distribución entre múltiples brokers.
 
-## 2.2.7. Replicación, liderazgo y tolerancia a fallos
+#### 2.2.7. Replicación, liderazgo y tolerancia a fallos
 
 Cada partición dispone de una réplica líder y puede disponer de réplicas adicionales. El líder atiende las escrituras y lecturas ordinarias; las réplicas seguidoras mantienen copias sincronizadas del registro.
 
-![Figura 40. Partición sin redundancia frente a partición replicada](imagenes/figura_40.svg)
+<img src="imagenes/figura_40.svg" alt="Figura 40. Partición sin redundancia frente a partición replicada" width="760">
 
 *Figura 40. Diferencia entre una partición sin redundancia y una partición replicada.*
 
 El particionamiento distribuye registros entre secuencias de almacenamiento; la replicación mantiene copias de una misma partición. En un único broker con factor de replicación 1, la falla del broker interrumpe la disponibilidad de las particiones alojadas en él. La infraestructura docente no representa una arquitectura de alta disponibilidad.
 
-## 2.2.8. Configuración de retención y conservación de eventos
+#### 2.2.8. Configuración de retención y conservación de eventos
 
 Kafka no elimina automáticamente los eventos después de su lectura. Las políticas de retención temporal y por tamaño determinan qué registros pueden conservarse.
 
@@ -2465,11 +2467,11 @@ Kafka no elimina automáticamente los eventos después de su lectura. Las polít
 
 La eliminación no necesariamente ocurre exactamente cuando se alcanza el límite: intervienen los segmentos y los procesos de limpieza. Kafka también ofrece **compactación del registro (*log compaction*)**, orientada a conservar registros recientes asociados con claves, útil para representar el último estado conocido de una entidad.
 
-## 2.2.9. Modificación de particiones y administración del ciclo de vida
+#### 2.2.9. Modificación de particiones y administración del ciclo de vida
 
 Kafka permite aumentar la cantidad de particiones de un tópico, por ejemplo, de tres a seis. Esto puede ampliar el paralelismo del consumo, pero también alterar la asignación de claves a particiones futuras. **Aumentar las particiones no redistribuye automáticamente los registros históricos**. Eliminar un tópico puede implicar pérdida de datos y exige procedimientos controlados en producción.
 
-## 2.2.10. Criterios para diseñar tópicos en un sistema de transacciones comerciales
+#### 2.2.10. Criterios para diseñar tópicos en un sistema de transacciones comerciales
 
 Separar `ventas`, `pagos` e `inventario` facilita la delimitación de responsabilidades, aunque crear demasiados tópicos también aumenta la complejidad.
 
@@ -2484,31 +2486,31 @@ Separar `ventas`, `pagos` e `inventario` facilita la delimitación de responsabi
 | Conservación | ¿Durante cuánto tiempo se requieren los datos? |
 | Disponibilidad | ¿Qué tolerancia a fallos se necesita? |
 
-![Figura 41. Decisiones de diseño de un tópico de transacciones](imagenes/figura_41.svg)
+<img src="imagenes/figura_41.svg" alt="Figura 41. Decisiones de diseño de un tópico de transacciones" width="760">
 
 *Figura 41. Decisiones de diseño para un tópico de transacciones comerciales.*
 
-## 2.2.11. Síntesis del apartado
+#### 2.2.11. Síntesis del apartado
 
 La administración de tópicos combina operaciones técnicas y decisiones arquitectónicas. Los tópicos organizan los flujos; las particiones almacenan secuencias de registros; los offsets identifican posiciones; la replicación aporta redundancia; y la retención determina la conservación. En el apartado **2.3** estudiaremos cómo los productores publican eventos en estos tópicos.
 
 ---
 
-# 2.3. Publicación de eventos mediante productores
+### 2.3. Publicación de eventos mediante productores
 
-## 2.3.1. Del tópico al flujo de eventos
+#### 2.3.1. Del tópico al flujo de eventos
 
 Los tópicos organizan los eventos, pero necesitan aplicaciones capaces de generarlos y publicarlos: los **productores (*producers*)**. Un productor construye registros y los envía a un tópico Kafka. Puede ser una aplicación empresarial, servicio web, proceso automatizado, dispositivo IoT o programa de integración. En una venta comercial, el sistema de origen registra la operación, el productor construye y transmite el evento y el broker recibe y almacena el registro.
 
-## 2.3.2. Arquitectura básica de publicación
+#### 2.3.2. Arquitectura básica de publicación
 
 El productor necesita una dirección inicial de conexión y el tópico de destino. No necesita conocer las aplicaciones que consumirán posteriormente los eventos: este desacoplamiento facilita incorporar nuevos consumidores.
 
-![Figura 42. Flujo de publicación de una transacción comercial](imagenes/figura_42.svg)
+<img src="imagenes/figura_42.svg" alt="Figura 42. Flujo de publicación de una transacción comercial" width="760">
 
 *Figura 42. Flujo de publicación de una transacción comercial en Kafka.*
 
-## 2.3.3. Estructura de un registro publicado
+#### 2.3.3. Estructura de un registro publicado
 
 | Componente | Descripción |
 |---|---|
@@ -2532,7 +2534,7 @@ El productor necesita una dirección inicial de conexión y el tópico de destin
 
 Kafka no interpreta automáticamente el JSON: el productor debe serializar el contenido en bytes. La fecha del JSON es distinta de la marca temporal propia del registro Kafka. Estos formatos se profundizarán en el apartado 2.5.
 
-## 2.3.4. Configuración mínima de un productor
+#### 2.3.4. Configuración mínima de un productor
 
 El parámetro `bootstrap.servers` proporciona direcciones iniciales para descubrir brokers:
 
@@ -2549,7 +2551,7 @@ value.serializer=org.apache.kafka.common.serialization.StringSerializer
 
 Otras bibliotecas, como las de Python, pueden utilizar mecanismos diferentes.
 
-## 2.3.5. Publicación mediante la consola
+#### 2.3.5. Publicación mediante la consola
 
 ```bash
 kafka-console-producer \
@@ -2565,7 +2567,7 @@ Venta V-1050 rechazada
 
 Normalmente cada línea representa un registro. Esta herramienta permite comprobar el mecanismo de publicación sin desarrollar una aplicación. **La sintaxis y la ruta del ejecutable deben verificarse contra la imagen real del laboratorio**, que utiliza una distribución anterior.
 
-## 2.3.6. Productores programáticos: publicación desde aplicaciones
+#### 2.3.6. Productores programáticos: publicación desde aplicaciones
 
 Ejemplo ilustrativo con `kafka-python`:
 
@@ -2601,15 +2603,15 @@ productor.close()
 
 El programa crea un productor, serializa el objeto a JSON UTF-8, solicita el envío y espera el resultado para conocer partición y offset. Los errores y tiempos de espera deben gestionarse en aplicaciones reales. **Este ejemplo no ha sido validado todavía en el contenedor docente**: requiere biblioteca compatible y conectividad.
 
-## 2.3.7. Publicación asíncrona y confirmación
+#### 2.3.7. Publicación asíncrona y confirmación
 
 La publicación puede ser asíncrona. Debemos distinguir entre solicitar el envío, transmitir el registro y obtener confirmación del broker. Que `send()` retorne no demuestra por sí solo almacenamiento exitoso.
 
-![Figura 43. Secuencia de publicación y confirmación](imagenes/figura_43.svg)
+<img src="imagenes/figura_43.svg" alt="Figura 43. Secuencia de publicación y confirmación" width="760">
 
 *Figura 43. Secuencia simplificada de publicación y confirmación.*
 
-## 2.3.8. Garantías de entrega y parámetro acks
+#### 2.3.8. Garantías de entrega y parámetro acks
 
 | Valor | Comportamiento | Consideración |
 |---|---|---|
@@ -2619,7 +2621,7 @@ La publicación puede ser asíncrona. Debemos distinguir entre solicitar el env�
 
 `acks=all` no es una garantía absoluta. Depende del factor de replicación y las réplicas sincronizadas. En nuestro laboratorio de broker único no existen copias independientes entre servidores.
 
-## 2.3.9. Reintentos, duplicados e idempotencia
+#### 2.3.9. Reintentos, duplicados e idempotencia
 
 Los reintentos ayudan ante fallos temporales, pero pueden duplicar publicaciones si el broker almacenó un registro y la confirmación se perdió. Kafka ofrece idempotencia del productor:
 
@@ -2629,25 +2631,25 @@ enable.idempotence=true
 
 La idempotencia evita determinados duplicados de reintentos dentro de sus garantías, pero no deduplica automáticamente dos eventos de negocio generados de forma independiente. El comportamiento exacto depende de versión y configuración.
 
-## 2.3.10. Particionamiento: claves y distribución
+#### 2.3.10. Particionamiento: claves y distribución
 
 El productor puede elegir una partición explícitamente, utilizar una clave o dejar que el cliente distribuya registros sin clave. Usar el identificador del cliente como clave puede preservar el orden de eventos de ese cliente dentro de una partición, mientras no cambien las condiciones relevantes del particionamiento.
 
-![Figura 44. Distribución de eventos mediante claves](imagenes/figura_44.svg)
+<img src="imagenes/figura_44.svg" alt="Figura 44. Distribución de eventos mediante claves" width="760">
 
 *Figura 44. Distribución ilustrativa de eventos comerciales mediante claves.*
 
 Una clave muy frecuente puede concentrar carga en una partición (*data skew*). La elección de claves debe equilibrar ordenamiento y distribución.
 
-## 2.3.11. Agrupación de mensajes, latencia y rendimiento
+#### 2.3.11. Agrupación de mensajes, latencia y rendimiento
 
 El productor puede agrupar registros destinados a una partición antes de enviarlos (*batching*). Entre los parámetros relacionados están `batch.size`, `linger.ms` y `compression.type`. Lotes mayores pueden reducir solicitudes y mejorar rendimiento, pero añadir espera puede incrementar latencia.
 
-![Figura 45. Publicación individual frente a agrupada](imagenes/figura_45.svg)
+<img src="imagenes/figura_45.svg" alt="Figura 45. Publicación individual frente a agrupada" width="760">
 
 *Figura 45. Publicación individual frente a publicación agrupada.*
 
-## 2.3.12. Errores frecuentes
+#### 2.3.12. Errores frecuentes
 
 | Situación | Posible causa | Verificación |
 |---|---|---|
@@ -2661,41 +2663,41 @@ El productor puede agrupar registros destinados a una partición antes de enviar
 
 Conviene distinguir fallos transitorios recuperables de errores permanentes que requieren intervención.
 
-## 2.3.13. Aplicación al caso comercial
+#### 2.3.13. Aplicación al caso comercial
 
 La empresa registra una venta, construye el evento, lo serializa y publica en `ventas`. Kafka lo almacena en una partición y posteriormente los consumidores pueden recuperarlo. Surge un problema adicional: si la base de datos confirma la venta, pero falla la publicación, ambos sistemas pueden quedar desincronizados. El patrón **Transactional Outbox** es una alternativa arquitectónica para abordar esa consistencia, mediante una tabla de eventos pendientes y publicación posterior.
 
-## 2.3.14. Síntesis del apartado
+#### 2.3.14. Síntesis del apartado
 
 Los productores publican eventos, serializan registros, seleccionan particiones y gestionan confirmaciones. Estudiamos `acks`, reintentos, idempotencia, agrupación y errores de publicación. En el apartado **2.4** examinaremos cómo los consumidores recuperan esos registros y coordinan el procesamiento.
 
 ---
 
-# 2.4. Consumo de eventos y funcionamiento de los grupos de consumidores
+### 2.4. Consumo de eventos y funcionamiento de los grupos de consumidores
 
-## 2.4.1. Del productor al consumidor: completar el flujo de eventos
+#### 2.4.1. Del productor al consumidor: completar el flujo de eventos
 
 En el apartado 2.3 estudiamos cómo las aplicaciones productoras construyen registros, los serializan y los publican en los tópicos de Kafka. El valor de una arquitectura orientada a eventos depende también de la capacidad de otras aplicaciones para recuperar y utilizar esa información.
 
 Un **consumidor (*consumer*)** es una aplicación que se suscribe a uno o varios tópicos y recupera registros de sus particiones. Por ejemplo, a partir de una venta publicada en `ventas`, distintas aplicaciones pueden actualizar indicadores, detectar operaciones anómalas o alimentar un sistema analítico. El consumidor no necesita consultar directamente al sistema que registró la venta: recupera el evento desde Kafka.
 
-## 2.4.2. Arquitectura básica del consumo de eventos
+#### 2.4.2. Arquitectura básica del consumo de eventos
 
 Una empresa puede publicar ventas en Kafka y permitir que varias aplicaciones independientes las procesen.
 
-![Figura 46. Distribución de eventos hacia consumidores](imagenes/figura_46.svg)
+<img src="imagenes/figura_46.svg" alt="Figura 46. Distribución de eventos hacia consumidores" width="760">
 
 *Figura 46. Distribución de eventos desde Kafka hacia distintos consumidores.*
 
 Una aplicación calcula ingresos acumulados, otra evalúa patrones inusuales y otra incorpora datos a un repositorio analítico. Ninguna necesita esperar a que las otras terminen. **La lectura de un evento no lo elimina del tópico**, de modo que grupos independientes pueden consumirlo.
 
-## 2.4.3. El modelo de consumo mediante polling
+#### 2.4.3. El modelo de consumo mediante polling
 
 Kafka utiliza un modelo en que los consumidores solicitan datos mediante consultas (*polling*). El proceso general consiste en establecer conexión, suscribirse a tópicos, obtener particiones asignadas, solicitar registros, procesarlos y repetir la consulta.
 
 En la API Java, una operación representativa es `poll()`. Una consulta puede devolver múltiples registros. Aunque se recuperen pequeños lotes, esto no equivale al procesamiento batch tradicional de grandes conjuntos históricos: los eventos pueden generarse continuamente.
 
-## 2.4.4. Los offsets desde la perspectiva del consumidor
+#### 2.4.4. Los offsets desde la perspectiva del consumidor
 
 Cada registro tiene un offset dentro de su partición.
 
@@ -2709,7 +2711,7 @@ Cada registro tiene un offset dentro de su partición.
 
 Debemos distinguir entre la posición actual de lectura y los offsets confirmados (*committed offsets*) del grupo. Un offset confirmado normalmente representa **la siguiente posición desde la cual se debe reanudar el consumo**. Si se procesaron los registros hasta el offset 2, confirmar el offset 3 indica que la siguiente posición pendiente es 3.
 
-## 2.4.5. Confirmación automática y manual de offsets
+#### 2.4.5. Confirmación automática y manual de offsets
 
 | Modalidad | Característica | Consideración |
 |---|---|---|
@@ -2718,17 +2720,17 @@ Debemos distinguir entre la posición actual de lectura y los offsets confirmado
 
 Si una aplicación falla durante el procesamiento, la relación entre avance real y offsets confirmados determina si ciertos eventos podrían repetirse u omitirse. La estrategia debe responder a los requisitos de confiabilidad.
 
-## 2.4.6. ¿Qué es un grupo de consumidores?
+#### 2.4.6. ¿Qué es un grupo de consumidores?
 
 Un **grupo de consumidores (*consumer group*)** es un conjunto de instancias que colaboran para procesar registros. Cada grupo tiene un identificador `group.id`.
 
 Dentro de un grupo, una partición se asigna normalmente a una sola instancia a la vez. Así se distribuye el trabajo sin que todas las instancias procesen los mismos registros de esa partición.
 
-![Figura 47. Tres particiones y tres consumidores](imagenes/figura_47.svg)
+<img src="imagenes/figura_47.svg" alt="Figura 47. Tres particiones y tres consumidores" width="760">
 
 *Figura 47. Distribución ilustrativa de tres particiones entre tres consumidores del mismo grupo.*
 
-## 2.4.7. Relación entre particiones y paralelismo
+#### 2.4.7. Relación entre particiones y paralelismo
 
 | Consumidores en el grupo | Distribución posible para tres particiones |
 |---:|---|
@@ -2739,29 +2741,29 @@ Dentro de un grupo, una partición se asigna normalmente a una sola instancia a 
 
 **Agregar consumidores no siempre aumenta el paralelismo**. Si existen más consumidores que particiones, algunos quedarán sin asignación de ese tópico. Aumentar particiones también puede afectar el orden de eventos asociados con claves.
 
-## 2.4.8. Diferentes grupos pueden consumir los mismos eventos
+#### 2.4.8. Diferentes grupos pueden consumir los mismos eventos
 
 Los consumidores de un grupo colaboran; **los grupos diferentes mantienen posiciones independientes**.
 
 Por ejemplo, los grupos `indicadores`, `fraudes` e `historico` pueden leer el mismo tópico `ventas` y procesarlo con finalidades diferentes.
 
-![Figura 48. Grupos independientes](imagenes/figura_48.svg)
+<img src="imagenes/figura_48.svg" alt="Figura 48. Grupos independientes" width="760">
 
 *Figura 48. Grupos independientes que consumen un mismo tópico.*
 
 Un grupo puede procesar casi inmediatamente mientras otro mantiene retraso, sin bloquearse entre sí. Sin embargo, todos están sujetos a la retención del tópico.
 
-## 2.4.9. Rebalanceo de grupos de consumidores
+#### 2.4.9. Rebalanceo de grupos de consumidores
 
 Cuando cambia la composición de un grupo, Kafka puede redistribuir particiones mediante un **rebalanceo (*rebalance*)**. Esto puede ocurrir cuando se incorpora un consumidor, otro deja de funcionar, alguien abandona el grupo, cambian particiones o se incumplen ciertos intervalos de actividad.
 
-![Figura 49. Rebalanceo de consumidores](imagenes/figura_49.svg)
+<img src="imagenes/figura_49.svg" alt="Figura 49. Rebalanceo de consumidores" width="760">
 
 *Figura 49. Redistribución ilustrativa de particiones después de incorporar un consumidor.*
 
 Durante el rebalanceo puede verse temporalmente afectado el procesamiento. El comportamiento depende de la versión, del protocolo y de la estrategia de asignación.
 
-## 2.4.10. Recuperación después de un fallo
+#### 2.4.10. Recuperación después de un fallo
 
 Si un consumidor se detiene, puede reanudar a partir de los offsets confirmados. Dos situaciones son importantes:
 
@@ -2771,7 +2773,7 @@ Si un consumidor se detiene, puede reanudar a partir de los offsets confirmados.
 
 Por ello, la confirmación de offsets es una decisión central de confiabilidad.
 
-## 2.4.11. Semánticas de procesamiento y entrega
+#### 2.4.11. Semánticas de procesamiento y entrega
 
 | Semántica | Interpretación |
 |---|---|
@@ -2781,7 +2783,7 @@ Por ello, la confirmación de offsets es una decisión central de confiabilidad.
 
 Estas garantías dependen de Kafka, del consumidor, del momento de confirmación y de los sistemas externos. Una actualización en una base de datos externa no se vuelve automáticamente *exactly-once* por utilizar Kafka.
 
-## 2.4.12. Consumo mediante la consola de Kafka
+#### 2.4.12. Consumo mediante la consola de Kafka
 
 ```bash
 kafka-console-consumer \
@@ -2801,7 +2803,7 @@ kafka-console-consumer \
 
 La sintaxis y opciones deben comprobarse en la imagen real del laboratorio, que utiliza una distribución anterior.
 
-## 2.4.13. Implementación conceptual de un consumidor en Python
+#### 2.4.13. Implementación conceptual de un consumidor en Python
 
 ```python
 from kafka import KafkaConsumer
@@ -2838,7 +2840,7 @@ El consumidor se suscribe a `ventas`, participa en `indicadores`, deserializa JS
 
 En producción, `commit()` debe ejecutarse después de completar las operaciones de negocio y deben gestionarse excepciones. Este ejemplo es didáctico y aún no está validado contra la distribución específica del laboratorio.
 
-## 2.4.14. El retraso del consumidor o consumer lag
+#### 2.4.14. El retraso del consumidor o consumer lag
 
 El **consumer lag** expresa la diferencia entre la posición final del registro y la posición confirmada por el grupo, según la herramienta y métrica utilizadas.
 
@@ -2848,13 +2850,13 @@ Si la siguiente posición del registro es 1000 y el grupo confirmó 850:
 Lag = 1000 - 850 = 150
 ```
 
-![Figura 50. Consumer lag](imagenes/figura_50.svg)
+<img src="imagenes/figura_50.svg" alt="Figura 50. Consumer lag" width="760">
 
 *Figura 50. Representación conceptual del retraso de un consumidor.*
 
 Un lag elevado puede señalar que se publican eventos más rápido de lo que se procesan, aunque no todo lag distinto de cero implica una falla. El lag mide posiciones, no directamente tiempo.
 
-## 2.4.15. Aplicación al caso de transacciones comerciales
+#### 2.4.15. Aplicación al caso de transacciones comerciales
 
 La empresa publica ventas en un tópico con tres particiones y establece tres grupos independientes.
 
@@ -2866,15 +2868,15 @@ La empresa publica ventas en un tópico con tres particiones y establece tres gr
 
 Cada grupo puede tener varias instancias, con el límite de paralelismo determinado por las particiones. Los requisitos de confirmación pueden variar según la criticidad de cada aplicación.
 
-## 2.4.16. Síntesis del apartado
+#### 2.4.16. Síntesis del apartado
 
 Estudiamos cómo los consumidores recuperan eventos mediante *polling*, administran offsets y confirman su avance. Los grupos permiten distribuir particiones entre instancias; grupos diferentes procesan independientemente los mismos eventos. Analizamos rebalanceo, recuperación, semánticas de procesamiento y *consumer lag*. En el apartado **2.5. Estructuración de mensajes: texto, JSON, claves y marcas temporales** profundizaremos en la representación de registros.
 
 ---
 
-# 2.5. Estructuración de mensajes: texto, JSON, claves y marcas temporales
+### 2.5. Estructuración de mensajes: texto, JSON, claves y marcas temporales
 
-## 2.5.1. De la publicación de eventos a la representación de la información
+#### 2.5.1. De la publicación de eventos a la representación de la información
 
 En los apartados anteriores estudiamos cómo Kafka organiza los registros mediante tópicos y particiones, cómo los productores publican eventos y cómo los consumidores recuperan esa información.
 
@@ -2900,19 +2902,19 @@ Este mensaje es comprensible para una persona, pero presenta limitaciones para e
 
 **Kafka transporta y almacena registros cuyos componentes clave y valor se representan como secuencias de bytes.** La interpretación corresponde a los productores, consumidores y serializadores. Kafka no exige JSON ni otro formato específico.
 
-## 2.5.2. Diferencia entre evento, registro y mensaje
+#### 2.5.2. Diferencia entre evento, registro y mensaje
 
 Un **evento** representa algo que ocurrió o un cambio de estado relevante para el sistema: por ejemplo, el cliente C-025 realizó la venta V-1048 por $45.990.
 
 Un **registro Kafka** es la representación técnica almacenada en una partición; puede contener clave, valor, marca temporal, cabeceras y metadatos. **Mensaje** suele designar la información transmitida entre productor y consumidor.
 
-![Figura 51. Transformación de evento a registro Kafka](imagenes/figura_51.svg)
+<img src="imagenes/figura_51.svg" alt="Figura 51. Transformación de evento a registro Kafka" width="760">
 
 *Figura 51. Transformación de un evento de negocio en un registro Kafka.*
 
 Un mismo hecho de negocio puede representarse mediante texto, JSON o Avro. El significado del evento puede mantenerse aunque cambie su representación técnica.
 
-## 2.5.3. Mensajes de texto: simplicidad y limitaciones
+#### 2.5.3. Mensajes de texto: simplicidad y limitaciones
 
 ```text
 Venta V-1048 confirmada
@@ -2927,7 +2929,7 @@ La transacción V-1049 fue aprobada. Total: $52.990
 
 Aunque ambos describen ventas, usan estructuras distintas. Un consumidor tendría que interpretar las frases para extraer montos. **El texto libre es útil para ejemplos sencillos, pero no suele ser la mejor alternativa para intercambiar datos estructurados.**
 
-## 2.5.4. JSON como formato de intercambio de eventos
+#### 2.5.4. JSON como formato de intercambio de eventos
 
 JSON (*JavaScript Object Notation*) representa información mediante pares de clave y valor, objetos y arreglos:
 
@@ -2948,7 +2950,7 @@ JSON (*JavaScript Object Notation*) representa información mediante pares de cl
 
 Los campos son explícitos y sus tipos reconocibles; el consumidor puede leer `monto_total` sin interpretar lenguaje natural. JSON es legible y facilita depuración, pero no incorpora por sí solo un contrato formal de esquema, puede ocupar más espacio que formatos binarios y exige serialización.
 
-## 2.5.5. Serialización y deserialización
+#### 2.5.5. Serialización y deserialización
 
 Kafka no almacena directamente objetos Python o diccionarios. El productor los transforma en bytes mediante **serialización**; el consumidor reconstruye la información mediante **deserialización**.
 
@@ -2960,13 +2962,13 @@ mensaje = json.dumps(venta).encode("utf-8")
 venta_recuperada = json.loads(mensaje.decode("utf-8"))
 ```
 
-![Figura 52. Serialización y deserialización de JSON](imagenes/figura_52.svg)
+<img src="imagenes/figura_52.svg" alt="Figura 52. Serialización y deserialización de JSON" width="760">
 
 *Figura 52. Proceso de serialización y deserialización de un evento JSON.*
 
 Productor y consumidor deben usar mecanismos compatibles. Interpretar bytes JSON con un formato incompatible puede provocar errores.
 
-## 2.5.6. La clave del mensaje y su relación con las particiones
+#### 2.5.6. La clave del mensaje y su relación con las particiones
 
 Un registro puede contener **clave (*key*)** y **valor (*value*)**. La clave no es necesariamente un identificador único del evento; suele asociar registros con una entidad y contribuir a seleccionar la partición.
 
@@ -2985,13 +2987,13 @@ Una estrategia basada en la clave puede enviar los eventos de C-025 a la misma p
 | `C-025` | `V-1057` |
 | `C-103` | `V-1060` |
 
-![Figura 53. Clave e identificador de evento](imagenes/figura_53.svg)
+<img src="imagenes/figura_53.svg" alt="Figura 53. Clave e identificador de evento" width="760">
 
 *Figura 53. Diferencia entre clave de particionamiento e identificador del evento.*
 
 La selección de claves debe considerar ordenamiento, distribución de carga y necesidades de consumidores.
 
-## 2.5.7. Registros sin clave y registros con clave nula
+#### 2.5.7. Registros sin clave y registros con clave nula
 
 Kafka admite registros sin clave:
 
@@ -3003,7 +3005,7 @@ La distribución sin clave depende del particionador y de la versión del client
 
 Una **clave nula** es distinta de un **valor nulo**. Los registros con valor nulo pueden utilizarse en tópicos compactados como *tombstones*, para representar la eliminación lógica del estado asociado con una clave, según el contrato de la aplicación.
 
-## 2.5.8. Marcas temporales: cuándo ocurrió y cuándo se registró un evento
+#### 2.5.8. Marcas temporales: cuándo ocurrió y cuándo se registró un evento
 
 Debemos distinguir **tiempo del evento (*event time*)**, momento en que ocurrió el hecho; **tiempo de incorporación (*ingestion time*)**, cuando ingresa a un sistema; y **tiempo de procesamiento (*processing time*)**, cuando una aplicación lo procesa.
 
@@ -3013,13 +3015,13 @@ Debemos distinguir **tiempo del evento (*event time*)**, momento en que ocurrió
 | Evento publicado y recibido | 11:35:02 |
 | Procesamiento analítico | 11:35:07 |
 
-![Figura 54. Referencias temporales](imagenes/figura_54.svg)
+<img src="imagenes/figura_54.svg" alt="Figura 54. Referencias temporales" width="760">
 
 *Figura 54. Diferencias entre tiempo del evento, incorporación y procesamiento.*
 
 La marca temporal del registro Kafka puede corresponder a `CreateTime` o `LogAppendTime`, según versión y configuración. No necesariamente coincide con el instante del hecho de negocio. Puede ser útil incluir `fecha_venta` en el valor. Esta distinción será esencial al estudiar ventanas de tiempo con Spark Structured Streaming.
 
-## 2.5.9. Formatos de fecha y zonas horarias
+#### 2.5.9. Formatos de fecha y zonas horarias
 
 ISO 8601 permite representar fechas inequívocas:
 
@@ -3030,7 +3032,7 @@ ISO 8601 permite representar fechas inequívocas:
 
 Ambas expresiones representan el mismo instante. En cambio, `29/10/2026 11:35` carece de información explícita de zona horaria. En sistemas distribuidos conviene documentar el huso horario o normalizar a UTC.
 
-## 2.5.10. Cabeceras de los registros Kafka
+#### 2.5.10. Cabeceras de los registros Kafka
 
 Las **cabeceras (*headers*)** contienen metadatos opcionales sin mezclarlos necesariamente con el valor principal.
 
@@ -3043,7 +3045,7 @@ Las **cabeceras (*headers*)** contienen metadatos opcionales sin mezclarlos nece
 
 Pueden identificar origen, versión o correlación entre servicios. Kafka no interpreta automáticamente estos metadatos como reglas de negocio: su significado requiere acuerdos entre aplicaciones.
 
-## 2.5.11. Contratos de datos y evolución de esquemas
+#### 2.5.11. Contratos de datos y evolución de esquemas
 
 Un **contrato de datos (*data contract*)** define la estructura y significado de los eventos. Por ejemplo, `id_venta` obligatorio, `id_cliente` como identificador, `monto_total` numérico en pesos chilenos, `moneda` como código, `fecha_venta` inequívoca y `estado` con valores definidos.
 
@@ -3061,7 +3063,7 @@ por:
 
 puede romper un consumidor que espera `monto`. **Modificar JSON no garantiza compatibilidad**. Las versiones de eventos, reglas de compatibilidad y soluciones como JSON Schema, Apache Avro y Protocol Buffers ayudan a formalizar contratos. Kafka no impone automáticamente un esquema a todos los valores.
 
-## 2.5.12. Comparación de formatos
+#### 2.5.12. Comparación de formatos
 
 | Formato | Ventajas | Limitaciones |
 |---|---|---|
@@ -3072,7 +3074,7 @@ puede romper un consumidor que espera `monto`. **Modificar JSON no garantiza com
 
 En el laboratorio utilizaremos principalmente JSON por su legibilidad e interoperabilidad con Python, APIs y herramientas analíticas.
 
-## 2.5.13. Construcción de un evento comercial estructurado
+#### 2.5.13. Construcción de un evento comercial estructurado
 
 ```json
 {
@@ -3118,7 +3120,7 @@ valor_bytes = json.dumps(evento, ensure_ascii=False).encode("utf-8")
 
 Estas secuencias de bytes pueden utilizarse como clave y valor. El ejemplo se concentra en transformación de datos y no requiere ejecutar Kafka.
 
-## 2.5.14. Errores frecuentes en la estructuración
+#### 2.5.14. Errores frecuentes en la estructuración
 
 | Problema | Ejemplo | Consecuencia |
 |---|---|---|
@@ -3132,7 +3134,7 @@ Estas secuencias de bytes pueden utilizarse como clave y valor. El ejemplo se co
 
 La calidad de una arquitectura de eventos depende de datos consistentes y documentados, no solamente de que Kafka pueda transportar registros.
 
-## 2.5.15. Síntesis del apartado
+#### 2.5.15. Síntesis del apartado
 
 Diferenciamos evento, mensaje y registro; comparamos texto y JSON; estudiamos serialización, claves, marcas temporales, cabeceras, contratos y evolución de esquemas. Finalmente definimos un evento comercial estructurado como referencia para las siguientes integraciones.
 
@@ -3140,9 +3142,9 @@ En el apartado **2.6. Integración con fuentes externas: archivos, bases de dato
 
 ---
 
-# 2.6. Integración con fuentes externas: archivos, bases de datos y APIs REST
+### 2.6. Integración con fuentes externas: archivos, bases de datos y APIs REST
 
-## 2.6.1. Kafka como componente de integración de datos
+#### 2.6.1. Kafka como componente de integración de datos
 
 En los apartados anteriores estudiamos cómo Kafka organiza, recibe, almacena y distribuye eventos. Comprendimos el funcionamiento de productores, consumidores, tópicos, particiones y grupos de consumidores, así como la estructuración mediante JSON, claves y marcas temporales.
 
@@ -3150,7 +3152,7 @@ En los sistemas empresariales, la información normalmente se origina en aplicac
 
 **Kafka puede actuar como plataforma de distribución de eventos entre sistemas heterogéneos**, siempre que existan componentes capaces de extraer, transformar y publicar la información. Kafka no consulta automáticamente cualquier base de datos, archivo o API por el solo hecho de estar disponible.
 
-## 2.6.2. Arquitectura general de integración
+#### 2.6.2. Arquitectura general de integración
 
 La integración puede organizarse en tres etapas:
 
@@ -3158,13 +3160,13 @@ La integración puede organizarse en tres etapas:
 2. **Transformación:** validar, estructurar y serializar los datos.
 3. **Publicación:** enviar los registros a un tópico Kafka.
 
-![Figura 55. Arquitectura general de integración de fuentes externas con Kafka](imagenes/figura_55.svg)
+<img src="imagenes/figura_55.svg" alt="Figura 55. Arquitectura general de integración de fuentes externas con Kafka" width="760">
 
 *Figura 55. Arquitectura general de integración de fuentes externas con Kafka.*
 
 El componente puede ser un programa Python, un servicio Java, un conector o una herramienta como Apache NiFi. La elección depende de la fuente, la frecuencia, el volumen y los requisitos de confiabilidad.
 
-## 2.6.3. Integración mediante archivos
+#### 2.6.3. Integración mediante archivos
 
 Los archivos CSV, JSON y de texto son fuentes habituales en ingeniería de datos. Por ejemplo, una empresa genera un archivo diario de ventas:
 
@@ -3177,7 +3179,7 @@ V-1050,C-207,2026-10-29T11:37:00-03:00,18990,rechazada
 
 Una aplicación puede leerlo y publicar cada fila como evento independiente. **Publicar datos en Kafka no convierte automáticamente el origen en una fuente de tiempo real**: si el archivo es diario, la información puede tener horas de antigüedad.
 
-## 2.6.4. Lectura y transformación de archivos CSV mediante Python
+#### 2.6.4. Lectura y transformación de archivos CSV mediante Python
 
 ```python
 import csv
@@ -3205,7 +3207,7 @@ with open(
 
 Este programa **no publica todavía en Kafka**: ilustra obtención y transformación. `csv.DictReader` permite acceder por nombres de columnas y `int()` convierte el monto desde texto. Una integración robusta debe gestionar filas incompletas, evitar reprocesamientos y recuperar ejecuciones interrumpidas.
 
-## 2.6.5. Integración con bases de datos relacionales
+#### 2.6.5. Integración con bases de datos relacionales
 
 Una base de datos comercial puede contener:
 
@@ -3231,7 +3233,7 @@ ORDER BY fecha_actualizacion, id_venta;
 
 Una marca temporal de actualización no garantiza por sí sola capturar todos los cambios: varias filas pueden compartir fecha y pueden existir situaciones de concurrencia. Deben considerarse identificadores, puntos de control y transacciones.
 
-## 2.6.6. Consulta periódica frente a captura de cambios
+#### 2.6.6. Consulta periódica frente a captura de cambios
 
 Dos enfoques son **polling**, que consulta periódicamente tablas, y **Change Data Capture (CDC)**, que captura modificaciones del origen, frecuentemente a través de registros transaccionales.
 
@@ -3243,32 +3245,32 @@ Dos enfoques son **polling**, que consulta periódicamente tablas, y **Change Da
 | Complejidad | Relativamente sencilla | Configuración especializada |
 | Cambios detectados | Según diseño de consulta | Puede capturar inserciones, actualizaciones y eliminaciones |
 
-![Figura 56. Consulta periódica y CDC](imagenes/figura_56.svg)
+<img src="imagenes/figura_56.svg" alt="Figura 56. Consulta periódica y CDC" width="760">
 
 *Figura 56. Diferencia conceptual entre consulta periódica y CDC.*
 
 Una venta puede pasar de pendiente a confirmada y anulada. Una consulta al estado actual puede no preservar todas las transiciones, mientras un CDC configurado correctamente puede generar eventos para los cambios. CDC requiere permisos, compatibilidad e infraestructura; no es superior en todos los escenarios.
 
-## 2.6.7. Kafka Connect y los conectores de integración
+#### 2.6.7. Kafka Connect y los conectores de integración
 
 **Kafka Connect** proporciona una arquitectura de transferencia de datos entre Kafka y otros sistemas mediante conectores.
 
 - **Source connectors:** extraen información externa y la publican en Kafka.
 - **Sink connectors:** consumen registros Kafka y los entregan a sistemas externos.
 
-![Figura 57. Arquitectura conceptual de Kafka Connect](imagenes/figura_57.svg)
+<img src="imagenes/figura_57.svg" alt="Figura 57. Arquitectura conceptual de Kafka Connect" width="760">
 
 *Figura 57. Arquitectura conceptual de Kafka Connect.*
 
 La disponibilidad de Kafka no implica que todos los conectores estén instalados o configurados. Deben comprobarse las herramientas y versiones del laboratorio.
 
-## 2.6.8. Apache NiFi como alternativa de integración
+#### 2.6.8. Apache NiFi como alternativa de integración
 
 Nuestro entorno docente también contempla Apache NiFi, plataforma para diseñar y ejecutar flujos de datos. Un flujo podría obtener datos de una API REST, validar la respuesta, transformar a JSON y publicar en Kafka.
 
 NiFi permite visualizar las etapas; Kafka recibe, conserva y distribuye los eventos. **Son tecnologías complementarias, no equivalentes.** Que ambos servicios aparezcan en Docker Compose no significa que exista una integración funcional: deben configurarse procesadores, conexiones y parámetros compatibles.
 
-## 2.6.9. Integración mediante APIs REST
+#### 2.6.9. Integración mediante APIs REST
 
 Las APIs REST permiten obtener información mediante HTTP. Una operación ilustrativa:
 
@@ -3289,7 +3291,7 @@ Puede devolver:
 
 Un programa consulta la API, interpreta el JSON y publica cada venta en Kafka. Esto permite integrar sistemas sin acceso directo a sus bases de datos. Como REST responde habitualmente a solicitudes, la obtención periódica requiere un proceso de consulta programada.
 
-## 2.6.10. Consulta de una API REST mediante Python
+#### 2.6.10. Consulta de una API REST mediante Python
 
 ```python
 import requests
@@ -3311,11 +3313,11 @@ for venta in datos["ventas"]:
 
 La dirección es **ilustrativa y no corresponde a un servicio real verificado**. Se establece la URL, se ejecuta la solicitud HTTP, se comprueba el estado mediante `raise_for_status()` y se interpreta la respuesta JSON. Este código todavía no incorpora Kafka: el apartado 2.7 combinará obtención y publicación.
 
-## 2.6.11. Integración mediante consultas periódicas
+#### 2.6.11. Integración mediante consultas periódicas
 
 Una aplicación podría consultar una API cada 30 segundos, pero eso no garantiza que la información tenga exactamente 30 segundos de antigüedad. También depende de la actualización del origen. Deben respetarse límites de solicitudes por minuto, hora o día, y gestionarse las respuestas y fallos.
 
-## 2.6.12. Paginación, límites y recuperación de errores
+#### 2.6.12. Paginación, límites y recuperación de errores
 
 Muchas APIs distribuyen resultados entre páginas:
 
@@ -3337,7 +3339,7 @@ GET /api/ventas?page=3&limit=100
 
 No todos los errores deben reintentarse igual: credenciales incorrectas requieren corrección, mientras una interrupción transitoria puede justificar un reintento controlado.
 
-## 2.6.13. Duplicación y estado de extracción
+#### 2.6.13. Duplicación y estado de extracción
 
 Si una API devuelve las últimas cien ventas, consultarla cada minuto y publicar todos los resultados podría generar duplicados. Estrategias de control incluyen:
 
@@ -3349,7 +3351,7 @@ Si una API devuelve las últimas cien ventas, consultarla cada minuto y publicar
 
 **Una clave Kafka no elimina automáticamente duplicados**: dos publicaciones con la misma clave pueden generar registros distintos. La deduplicación requiere diseño explícito.
 
-## 2.6.14. Integración batch, near real-time y streaming
+#### 2.6.14. Integración batch, near real-time y streaming
 
 | Modalidad | Característica | Ejemplo |
 |---|---|---|
@@ -3357,13 +3359,13 @@ Si una API devuelve las últimas cien ventas, consultarla cada minuto y publicar
 | Near Real-Time | Actualizaciones frecuentes con retraso acotado según diseño | Consulta API cada 30 segundos |
 | Streaming | Procesamiento continuo de eventos disponibles | Publicación desde sistema transaccional |
 
-![Figura 58. Modalidades de integración](imagenes/figura_58.svg)
+<img src="imagenes/figura_58.svg" alt="Figura 58. Modalidades de integración" width="760">
 
 *Figura 58. Diferencias conceptuales entre batch, near real-time y streaming.*
 
 Una fuente diaria publicada en Kafka sigue teniendo actualización diaria; una API consultada cada minuto utiliza extracción periódica aunque alimente un flujo de eventos. El apartado 2.8 profundizará estas modalidades.
 
-## 2.6.15. Criterios para seleccionar un mecanismo
+#### 2.6.15. Criterios para seleccionar un mecanismo
 
 | Criterio | Pregunta de diseño |
 |---|---|
@@ -3379,7 +3381,7 @@ Una fuente diaria publicada en Kafka sigue teniendo actualización diaria; una A
 
 Un CSV diario puede requerir solo un proceso programado; cambios inmediatos de base de datos podrían justificar CDC; una API REST es adecuada cuando el servicio externo expone HTTP pero no acceso directo a su base.
 
-## 2.6.16. Aplicación al laboratorio de Big Data
+#### 2.6.16. Aplicación al laboratorio de Big Data
 
 La infraestructura Docker del curso contempla Kafka, ZooKeeper y otras tecnologías, pero debemos distinguir servicios disponibles de conexiones realmente implementadas.
 
@@ -3387,7 +3389,7 @@ La secuencia didáctica será: obtener y transformar datos externos; implementar
 
 Kafka no reemplaza la API ni transforma automáticamente los datos: su función en esta arquitectura es recibir, conservar y distribuir eventos.
 
-## 2.6.17. Síntesis del apartado
+#### 2.6.17. Síntesis del apartado
 
 Estudiamos integración mediante archivos CSV/JSON, bases relacionales, extracción incremental, CDC, Kafka Connect, NiFi y APIs REST. Revisamos HTTP, paginación, límites de solicitudes, errores, duplicados y puntos de control. Distinguimos batch, near real-time y streaming, subrayando que la frecuencia de actualización depende de toda la arquitectura.
 
@@ -3395,15 +3397,15 @@ En el apartado **2.7. Construcción de un productor que consulta una API y publi
 
 ---
 
-# 2.7. Construcción de un productor que consulta una API y publica eventos en Kafka
+### 2.7. Construcción de un productor que consulta una API y publica eventos en Kafka
 
-## 2.7.1. Del estudio de las integraciones a la construcción de una aplicación
+#### 2.7.1. Del estudio de las integraciones a la construcción de una aplicación
 
 En el apartado 2.6 examinamos archivos, bases de datos, CDC, Kafka Connect, NiFi y APIs REST. Ahora desarrollaremos una aplicación que reúna esos conceptos en un procedimiento operativo: **un productor Python capaz de consultar una API REST, recuperar JSON, transformarlo en eventos y publicarlo en un tópico Kafka**.
 
 La solución relaciona una fuente HTTP, una aplicación que obtiene y transforma los datos, y un broker Kafka que recibe los eventos. Además de ejecutar el programa, estudiaremos las decisiones de diseño y las limitaciones que diferencian una demostración de un sistema de producción.
 
-## 2.7.2. Escenario de trabajo y objetivos
+#### 2.7.2. Escenario de trabajo y objetivos
 
 Continuaremos con el caso transversal de transacciones comerciales. Supongamos que una API devuelve:
 
@@ -3434,17 +3436,17 @@ La aplicación debe recuperar estas ventas y publicar cada una como registro ind
 
 Para no depender inicialmente de servicios externos, construiremos una API local de demostración, que posteriormente podrá sustituirse por una API real.
 
-## 2.7.3. Arquitectura de la solución
+#### 2.7.3. Arquitectura de la solución
 
 La arquitectura contempla cuatro componentes: **API REST** (fuente JSON), **productor Python** (consulta, valida y publica), **broker Kafka** (almacena eventos en `ventas`) y **consumidor de verificación** (observa registros).
 
-![Figura 59. Arquitectura del productor Python integrado con API REST](imagenes/figura_59.svg)
+<img src="imagenes/figura_59.svg" alt="Figura 59. Arquitectura del productor Python integrado con API REST" width="760">
 
 *Figura 59. Arquitectura del productor Python integrado con una API REST.*
 
 La API no se comunica directamente con Kafka. Python establece ambas conexiones; los errores HTTP, la transformación y las confirmaciones Kafka requieren tratamiento diferenciado.
 
-## 2.7.4. Condiciones previas del laboratorio
+#### 2.7.4. Condiciones previas del laboratorio
 
 Comprobaremos el estado del entorno Docker:
 
@@ -3472,7 +3474,7 @@ python -m pip install requests kafka-python
 
 La compatibilidad debe comprobarse contra las versiones instaladas.
 
-## 2.7.5. Organización del proyecto
+#### 2.7.5. Organización del proyecto
 
 ```text
 productor-api-kafka/
@@ -3491,7 +3493,7 @@ productor-api-kafka/
 
 Separar la fuente de la aplicación permite sustituir la API local sin rediseñar necesariamente la publicación.
 
-## 2.7.6. Construcción de una API REST de demostración
+#### 2.7.6. Construcción de una API REST de demostración
 
 El archivo `requirements.txt` contendrá:
 
@@ -3563,7 +3565,7 @@ curl http://127.0.0.1:5000/api/ventas
 
 El servicio devuelve las tres ventas en JSON. Es una demostración con datos estáticos, sin autenticación ni persistencia. Si el productor se ejecuta en otro contenedor, `127.0.0.1` no apuntará automáticamente a la API; deberá adaptarse la conectividad.
 
-## 2.7.7. Diseño del evento publicado en Kafka
+#### 2.7.7. Diseño del evento publicado en Kafka
 
 Mantendremos el diseño del apartado 2.5, separando metadatos y datos de negocio:
 
@@ -3587,7 +3589,7 @@ El identificador del evento se deriva de venta y estado para que sea estable en 
 
 La clave Kafka será `id_cliente`, por ejemplo `C-025`. Esto asocia ventas del mismo cliente, pero puede desequilibrar la distribución si ciertos clientes concentran muchas transacciones.
 
-## 2.7.8. Transformación y validación de registros
+#### 2.7.8. Transformación y validación de registros
 
 Antes de publicar debemos comprobar los campos requeridos y su consistencia:
 
@@ -3628,7 +3630,7 @@ def transformar_venta(venta):
 
 La validación es básica: una aplicación productiva también comprobaría fechas, tipos, estados permitidos y reglas comerciales. **No debemos publicar automáticamente cualquier dato recibido sin verificar su estructura y consistencia.**
 
-## 2.7.9. Implementación del productor Kafka en Python
+#### 2.7.9. Implementación del productor Kafka en Python
 
 Archivo `productor.py`:
 
@@ -3780,7 +3782,7 @@ if __name__ == "__main__":
 
 Esta implementación utiliza `kafka-python`, cuya compatibilidad debe comprobarse con la versión del laboratorio. Es una aplicación docente, no una integración empresarial terminada.
 
-## 2.7.10. Análisis de los componentes del productor
+#### 2.7.10. Análisis de los componentes del productor
 
 **Variables de entorno:** permiten adaptar las direcciones sin editar el código:
 
@@ -3793,7 +3795,7 @@ export API_URL=http://127.0.0.1:5000/api/ventas
 
 `acks="all"` solicita confirmación según las réplicas sincronizadas y configuración del tópico. En el broker único docente no proporciona redundancia física. `retries=3` habilita ciertos reintentos, pero no garantiza ausencia de duplicados ni recuperación ante cualquier fallo.
 
-## 2.7.11. Secuencia completa de ejecución
+#### 2.7.11. Secuencia completa de ejecución
 
 1. Verificar Kafka: `docker ps`.
 2. Comprobar que el tópico `ventas` existe; preferir creación explícita como en 2.2.
@@ -3802,7 +3804,7 @@ export API_URL=http://127.0.0.1:5000/api/ventas
 5. Ejecutar productor desde otro terminal: `python productor.py`.
 6. Consumir registros para verificar recepción.
 
-![Figura 60. Secuencia operativa del productor](imagenes/figura_60.svg)
+<img src="imagenes/figura_60.svg" alt="Figura 60. Secuencia operativa del productor" width="760">
 
 *Figura 60. Secuencia operativa de ejecución y verificación.*
 
@@ -3817,7 +3819,7 @@ Total de eventos publicados: 3
 
 Las particiones y offsets reales dependen del tópico, su historial y el particionador. Verificar por etapas permite separar errores de API, Kafka y transformación.
 
-## 2.7.12. Verificación de eventos publicados
+#### 2.7.12. Verificación de eventos publicados
 
 Archivo `verificar_eventos.py`:
 
@@ -3863,23 +3865,23 @@ finally:
 
 El consumidor muestra registros disponibles y permanece esperando eventos nuevos. `auto_offset_reset="earliest"` no fuerza reiniciar desde cero si el grupo ya tiene offsets confirmados válidos; para repetir la prueba puede requerirse un grupo nuevo o administrar offsets.
 
-## 2.7.13. Diferencia entre envío, confirmación y procesamiento
+#### 2.7.13. Diferencia entre envío, confirmación y procesamiento
 
 Debemos distinguir: el productor **invoca el envío**; Kafka **confirma la publicación** según configuración; un consumidor **procesa posteriormente** el registro.
 
-![Figura 61. Envío, confirmación y procesamiento](imagenes/figura_61.svg)
+<img src="imagenes/figura_61.svg" alt="Figura 61. Envío, confirmación y procesamiento" width="760">
 
 *Figura 61. Diferencia entre envío del productor, confirmación del broker y procesamiento del consumidor.*
 
 Que `resultado.get()` devuelva metadatos no demuestra que una aplicación analítica haya terminado su trabajo. Para comprobar procesamiento se debe observar el consumidor o sistema de destino.
 
-## 2.7.14. Limitaciones de la implementación inicial
+#### 2.7.14. Limitaciones de la implementación inicial
 
 La aplicación consulta una sola vez; no incorpora ejecución periódica. Publica todas las ventas obtenidas y, si se ejecuta dos veces, puede repetir registros. La gestión de errores es simplificada y no conserva puntos de control entre ejecuciones. La API es estática, no una fuente que produzca transacciones continuamente.
 
 Estas limitaciones permiten reconocer la diferencia entre demostración y operación permanente.
 
-## 2.7.15. Hacia un productor periódico con control de duplicados
+#### 2.7.15. Hacia un productor periódico con control de duplicados
 
 Una evolución sería consultar cada 30 segundos, pero **agregar una espera no resuelve la duplicación**. Debemos identificar registros ya publicados y mantener estado de extracción.
 
@@ -3887,7 +3889,7 @@ Un conjunto de identificadores en memoria se pierde al reiniciar. Persistirlos e
 
 Por ello, la deduplicación y recuperación robustas pueden requerir identificadores estables, operaciones idempotentes y coordinación entre confirmación de Kafka y estado de extracción.
 
-## 2.7.16. Actividad práctica propuesta
+#### 2.7.16. Actividad práctica propuesta
 
 El estudiante ejecutará la API, verificará su respuesta HTTP, publicará ventas en Kafka y utilizará un consumidor para comprobar los eventos. Luego incorporará una venta, ejecutará nuevamente el productor y analizará los duplicados.
 
@@ -3902,7 +3904,7 @@ El estudiante ejecutará la API, verificará su respuesta HTTP, publicará venta
 
 La finalidad no es solo ejecutar comandos: se espera explicar el recorrido de la información y reconocer las limitaciones del sistema.
 
-## 2.7.17. Síntesis del apartado
+#### 2.7.17. Síntesis del apartado
 
 Construimos una integración docente entre API REST y Kafka mediante Python: organización de archivos, API local Flask, estructura de eventos, validación, serialización, productor y consumidor de verificación. Diferenciamos envío, confirmación y procesamiento, y analizamos los límites de una solución sin periodicidad ni estado persistente.
 
@@ -3910,9 +3912,9 @@ El apartado **2.8. Implementación de flujos en tiempo real y Near Real-Time** p
 
 ---
 
-# 2.8. Implementación de flujos en tiempo real y Near Real-Time
+### 2.8. Implementación de flujos en tiempo real y Near Real-Time
 
-## 2.8.1. De la integración puntual al procesamiento continuo
+#### 2.8.1. De la integración puntual al procesamiento continuo
 
 En el apartado 2.7 desarrollamos una aplicación Python capaz de consultar una API REST, transformar los registros obtenidos y publicarlos en un tópico Kafka. Comprendimos el recorrido de los datos desde una fuente externa hasta el sistema de mensajería distribuida. Sin embargo, nuestro productor consultaba una sola vez y terminaba.
 
@@ -3920,7 +3922,7 @@ En organizaciones que registran ventas durante toda la jornada, actualizan asist
 
 Este apartado diferencia batch, Near Real-Time y streaming, y examina los desafíos de la ejecución prolongada de productores Kafka.
 
-## 2.8.2. ¿Qué significa realmente procesar datos en tiempo real?
+#### 2.8.2. ¿Qué significa realmente procesar datos en tiempo real?
 
 En lenguaje cotidiano, *tiempo real* suele significar rapidez. Técnicamente, un sistema de tiempo real es aquel cuya corrección depende tanto del resultado como del cumplimiento de restricciones temporales. En control industrial, una respuesta tardía puede ser inútil aunque sea correcta.
 
@@ -3934,7 +3936,7 @@ En analítica de datos se emplea a menudo «tiempo real» para flujos con baja l
 
 No existen límites temporales universales entre estas categorías. Treinta segundos pueden ser adecuados para un tablero comercial e inaceptables para un sistema de seguridad.
 
-## 2.8.3. Generación, disponibilidad y procesamiento de eventos
+#### 2.8.3. Generación, disponibilidad y procesamiento de eventos
 
 Supongamos que una venta ocurre a las 11:35:00, está disponible en la API a las 11:35:03, se publica en Kafka a las 11:35:31 y se procesa a las 11:35:33. Distinguimos:
 
@@ -3943,7 +3945,7 @@ Supongamos que una venta ocurre a las 11:35:00, está disponible en la API a las
 - **Tiempo de publicación:** incorporación a Kafka.
 - **Tiempo de procesamiento:** ejecución de la operación del consumidor.
 
-![Figura 62. Línea temporal del evento](imagenes/figura_62.svg)
+<img src="imagenes/figura_62.svg" alt="Figura 62. Línea temporal del evento" width="760">
 
 *Figura 62. Línea temporal ilustrativa de un evento, no medida en el laboratorio.*
 
@@ -3956,7 +3958,7 @@ L_total = 33 segundos
 
 Entre la publicación Kafka y el procesamiento transcurren solamente dos segundos. La mayor parte del retraso está en la fuente o frecuencia de consulta. **Un broker rápido no implica una arquitectura de baja latencia extremo a extremo.**
 
-## 2.8.4. Latencia, throughput y frecuencia de actualización
+#### 2.8.4. Latencia, throughput y frecuencia de actualización
 
 **Latencia** es el tiempo transcurrido entre dos momentos definidos; debemos especificarlos. **Throughput** es la cantidad de registros o volumen procesado por unidad de tiempo. **Frecuencia de actualización** es la periodicidad con que una fuente obtiene o entrega datos.
 
@@ -3964,17 +3966,17 @@ No son equivalentes: un productor puede publicar 10.000 eventos por segundo y tr
 
 La arquitectura debe evaluar conjuntamente capacidad de procesamiento y oportunidad temporal de la información.
 
-## 2.8.5. Arquitectura Near Real-Time mediante consultas periódicas
+#### 2.8.5. Arquitectura Near Real-Time mediante consultas periódicas
 
 Una forma sencilla de evolucionar el productor consiste en consultar la API cada treinta segundos. El ciclo será: consultar, identificar registros nuevos o modificados, validar, publicar, registrar el estado y esperar la siguiente ejecución.
 
-![Figura 63. Ciclo de consulta periódica](imagenes/figura_63.svg)
+<img src="imagenes/figura_63.svg" alt="Figura 63. Ciclo de consulta periódica" width="760">
 
 *Figura 63. Ciclo conceptual de consulta periódica y publicación.*
 
 La estrategia puede ser adecuada cuando no se requieren latencias de milisegundos. Pero las consultas pueden durar más de lo previsto, fallar o devolver datos repetidos. La ejecución periódica necesita control de errores y estado.
 
-## 2.8.6. Construcción de un productor periódico
+#### 2.8.6. Construcción de un productor periódico
 
 Podemos extender el productor de 2.7 mediante un ciclo:
 
@@ -3999,7 +4001,7 @@ Este fragmento muestra la estructura, **no una solución completa**. Con la func
 
 Además, `time.sleep(30)` espera treinta segundos *después* de terminar la ejecución: si consulta y publicación tardan diez segundos, los inicios de ejecución estarán separados aproximadamente cuarenta segundos.
 
-## 2.8.7. Intervalos fijos y duración variable de consultas
+#### 2.8.7. Intervalos fijos y duración variable de consultas
 
 Con una espera posterior de treinta segundos:
 
@@ -4011,7 +4013,7 @@ Con una espera posterior de treinta segundos:
 
 Este mecanismo es sencillo y evita superposición dentro de un mismo ciclo. Una planificación con horarios fijos requiere otra estrategia. Si nuevas ejecuciones comienzan mientras las anteriores siguen activas, podrían producirse consultas simultáneas, duplicados y sobrecarga de la API, salvo que el sistema gestione explícitamente esa concurrencia.
 
-## 2.8.8. Control de duplicados mediante identificadores
+#### 2.8.8. Control de duplicados mediante identificadores
 
 Nuestra API contiene `id_venta`. Una primera aproximación es conservar los identificadores ya procesados:
 
@@ -4039,7 +4041,7 @@ Esto evita repeticiones mientras el proceso sigue activo, pero el conjunto se pi
 
 Debemos distinguir **detectar registros nuevos** de **detectar nuevas versiones de registros existentes**.
 
-## 2.8.9. Persistencia del estado de extracción
+#### 2.8.9. Persistencia del estado de extracción
 
 Un productor recuperable conserva información sobre el trabajo realizado, mediante un *checkpoint* o punto de control. Puede guardar fecha de modificación, último identificador, cursor de API o combinación de atributos.
 
@@ -4058,7 +4060,7 @@ Ejemplo docente:
 
 La última ejecución no equivale necesariamente al último evento. Conservar solo identificadores impide detectar modificaciones posteriores; podría ser necesario registrar versiones o fechas de cambio. Si la API proporciona un cursor incremental, conviene evaluar su uso. La elección depende del contrato de la fuente.
 
-## 2.8.10. Publicación y confirmación del checkpoint
+#### 2.8.10. Publicación y confirmación del checkpoint
 
 Consideremos dos secuencias.
 
@@ -4066,13 +4068,13 @@ Consideremos dos secuencias.
 
 **Guardar primero:** se registra la venta como procesada, pero falla la publicación. Al reiniciar, la venta se omite: **riesgo de pérdida**.
 
-![Figura 64. Riesgos del orden de operaciones](imagenes/figura_64.svg)
+<img src="imagenes/figura_64.svg" alt="Figura 64. Riesgos del orden de operaciones" width="760">
 
 *Figura 64. Riesgos de duplicación o pérdida según el orden entre publicación y checkpoint.*
 
 Guardar un archivo de estado no resuelve por sí solo la coordinación entre publicación y extracción. Este es un problema central en ingeniería de datos distribuida.
 
-## 2.8.11. Semánticas de entrega
+#### 2.8.11. Semánticas de entrega
 
 | Semántica | Característica | Riesgo principal |
 |---|---|---|
@@ -4084,7 +4086,7 @@ Kafka dispone, en versiones compatibles, de productores idempotentes y transacci
 
 Para el laboratorio podemos favorecer at-least-once, identificadores estables y consumidores preparados para detectar duplicados.
 
-## 2.8.12. Idempotencia en el procesamiento
+#### 2.8.12. Idempotencia en el procesamiento
 
 Una operación idempotente produce el mismo efecto observable al repetirse. Establecer `estado = "confirmada"` puede ser idempotente; sumar el monto de la venta a un acumulado no lo es necesariamente.
 
@@ -4094,7 +4096,7 @@ Total acumulado = Total acumulado + 45990
 
 Si se ejecuta dos veces, incrementa el total en $91.980. El consumidor debe diseñarse para evitar que un evento repetido altere dos veces los resultados, por ejemplo mediante identificadores de eventos aplicados y controles consistentes con el destino.
 
-## 2.8.13. Manejo de fallos y reintentos
+#### 2.8.13. Manejo de fallos y reintentos
 
 Una integración continua debe asumir errores de conectividad, respuestas HTTP, límites de solicitudes, reinicios del broker, JSON malformado, excepciones de transformación y fallos de checkpoint.
 
@@ -4109,17 +4111,17 @@ No todos los errores se tratan igual. HTTP 429 puede exigir respetar `Retry-Afte
 
 En producción se consideran máximos, *jitter* y políticas del proveedor. Los valores anteriores son ilustrativos.
 
-## 2.8.14. Backpressure y capacidad de procesamiento
+#### 2.8.14. Backpressure y capacidad de procesamiento
 
 **Backpressure** describe mecanismos para manejar una producción superior a la capacidad de una etapa posterior. Si un productor publica 5.000 eventos/s y un consumidor procesa 3.000, la diferencia es 2.000 eventos/s. En un minuto se acumularían aproximadamente 120.000 eventos, bajo tasas constantes.
 
-![Figura 65. Acumulación de eventos](imagenes/figura_65.svg)
+<img src="imagenes/figura_65.svg" alt="Figura 65. Acumulación de eventos" width="760">
 
 *Figura 65. Ejemplo ilustrativo de producción superior al consumo.*
 
 Kafka desacopla productores y consumidores, permitiendo procesar posteriormente eventos disponibles conforme a retención. Pero la acumulación implica necesidades de almacenamiento, dimensionamiento y recuperación; no puede crecer indefinidamente sin consecuencias.
 
-## 2.8.15. Consumer lag como indicador operacional
+#### 2.8.15. Consumer lag como indicador operacional
 
 El *consumer lag* expresa el retraso de un grupo respecto de los registros disponibles. Aproximadamente, puede calcularse como diferencia entre offset final siguiente y offset confirmado siguiente:
 
@@ -4132,7 +4134,7 @@ El *consumer lag* expresa el retraso de un grupo respecto de los registros dispo
 
 **Un lag de 250 registros no equivale directamente a 250 segundos.** Para estimar retrasos temporales necesitamos tasas, tiempos y marcas temporales. Un consumidor puede haber leído registros sin confirmar todavía sus offsets; el indicador debe interpretarse junto con otras métricas.
 
-## 2.8.16. Monitoreo de una integración Near Real-Time
+#### 2.8.16. Monitoreo de una integración Near Real-Time
 
 No basta con que el proceso permanezca activo. Debemos observar si obtiene datos nuevos, publica y mantiene una latencia aceptable.
 
@@ -4150,17 +4152,17 @@ No basta con que el proceso permanezca activo. Debemos observar si obtiene datos
 
 Un productor puede consultar cada treinta segundos y recibir siempre los mismos registros. Está activo, pero no incorpora eventos nuevos. A la inversa, la fuente podría legítimamente no tener nuevas ventas. La observabilidad debe considerar el comportamiento esperado.
 
-## 2.8.17. Arquitectura Near Real-Time más robusta
+#### 2.8.17. Arquitectura Near Real-Time más robusta
 
 La solución mejorada consulta una API, valida la respuesta, compara con estado persistido, publica registros nuevos o modificados y registra el progreso. También mantiene métricas, errores y resultados.
 
-![Figura 66. Arquitectura Near Real-Time con recuperación y monitoreo](imagenes/figura_66.svg)
+<img src="imagenes/figura_66.svg" alt="Figura 66. Arquitectura Near Real-Time con recuperación y monitoreo" width="760">
 
 *Figura 66. Arquitectura conceptual de referencia; los componentes de recuperación y monitoreo requieren implementación específica.*
 
 Esta arquitectura mejora la operación, pero actualizar el checkpoint después de publicar no garantiza por sí solo exactamente una vez. La confiabilidad requiere decisiones coordinadas entre fuente, productor, Kafka y consumidor.
 
-## 2.8.18. Actividad práctica: evolución del productor 2.7
+#### 2.8.18. Actividad práctica: evolución del productor 2.7
 
 El estudiante evolucionará el productor por etapas: intervalo configurable, control básico de ventas publicadas, registro de ejecuciones y simulación de interrupciones.
 
@@ -4174,7 +4176,7 @@ El estudiante evolucionará el productor por etapas: intervalo configurable, con
 
 No se pretende implementar exactamente una vez a escala empresarial, sino comprender los mecanismos adicionales necesarios para operar continuamente.
 
-## 2.8.19. Síntesis del apartado
+#### 2.8.19. Síntesis del apartado
 
 Estudiamos la evolución desde una integración puntual hacia un flujo Near Real-Time. Distinguimos batch, Near Real-Time y streaming; analizamos tiempos de generación, disponibilidad, publicación y procesamiento, junto con latencia, throughput y frecuencia. Examinamos ejecución periódica, duplicados, checkpoints, semánticas de entrega, idempotencia, reintentos, backpressure y consumer lag. Finalmente propusimos recuperación y monitoreo como elementos esenciales.
 
@@ -4182,9 +4184,9 @@ En **2.9. Integración de Kafka con Apache Spark Structured Streaming** estudiar
 
 ---
 
-# 2.9. Integración de Kafka con Apache Spark Structured Streaming
+### 2.9. Integración de Kafka con Apache Spark Structured Streaming
 
-## 2.9.1. De la distribución de eventos al procesamiento distribuido
+#### 2.9.1. De la distribución de eventos al procesamiento distribuido
 
 En los apartados anteriores construimos progresivamente una arquitectura de integración de datos basada en Apache Kafka.
 
@@ -4206,7 +4208,7 @@ La integración de ambas tecnologías establece una separación de responsabilid
 
 Esta distinción es fundamental. Kafka no reemplaza al motor analítico y Spark no reemplaza necesariamente a la plataforma de distribución de eventos.
 
-## 2.9.2. ¿Qué es Apache Spark Structured Streaming?
+#### 2.9.2. ¿Qué es Apache Spark Structured Streaming?
 
 Structured Streaming es un componente de Apache Spark que permite expresar operaciones sobre flujos de datos utilizando abstracciones estructuradas, especialmente DataFrames.
 
@@ -4222,7 +4224,7 @@ Esto significa que el motor organiza los registros disponibles en pequeños lote
 
 No debemos confundir este mecanismo con el procesamiento estrictamente individual e inmediato de cada evento.
 
-![Figura 67. Relación entre Kafka, Structured Streaming y los resultados analíticos](imagenes/figura_67.svg)
+<img src="imagenes/figura_67.svg" alt="Figura 67. Relación entre Kafka, Structured Streaming y los resultados analíticos" width="760">
 
 *Figura 67. Kafka recibe eventos desde el productor y Spark ejecuta las transformaciones analíticas.*
 
@@ -4230,7 +4232,7 @@ Structured Streaming no obliga a escribir manualmente un ciclo que consulte Kafk
 
 El motor administra la ejecución de la consulta, la obtención de registros y el progreso del procesamiento, de acuerdo con la configuración utilizada.
 
-## 2.9.3. Procesamiento por micro-batches
+#### 2.9.3. Procesamiento por micro-batches
 
 Para comprender el funcionamiento de Spark 2.4, consideremos que nuestro tópico `ventas` recibe eventos continuamente.
 
@@ -4247,7 +4249,7 @@ Los lotes no necesariamente contienen la misma cantidad de eventos.
 
 Su composición depende de la disponibilidad de datos, del intervalo de activación, del progreso de la consulta y de otros parámetros de ejecución.
 
-![Figura 68. Procesamiento continuo mediante micro-batches](imagenes/figura_68.svg)
+<img src="imagenes/figura_68.svg" alt="Figura 68. Procesamiento continuo mediante micro-batches" width="760">
 
 *Figura 68. Representación conceptual. Los tamaños de lote y su periodicidad dependen de la ejecución real.*
 
@@ -4255,7 +4257,7 @@ El modelo permite aprovechar las capacidades de procesamiento distribuido de Spa
 
 No obstante, introduce una consideración importante: la latencia depende también de la frecuencia de activación y del tiempo que Spark necesita para completar las operaciones.
 
-## 2.9.4. Compatibilidad entre Kafka y Spark en nuestro laboratorio
+#### 2.9.4. Compatibilidad entre Kafka y Spark en nuestro laboratorio
 
 Antes de escribir código, debemos examinar un aspecto técnico fundamental.
 
@@ -4298,7 +4300,7 @@ Si el entorno no dispone de acceso a repositorios de paquetes, podría ser neces
 
 Por tanto, este comando representa una configuración de referencia y no una ejecución verificada en los contenedores del laboratorio.
 
-## 2.9.5. Arquitectura de ejecución: driver, ejecutores y Kafka
+#### 2.9.5. Arquitectura de ejecución: driver, ejecutores y Kafka
 
 Cuando Spark ejecuta una consulta distribuida, debemos distinguir entre el proceso conductor (*driver*) y los ejecutores (*executors*).
 
@@ -4310,7 +4312,7 @@ Kafka, por su parte, almacena los eventos en particiones.
 
 La lectura de un tópico permite que Spark organice tareas de procesamiento sobre los registros disponibles.
 
-![Figura 69. Relación conceptual entre particiones Kafka y ejecución distribuida Spark](imagenes/figura_69.svg)
+<img src="imagenes/figura_69.svg" alt="Figura 69. Relación conceptual entre particiones Kafka y ejecución distribuida Spark" width="760">
 
 *Figura 69. Representación didáctica simplificada. La planificación real de tareas depende de Spark y de su configuración.*
 
@@ -4320,7 +4322,7 @@ La planificación de tareas depende del motor de ejecución.
 
 Asimismo, el número de particiones influye en las posibilidades de paralelismo, pero no determina por sí solo el rendimiento final.
 
-## 2.9.6. Lectura de un tópico Kafka mediante Structured Streaming
+#### 2.9.6. Lectura de un tópico Kafka mediante Structured Streaming
 
 Comenzaremos construyendo una consulta que lea eventos desde el tópico `ventas`.
 
@@ -4376,7 +4378,7 @@ Cuando Spark recupera el estado de una consulta, utiliza la información corresp
 
 La dirección `localhost:9092` es solamente un ejemplo. Debe sustituirse por un listener accesible desde el proceso Spark.
 
-## 2.9.7. Estructura de los registros recibidos desde Kafka
+#### 2.9.7. Estructura de los registros recibidos desde Kafka
 
 Cuando Structured Streaming lee un tópico Kafka, no recibe automáticamente las columnas comerciales que definimos en el productor.
 
@@ -4400,7 +4402,7 @@ Por tanto, necesitamos transformar ese contenido en texto y posteriormente inter
 
 Este paso es importante porque **Kafka no impone automáticamente a Spark el esquema de negocio de nuestros mensajes**.
 
-## 2.9.8. Conversión del contenido binario a texto
+#### 2.9.8. Conversión del contenido binario a texto
 
 Para inspeccionar el mensaje podemos seleccionar algunas columnas y convertir el valor binario a cadena.
 
@@ -4438,7 +4440,7 @@ Los valores de partición y offset son ilustrativos.
 
 En esta etapa todavía no hemos extraído las propiedades internas del JSON.
 
-## 2.9.9. Definición explícita del esquema JSON
+#### 2.9.9. Definición explícita del esquema JSON
 
 Structured Streaming puede trabajar con datos estructurados, pero debemos proporcionar un esquema que represente los eventos recibidos.
 
@@ -4520,7 +4522,7 @@ En sistemas que requieren decimales exactos, debe evaluarse el uso de tipos deci
 
 La elección del tipo depende del significado de los datos y del contrato de origen.
 
-## 2.9.10. Interpretación del JSON mediante from_json
+#### 2.9.10. Interpretación del JSON mediante from_json
 
 Una vez definido el esquema, podemos utilizar la función `from_json` para transformar el texto del mensaje en una estructura accesible mediante columnas.
 
@@ -4577,7 +4579,7 @@ ventas = eventos_estructurados.select(
 
 De esta manera, los eventos Kafka se transforman en registros tabulares.
 
-![Figura 70. Transformación de JSON a columnas estructuradas](imagenes/figura_70.svg)
+<img src="imagenes/figura_70.svg" alt="Figura 70. Transformación de JSON a columnas estructuradas" width="760">
 
 *Figura 70. Conversión del valor binario Kafka en texto JSON y columnas de DataFrame mediante un esquema explícito.*
 
@@ -4585,7 +4587,7 @@ Debemos recordar que un mensaje JSON inválido o incompatible con el esquema pue
 
 Por tanto, en una aplicación productiva es recomendable conservar información del registro original para diagnosticar problemas de transformación.
 
-## 2.9.11. Filtrado de eventos mediante DataFrames
+#### 2.9.11. Filtrado de eventos mediante DataFrames
 
 Una vez que disponemos de columnas estructuradas, podemos aplicar operaciones analíticas.
 
@@ -4613,7 +4615,7 @@ Sin embargo, en Structured Streaming se ejecutan dentro de una consulta continua
 
 No todas las operaciones disponibles sobre DataFrames batch pueden aplicarse de la misma manera sobre un DataFrame de streaming.
 
-## 2.9.12. Agregaciones sobre eventos de ventas
+#### 2.9.12. Agregaciones sobre eventos de ventas
 
 Supongamos que deseamos calcular el monto total de las ventas confirmadas por cliente.
 
@@ -4649,7 +4651,7 @@ Si la fuente publica duplicados y no incorporamos una estrategia de deduplicaci�
 
 Por ello, las garantías de entrega y la calidad de los datos afectan directamente a los indicadores analíticos.
 
-## 2.9.13. Modos de salida de Structured Streaming
+#### 2.9.13. Modos de salida de Structured Streaming
 
 Structured Streaming permite definir cómo se entregan los resultados de una consulta.
 
@@ -4669,7 +4671,7 @@ Además, cada destino o *sink* admite determinados modos.
 
 Para fines docentes, utilizaremos la consola con `complete` al mostrar una agregación acumulada.
 
-## 2.9.14. Visualización de resultados en la consola
+#### 2.9.14. Visualización de resultados en la consola
 
 Podemos iniciar una consulta que muestre el resultado de `ventas_por_cliente`:
 
@@ -4710,7 +4712,7 @@ Esta salida no corresponde a una ejecución verificada en el laboratorio.
 
 El destino de consola es apropiado para aprendizaje y depuración, pero no constituye una solución de almacenamiento analítico persistente.
 
-## 2.9.15. Checkpoints y recuperación de consultas Spark
+#### 2.9.15. Checkpoints y recuperación de consultas Spark
 
 En el apartado 2.8 estudiamos la importancia de conservar puntos de control.
 
@@ -4749,7 +4751,7 @@ También debemos considerar que no cualquier modificación a una consulta permit
 
 Cambiar esquemas, operaciones con estado o configuraciones fundamentales puede requerir una nueva consulta y un nuevo punto de control.
 
-## 2.9.16. Ventanas temporales y análisis de eventos
+#### 2.9.16. Ventanas temporales y análisis de eventos
 
 Una de las capacidades relevantes de Structured Streaming consiste en realizar agregaciones por ventanas temporales.
 
@@ -4806,7 +4808,7 @@ La interpretación correcta de las marcas temporales es fundamental cuando anali
 
 Además, el tratamiento de zonas horarias debe revisarse cuidadosamente: Spark interpreta y presenta timestamps según la configuración de la sesión y las funciones utilizadas.
 
-## 2.9.17. Watermarks y eventos atrasados
+#### 2.9.17. Watermarks y eventos atrasados
 
 En sistemas distribuidos, los eventos no siempre llegan en el mismo orden en que ocurrieron.
 
@@ -4836,13 +4838,13 @@ Tampoco significa que todos los registros que lleguen dentro de ese intervalo es
 
 El comportamiento depende de la operación y del avance del watermark.
 
-![Figura 71. Ventanas temporales y llegada tardía de eventos](imagenes/figura_71.svg)
+<img src="imagenes/figura_71.svg" alt="Figura 71. Ventanas temporales y llegada tardía de eventos" width="760">
 
 *Figura 71. La figura ilustra la llegada tardía; el comportamiento de descarte depende del watermark y de la consulta.*
 
 Los watermarks resultan especialmente relevantes cuando se utilizan ventanas y agregaciones que deben administrar su estado a lo largo del tiempo.
 
-## 2.9.18. Consideraciones de rendimiento y paralelismo
+#### 2.9.18. Consideraciones de rendimiento y paralelismo
 
 La integración entre Kafka y Spark ofrece oportunidades de procesamiento distribuido, pero requiere una configuración coherente.
 
@@ -4866,7 +4868,7 @@ Aumentar el número de particiones no garantiza automáticamente un mayor rendim
 
 De manera similar, incorporar más ejecutores no elimina los problemas de una fuente lenta o de una transformación ineficiente.
 
-## 2.9.19. Validación de la integración en el laboratorio
+#### 2.9.19. Validación de la integración en el laboratorio
 
 Para comprobar el funcionamiento de la arquitectura proponemos una secuencia de validación.
 
@@ -4898,7 +4900,7 @@ Si la lectura funciona, pero los campos aparecen nulos, debemos revisar el esque
 
 Esta separación facilita el diagnóstico.
 
-## 2.9.20. Actividad práctica: procesamiento de ventas en streaming
+#### 2.9.20. Actividad práctica: procesamiento de ventas en streaming
 
 La actividad propuesta consiste en integrar el productor Python del apartado 2.7 con Spark Structured Streaming.
 
@@ -4921,7 +4923,7 @@ La actividad debe acompañarse de una reflexión técnica.
 
 Los estudiantes deberán explicar por qué Kafka y Spark cumplen funciones diferentes, cómo Structured Streaming organiza el procesamiento y qué limitaciones presenta una agregación cuando los eventos pueden llegar duplicados o atrasados.
 
-## 2.9.21. Síntesis del apartado
+#### 2.9.21. Síntesis del apartado
 
 En este apartado incorporamos Apache Spark Structured Streaming a la arquitectura de integración basada en Kafka.
 
@@ -4943,9 +4945,9 @@ En el siguiente apartado, **2.10. Validación, monitoreo y tratamiento básico d
 
 ---
 
-## 2.10. Validación, monitoreo y tratamiento básico de errores
+### 2.10. Validación, monitoreo y tratamiento básico de errores
 
-### 2.10.1. Introducción: de una aplicación funcional a una arquitectura verificable
+#### 2.10.1. Introducción: de una aplicación funcional a una arquitectura verificable
 
 A lo largo del Volumen II hemos construido progresivamente una arquitectura de integración de datos basada en Apache Kafka.
 
@@ -4965,7 +4967,7 @@ Este apartado reúne procedimientos de validación funcional, monitoreo operacio
 
 Nuestro objetivo no será implementar una plataforma empresarial completa de observabilidad, sino establecer una metodología rigurosa para comprobar que los componentes funcionan de manera coordinada y que los resultados obtenidos son confiables.
 
-### 2.10.2. Objetivos de aprendizaje del apartado
+#### 2.10.2. Objetivos de aprendizaje del apartado
 
 Al finalizar este capítulo, el estudiante deberá ser capaz de:
 
@@ -4982,7 +4984,7 @@ Estas competencias son relevantes porque, en ingeniería de datos, **un sistema 
 
 También debe existir evidencia de que los datos se reciben, transforman y procesan de acuerdo con las reglas establecidas.
 
-### 2.10.3. Arquitectura integral que debemos validar
+#### 2.10.3. Arquitectura integral que debemos validar
 
 Retomemos la arquitectura desarrollada en los capítulos anteriores.
 
@@ -4996,7 +4998,7 @@ Posteriormente, Spark Structured Streaming consume esos registros, interpreta su
 
 Finalmente, los resultados se entregan a un destino de procesamiento o visualización.
 
-![Figura 72. Arquitectura integral y puntos de verificación](imagenes/figura_72.svg)
+<img src="imagenes/figura_72.svg" alt="Figura 72. Arquitectura integral y puntos de verificación" width="760">
 
 *Figura 72. Los puntos de control permiten localizar errores por etapa: fuente HTTP, publicación, broker y procesamiento analítico.*
 
@@ -5013,7 +5015,7 @@ Este enfoque evita tratar la arquitectura como una caja negra.
 
 Cuando aparece un problema, podemos identificar en qué etapa se produce y reducir progresivamente las posibles causas.
 
-### 2.10.4. Diferencia entre validación, monitoreo y diagnóstico
+#### 2.10.4. Diferencia entre validación, monitoreo y diagnóstico
 
 Aunque estos conceptos se relacionan, cumplen funciones diferentes.
 
@@ -5043,7 +5045,7 @@ Validar una vez no garantiza que el sistema continuará funcionando indefinidame
 
 Monitorear un proceso tampoco demuestra, por sí solo, que sus resultados sean correctos.
 
-### 2.10.5. Primera etapa: verificación del entorno Docker
+#### 2.10.5. Primera etapa: verificación del entorno Docker
 
 Nuestro procedimiento comienza por la infraestructura.
 
@@ -5099,7 +5101,7 @@ También debemos identificar posibles reinicios.
 
 Un servicio que se reinicia constantemente puede aparecer momentáneamente como activo, aunque no sea operacionalmente estable.
 
-### 2.10.6. Segunda etapa: verificación de la conectividad Kafka
+#### 2.10.6. Segunda etapa: verificación de la conectividad Kafka
 
 Una de las dificultades más frecuentes en entornos Docker es la conectividad entre aplicaciones y brokers.
 
@@ -5115,7 +5117,7 @@ En nuestro laboratorio hemos utilizado el puerto `9092` y existe una referencia 
 
 Sin embargo, debemos verificar la configuración efectiva antes de asumir que esa dirección continúa siendo accesible.
 
-![Figura 73. Conectividad inicial y listeners anunciados por Kafka](imagenes/figura_73.svg)
+<img src="imagenes/figura_73.svg" alt="Figura 73. Conectividad inicial y listeners anunciados por Kafka" width="760">
 
 *Figura 73. La conectividad inicial al bootstrap server no basta si el cliente no puede alcanzar las direcciones anunciadas por el broker.*
 
@@ -5123,7 +5125,7 @@ Este comportamiento explica por qué algunos problemas no se resuelven simplemen
 
 La configuración de listeners debe ser coherente con la ubicación de los clientes.
 
-### 2.10.7. Tercera etapa: comprobación de tópicos y particiones
+#### 2.10.7. Tercera etapa: comprobación de tópicos y particiones
 
 Una vez validada la conectividad, debemos comprobar que el tópico utilizado por nuestras aplicaciones exista.
 
@@ -5178,7 +5180,7 @@ En un laboratorio con un solo broker, el factor de replicación efectivo normalm
 
 Esto permite desarrollar actividades docentes, pero no representa una configuración tolerante a la pérdida de un broker.
 
-### 2.10.8. Cuarta etapa: validación de la publicación de eventos
+#### 2.10.8. Cuarta etapa: validación de la publicación de eventos
 
 Ahora comprobaremos el funcionamiento del productor Python.
 
@@ -5219,7 +5221,7 @@ Tampoco podemos afirmar que los datos comerciales sean correctos únicamente por
 
 La validación debe continuar hasta el consumidor y el resultado analítico.
 
-### 2.10.9. Quinta etapa: validación del consumo
+#### 2.10.9. Quinta etapa: validación del consumo
 
 Para verificar la disponibilidad de los eventos podemos utilizar un consumidor de consola.
 
@@ -5266,7 +5268,7 @@ Debemos comparar este resultado con el contrato de datos definido previamente.
 
 Un mensaje puede existir en Kafka y, aun así, presentar una estructura incorrecta.
 
-### 2.10.10. Validación del contrato de datos
+#### 2.10.10. Validación del contrato de datos
 
 Un contrato de datos define las características que deben cumplir los registros intercambiados entre componentes.
 
@@ -5309,7 +5311,7 @@ Debemos distinguir entre:
 
 Esta distinción será especialmente importante cuando procesemos eventos mediante Spark.
 
-### 2.10.11. Sexta etapa: validación de Spark Structured Streaming
+#### 2.10.11. Sexta etapa: validación de Spark Structured Streaming
 
 Una vez comprobada la publicación y el consumo desde Kafka, verificaremos la integración con Spark.
 
@@ -5341,7 +5343,7 @@ Sin embargo, si el tópico contiene eventos históricos o duplicados, el resulta
 
 Por ello, debemos definir cuidadosamente el conjunto de datos utilizado en la prueba.
 
-### 2.10.12. Diseño de pruebas controladas
+#### 2.10.12. Diseño de pruebas controladas
 
 Una buena práctica consiste en utilizar eventos de prueba con identificadores conocidos.
 
@@ -5371,7 +5373,7 @@ Es preferible utilizar un tópico de pruebas aislado o una consulta con condicio
 
 De lo contrario, las agregaciones podrían incluir información ajena al ejercicio.
 
-### 2.10.13. Matriz de problemas frecuentes y diagnóstico
+#### 2.10.13. Matriz de problemas frecuentes y diagnóstico
 
 Durante la implementación pueden aparecer errores de naturaleza muy diferente.
 
@@ -5398,7 +5400,7 @@ Por ejemplo, si Spark no puede interpretar un mensaje JSON, aumentar la cantidad
 
 Del mismo modo, si la API no responde, modificar la configuración del consumidor tampoco solucionará la causa.
 
-### 2.10.14. Interpretación de registros de errores
+#### 2.10.14. Interpretación de registros de errores
 
 Los registros de ejecución, habitualmente denominados *logs*, constituyen una fuente importante de información operacional.
 
@@ -5428,7 +5430,7 @@ Este procedimiento es más confiable que modificar simultáneamente múltiples c
 
 Si cambiamos varios parámetros a la vez, puede resultar difícil determinar cuál resolvió el problema.
 
-### 2.10.15. Registro estructurado de eventos operacionales
+#### 2.10.15. Registro estructurado de eventos operacionales
 
 En el productor Python utilizamos inicialmente instrucciones `print()` para mostrar información.
 
@@ -5477,7 +5479,7 @@ En una implementación más avanzada, también podríamos registrar identificado
 
 No obstante, debemos evitar registrar información sensible innecesaria, como contraseñas, tokens de acceso o datos personales completos.
 
-### 2.10.16. Métricas operacionales fundamentales
+#### 2.10.16. Métricas operacionales fundamentales
 
 Además de los logs, necesitamos observar indicadores cuantitativos.
 
@@ -5502,7 +5504,7 @@ Por ejemplo, un aumento del consumer lag puede relacionarse con un incremento de
 
 Por tanto, el indicador aislado no identifica automáticamente la causa.
 
-### 2.10.17. Monitoreo de grupos de consumidores
+#### 2.10.17. Monitoreo de grupos de consumidores
 
 Los grupos de consumidores permiten distribuir el procesamiento entre múltiples instancias.
 
@@ -5543,7 +5545,7 @@ Sin embargo, el lag no indica directamente cuánto tiempo llevan esperando esos 
 
 Para evaluar la antigüedad de la información debemos considerar marcas temporales y tasas de procesamiento.
 
-### 2.10.18. Monitoreo de consultas Spark
+#### 2.10.18. Monitoreo de consultas Spark
 
 Structured Streaming proporciona información sobre el estado y progreso de sus consultas.
 
@@ -5581,7 +5583,7 @@ Estas herramientas permiten observar la consulta desde la propia aplicación.
 
 No reemplazan un sistema de monitoreo persistente, pero proporcionan información útil para el diagnóstico docente.
 
-### 2.10.19. Detección de registros duplicados
+#### 2.10.19. Detección de registros duplicados
 
 En el apartado 2.8 analizamos por qué una integración Near Real-Time puede publicar duplicados.
 
@@ -5613,7 +5615,7 @@ También debemos diferenciar entre:
 
 Confundir ambos casos puede llevar a eliminar información válida.
 
-### 2.10.20. Tratamiento de registros inválidos
+#### 2.10.20. Tratamiento de registros inválidos
 
 Una arquitectura robusta debe definir qué hacer cuando recibe un registro que no cumple el contrato de datos.
 
@@ -5633,7 +5635,7 @@ En cambio, un campo descriptivo opcional ausente podría no impedir el procesami
 
 Una práctica habitual consiste en separar los eventos válidos de aquellos que requieren revisión.
 
-![Figura 74. Tratamiento conceptual de eventos válidos e inválidos](imagenes/figura_74.svg)
+<img src="imagenes/figura_74.svg" alt="Figura 74. Tratamiento conceptual de eventos válidos e inválidos" width="760">
 
 *Figura 74. Validación y separación conceptual de eventos válidos e inválidos.*
 
@@ -5643,7 +5645,7 @@ Sin embargo, Kafka no implementa automáticamente este comportamiento para cualq
 
 Debemos desarrollar o configurar explícitamente el mecanismo correspondiente.
 
-### 2.10.21. Recuperación ante interrupciones
+#### 2.10.21. Recuperación ante interrupciones
 
 Un sistema de integración debe contemplar la posibilidad de interrupciones.
 
@@ -5667,11 +5669,11 @@ De manera similar, reiniciar un productor Python sin conservar su estado puede p
 
 La recuperación debe diseñarse considerando el flujo completo.
 
-### 2.10.22. Procedimiento de diagnóstico de extremo a extremo
+#### 2.10.22. Procedimiento de diagnóstico de extremo a extremo
 
 Con los conceptos anteriores podemos establecer una metodología ordenada para investigar problemas.
 
-![Figura 75. Procedimiento de diagnóstico de la arquitectura Kafka–Spark](imagenes/figura_75.svg)
+<img src="imagenes/figura_75.svg" alt="Figura 75. Procedimiento de diagnóstico de la arquitectura Kafka–Spark" width="760">
 
 *Figura 75. Secuencia recomendada de verificación desde infraestructura hasta resultados analíticos.*
 
@@ -5685,7 +5687,7 @@ Si los eventos están disponibles y pueden consumirse, pero Spark no los interpr
 
 Si Spark interpreta correctamente los registros, pero los totales son incorrectos, debemos revisar la lógica analítica, los duplicados y el conjunto de datos utilizado.
 
-### 2.10.23. Actividad integradora final del Volumen II
+#### 2.10.23. Actividad integradora final del Volumen II
 
 Como cierre del volumen, proponemos una actividad de laboratorio que permita demostrar el funcionamiento completo de la arquitectura.
 
@@ -5745,7 +5747,7 @@ Esta última etapa es importante porque el propósito del curso no consiste sola
 
 Buscamos que el estudiante comprenda las decisiones arquitectónicas y pueda justificar técnicamente sus resultados.
 
-### 2.10.24. Matriz de evidencias de la actividad final
+#### 2.10.24. Matriz de evidencias de la actividad final
 
 Para organizar la entrega proponemos la siguiente matriz.
 
@@ -5766,7 +5768,7 @@ La matriz permite comprobar tanto la ejecución como la comprensión conceptual.
 
 Además, facilita identificar qué componentes fueron efectivamente validados.
 
-### 2.10.25. Buenas prácticas para documentar resultados técnicos
+#### 2.10.25. Buenas prácticas para documentar resultados técnicos
 
 Una implementación reproducible requiere documentación.
 
@@ -5801,7 +5803,7 @@ Esta última observación es especialmente importante.
 
 Una buena documentación técnica distingue entre aquello que fue efectivamente comprobado y aquello que todavía requiere validación.
 
-### 2.10.26. Limitaciones del laboratorio y proyección hacia entornos productivos
+#### 2.10.26. Limitaciones del laboratorio y proyección hacia entornos productivos
 
 Nuestro laboratorio ha sido diseñado para comprender los principios de integración y procesamiento distribuido.
 
@@ -5829,7 +5831,7 @@ En una implementación empresarial deberíamos evaluar aspectos adicionales, com
 
 Estas dimensiones exceden el alcance operativo básico del volumen, pero constituyen una proyección natural de los aprendizajes desarrollados.
 
-### 2.10.27. Síntesis del apartado
+#### 2.10.27. Síntesis del apartado
 
 En este último capítulo consolidamos los procedimientos necesarios para verificar y diagnosticar una arquitectura de integración basada en Apache Kafka.
 
