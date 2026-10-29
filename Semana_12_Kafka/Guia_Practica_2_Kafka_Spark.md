@@ -14,9 +14,9 @@ Al terminar, cada pareja podrá explicar la diferencia entre consultar una API y
 
 ## Antes de comenzar
 
-Para realizar esta actividad se requiere un laboratorio previamente configurado con Kafka, Spark y Python. Las siguientes condiciones deben estar disponibles antes de comenzar:
+La actividad se desarrolla en la instancia AWS utilizada durante el semestre para HDFS, Hive y Spark. Los comandos Docker se ejecutan **sin `sudo`**. Antes de comenzar, completar la [Guía 0](Guia_0_Preparacion_Entorno_Kafka_Spark.md). Las siguientes condiciones deben estar disponibles antes de comenzar:
 
-- Kafka accesible desde Python del anfitrión y desde Spark; tópico `sismos_usgs` existente, con **3 particiones**. En esta configuración, Spark utiliza `kafka:9092`; la conexión desde Ubuntu utiliza la dirección del broker facilitada para el laboratorio.
+- Kafka 3.9.0 en modo ZooKeeper en el laboratorio de referencia, accesible desde Python del anfitrión y desde Spark; tópico `sismos_usgs` existente, con **3 particiones**. En esta configuración, Spark utiliza `kafka:9092`; la conexión desde Ubuntu utiliza la dirección del broker facilitada para el laboratorio.
 - Contenedor Docker `spark-master` con `/spark/bin/spark-submit`, **Spark 2.4.0, Scala 2.11 y Java 8**. Conector requerido: `org.apache.spark:spark-sql-kafka-0-10_2.11:2.4.0`. Sus dependencias deben estar precargadas o disponibles desde Maven Central.
 - Python del anfitrión con `requests` y `kafka-python`, preferiblemente en un entorno virtual. El productor se ejecuta en Ubuntu; el script Spark se ejecuta dentro del contenedor.
 - Se utilizan los archivos `productor_usgs.py` y `sismos_checkpoint.py`, cuyos códigos se incluyen en esta guía. Pueden entregarse preparados para concentrar el trabajo en su ejecución e interpretación.
@@ -136,7 +136,7 @@ python productor_usgs.py
 Desde Ubuntu, ejecutar:
 
 ```bash
-sudo docker exec kafka bash -lc '
+docker exec kafka bash -lc '
 kafka-console-consumer \
   --bootstrap-server localhost:9092 \
   --topic sismos_usgs \
@@ -216,7 +216,7 @@ finally:
 Ejecutar desde Ubuntu:
 
 ```bash
-sudo docker exec spark-master bash -lc '
+docker exec spark-master bash -lc '
 /spark/bin/spark-submit \
   --master "local[1]" \
   --packages org.apache.spark:spark-sql-kafka-0-10_2.11:2.4.0 \
@@ -237,7 +237,7 @@ Mientras Spark continúa ejecutándose, volver a ejecutar el productor del ejerc
 Tras ejecutar Spark, inspeccionar dentro del contenedor:
 
 ```bash
-sudo docker exec spark-master bash -lc '
+docker exec spark-master bash -lc '
 echo "=== CHECKPOINT ==="
 ls -lah /tmp/checkpoint_sismos_usgs
 echo "=== OFFSETS ==="
