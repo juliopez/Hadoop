@@ -4,7 +4,7 @@
 
 ## Propósito
 
-**Aprovechar una instalación existente de Hadoop/Spark, cuando esté disponible,** para habilitar únicamente los componentes adicionales requeridos por Kafka y la integración con Spark. Preparar y verificar el entorno necesario para realizar, sin interrupciones por dependencias, la [Guía práctica 1 — Kafka](Semana_12_Kafka_Ejercicios.md) y la [Guía práctica 2 — USGS, Kafka y Spark](Guia_Practica_2_Kafka_Spark.md).
+**Aprovechar una instalación existente de Hadoop/Spark, cuando esté disponible,** para habilitar únicamente los componentes adicionales requeridos por Kafka y la integración con Spark. Preparar y verificar el entorno necesario para realizar, sin interrupciones por dependencias, la [Guía práctica 1 — Kafka](Semana_12_Kafka_Ejercicios.md) y la [Guía práctica 2 — USGS, Kafka y Spark](Semana_14_Kafka_Ejercicios.md).
 
 **Esta guía se realiza antes de comenzar las prácticas.** No requiere repetir los ejercicios anteriores de HDFS, Hive o Spark ni reinstalar sus servicios. Su producto es la habilitación de Kafka, sus dependencias y una lista de comprobación completada.
 
