@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simulador interactivo de Kafka y Spark | Hadoop y Big Data</title>
+<meta name="description" content="Simulador educativo de Apache Kafka y Spark Structured Streaming: productores, particiones, offsets, micro-lotes y checkpoints.">
+<link rel="stylesheet" href="assets/css/styles.css">
+<style>
+:root{--ink:#182743;--accent:#2364e8;--line:#dce5f4;--bg:#f4f7fc}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,sans-serif}
+.khero{background:linear-gradient(115deg,#15223c,#254f91);color:white;text-align:center;padding:24px 16px}
+.khero h1{margin:0 0 7px;font-size:clamp(1.5rem,3vw,2.3rem)}.khero p{margin:0;opacity:.88}
+.shell{max-width:1150px;margin:20px auto;padding:0 16px 40px}
+.panel{background:white;border:1px solid var(--line);border-radius:15px;padding:18px;margin:14px 0;box-shadow:0 4px 15px #20305208}
+h2{font-size:1.17rem;margin:0 0 12px}h3{font-size:1rem;margin:0 0 9px}.muted{color:#566781;font-size:.92rem}
+.tabs,.controls,.stats{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+button{border:1px solid #c6d7f2;border-radius:8px;padding:10px 14px;background:#ecf3ff;color:#153f88;font-weight:650;cursor:pointer}
+button.primary,.tab[aria-selected=true]{background:#2763e8;color:white;border-color:#2763e8}
+button:disabled{opacity:.43;cursor:not-allowed}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #f7ad30;outline-offset:2px}
+label{font-size:.91rem;font-weight:650;display:block;margin-bottom:5px}
+input,select,textarea{font:inherit;max-width:100%;border:1px solid #ccd6e5;border-radius:8px;padding:9px;background:white;color:var(--ink)}
+input[type=number]{width:90px}input[type=range]{padding:0;vertical-align:middle}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(235px,1fr));gap:12px}
+.inline{display:flex;gap:8px;flex-wrap:wrap;align-items:end}.inputgroup{flex:1;min-width:135px}
+.callout{background:#ecf3ff;border-left:4px solid #2468eb;padding:11px 13px;border-radius:7px;line-height:1.5}
+.flow{display:flex;align-items:center;justify-content:space-between;gap:6px;flex-wrap:wrap}
+.node{border:1px solid #b7c8e7;background:#f2f6ff;border-radius:9px;padding:10px;flex:1;text-align:center;min-width:120px;font-weight:700}
+.arrow{color:#536e99;font-weight:800}
+.topic{border:1px solid #bbcbea;border-radius:10px;padding:12px;background:#f7faff}
+.partition{display:grid;grid-template-columns:120px 1fr;gap:8px;align-items:center;border-bottom:1px solid #e0e8f4;padding:9px 0}
+.partition:last-child{border:0}.cells{display:flex;flex-wrap:wrap;gap:5px;min-height:40px;align-items:center}
+.message{font-size:12px;padding:7px;border-radius:6px;background:#cddfff;border:1px solid #8db3ef;min-width:48px;text-align:center}
+.message.consumed{background:#c1ead9;border-color:#6ab59b}.message small{display:block}
+.stat{background:#f1f6ff;border-radius:10px;padding:11px 14px;flex:1;min-width:125px}.stat strong{display:block;font-size:1.35rem}
+pre{white-space:pre-wrap;word-break:break-word;background:#142036;color:#dbeafe;padding:13px;border-radius:8px;max-height:270px;overflow:auto;font-size:.82rem}
+table{width:100%;border-collapse:collapse;font-size:.89rem}th,td{text-align:left;padding:8px;border-bottom:1px solid #e5ebf4}th{background:#edf3ff}
+.hide{display:none!important}.pill{font-size:.8rem;border-radius:40px;background:#e8f1ff;padding:4px 9px}
+.note{font-size:.86rem;color:#536781;margin:8px 0}
+#status{min-height:23px;font-weight:650;color:#235a36}
+@media(max-width:680px){.partition{grid-template-columns:1fr}.flow{justify-content:center}.arrow{transform:rotate(90deg)}.panel{padding:12px}}
+
+/* Visualización y orientación didáctica */
+.explainer{background:#f0f6ff;border:1px solid #cbdcf8;border-radius:12px;padding:14px 17px;margin:12px 0;line-height:1.55}.explainer h3{margin:0 0 6px}.explainer p{margin:5px 0}.help{display:inline-grid;place-items:center;border:1px solid #7da9e8;background:#edf5ff;color:#16468e;width:21px;height:21px;border-radius:50%;font-size:12px;padding:0;vertical-align:middle;margin-left:4px;cursor:help}.help:focus-visible{outline:3px solid orange}.helpbox{position:relative;display:inline-block}.tooltip{display:none;position:absolute;z-index:20;top:30px;left:0;min-width:220px;max-width:280px;background:#17243d;color:white;padding:10px 12px;border-radius:8px;font-size:.82rem;line-height:1.45;box-shadow:0 6px 20px #0003;font-weight:400}.helpbox:hover .tooltip,.helpbox:focus-within .tooltip{display:block}.stage{background:#f6f9ff;border:1px solid #ccdcf3;border-radius:12px;padding:14px;margin-top:12px}.stageFlow{display:flex;align-items:stretch;justify-content:space-around;gap:10px;flex-wrap:wrap}.stageNode{min-width:130px;flex:1;text-align:center;background:white;border:2px solid #c8d8ef;border-radius:12px;padding:13px 10px;transition:transform .22s,border-color .22s,box-shadow .22s}.stageNode.active{border-color:#2370ed;box-shadow:0 0 0 4px #2370ed20;transform:translateY(-2px)}.stageNode strong{display:block;margin:5px 0}.stageNode .glyph{font-size:29px;display:block}.stageNode small{display:block;color:#506581}.stageArrow{align-self:center;font-size:23px;color:#6380a8}.stageCaption{margin:12px 0 0;border-top:1px solid #d6e3f5;padding-top:10px;font-size:.9rem;color:#355374}.legend{display:flex;gap:10px;flex-wrap:wrap;margin:9px 0;font-size:.82rem;color:#415773}.legend span{padding:4px 8px;border:1px solid #d0ddf0;border-radius:20px}.logviz{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.logviz span{background:#e5efff;border:1px solid #b4caf2;border-radius:7px;padding:6px 9px;font-size:.82rem}.stepper{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:10px 0}.stepper button{background:white}.stepper strong{color:#174eae}.kguide{border-left:4px solid #20a27e;background:#eefaf5;padding:11px 13px;border-radius:7px;margin:12px 0}.kguide strong{display:block;margin-bottom:4px}@media(max-width:700px){.stageArrow{display:none}.stageNode{min-width:44%}.tooltip{left:auto;right:0}}
+
+/* Kafka Event Lab — identidad propia: grafito, ámbar, cian y verde */
+:root{--ink:#e9eef7;--accent:#fbbf24;--line:#334155;--bg:#0b111c}
+body{background:var(--bg);color:var(--ink)}
+.khero{background:radial-gradient(circle at 80% 10%,#42402a 0%,transparent 35%),linear-gradient(110deg,#0c121d,#172335);text-align:left;border-bottom:1px solid #46515f;padding:38px max(20px,calc((100vw - 1170px)/2))}
+.khero:before{content:"EVENT STREAMING / INTERACTIVE LAB";display:block;color:#fbbf24;letter-spacing:.17em;font-size:.71rem;font-weight:800;margin-bottom:13px}
+.khero h1{color:#fff;font-size:clamp(2rem,4vw,3.3rem);letter-spacing:-.035em}
+.khero p{color:#aab9cd;max-width:700px}
+.shell{max-width:1200px}
+.panel{background:#172130;border:1px solid #344154;box-shadow:none}
+h2,h3,strong,label{color:#f1f5f9}
+.muted,.note{color:#b6c4d7}
+button{background:#253346;border:1px solid #45566d;color:#e8f0fc}
+button.primary,.tab[aria-selected=true]{background:#f3b52a;border-color:#f3b52a;color:#151b23}
+button:hover:not(:disabled){filter:brightness(1.16)}
+input,select,textarea{background:#0f1725;border-color:#475569;color:#f8fafc}
+input::placeholder{color:#a7b4c6}
+.callout{background:#203241;border-left-color:#34d399;color:#dbeafe}
+.explainer{background:#1b2d3d;border-color:#3a5668;color:#e0ebfa}
+.kguide{background:#183b35;border-color:#34d399;color:#ddfff1}
+.stage,.topic{background:#101a28;border-color:#3a4d64}
+.stageNode,.node{background:#1c2c3d;border-color:#4d637f;color:#eff6ff}
+.stageNode.active{border-color:#fbbf24;box-shadow:0 0 0 4px #fbbf2425}
+.stageNode small,.stageCaption{color:#b4c8db}
+.stageCaption{border-color:#40546b}
+.partition{border-color:#364557}
+.message{background:#29475b;border-color:#5285a0;color:#eaf5ff;cursor:pointer}
+.message.consumed{background:#205443;border-color:#38ae86}
+.message:hover{outline:2px solid #fbbf24}
+.stat{background:#253244}
+.help{background:#344353;color:#fbbf24;border-color:#b48b3e}
+.tooltip{background:#050b14;border:1px solid #8ba2ba}
+pre{background:#090f19;border:1px solid #26374a;color:#c6f1ec}
+.stageArrow,.arrow{color:#fbbf24}
+.pill{background:#274252}
+a{color:#8dcbff}
+.lab-layout{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(280px,.8fr);gap:16px;align-items:start}
+.lab-layout>.panel{margin-top:0}
+.context-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.usecase{background:#111c2a;border:1px solid #425369;border-radius:12px;padding:16px;text-align:left;color:#eaf1f8}
+.usecase strong{display:block;font-size:1.07rem;margin:8px 0}.usecase .caseicon{font-size:1.65rem}
+.usecase[aria-pressed=true]{border-color:#fbbf24;box-shadow:0 0 0 2px #fbbf2430}
+#caseDetail{border-left:4px solid #fbbf24;background:#202c3a;padding:14px;margin-top:12px;border-radius:8px;line-height:1.6;color:#dbe7f4}
+.side-inspector{position:sticky;top:12px}
+.inspector-label{color:#fbbf24;text-transform:uppercase;letter-spacing:.12em;font-size:.72rem;font-weight:800}
+#inspector{min-height:180px}
+.message.selected{outline:2px solid #fbbf24;background:#594a2b}
+.stageFlow{gap:7px}
+.stageNode{min-width:115px}
+@media(max-width:900px){.lab-layout{grid-template-columns:1fr}.side-inspector{position:static}}
+@media(max-width:680px){.context-grid{grid-template-columns:1fr}.khero{padding:30px 18px}}
+
+/* Iteración visual: legibilidad WCAG, cartografía de eventos y métricas */
+.panel .muted,.panel .note,.stageNode small,.stageCaption{color:#d1dbe8!important}
+.panel p,.panel span,.panel small{line-height:1.5}
+.partition .muted{color:#d9e3ef!important}
+.stageNode small{color:#e2e8f0!important}
+.lab-flow{position:relative;display:grid;grid-template-columns:1fr auto 1.4fr auto 1fr;align-items:center;gap:10px;padding:17px 5px}
+.flow-entity{position:relative;min-height:112px;background:linear-gradient(155deg,#1a2a3c,#23364a);border:1px solid #526b87;border-radius:14px;padding:13px;text-align:center;overflow:hidden}
+.flow-entity strong{display:block;font-size:1rem}
+.flow-entity small{display:block;color:#d0dfed}
+.flow-entity .entity-symbol{display:block;font-size:30px;margin-bottom:5px}
+.flow-entity.is-active{border-color:#fbbf24;box-shadow:0 0 0 3px #fbbf2440}
+.flow-link{width:48px;height:5px;background:linear-gradient(90deg,#fbbf24,#22d3ee);position:relative;border-radius:5px;overflow:visible}
+.flow-link:after{content:"";position:absolute;right:-4px;top:-5px;border-top:7px solid transparent;border-bottom:7px solid transparent;border-left:9px solid #22d3ee}
+.flow-pulse{position:absolute;top:-5px;width:14px;height:14px;background:#fff1b8;border-radius:50%;box-shadow:0 0 14px #fbbf24;animation:travel 1.25s linear infinite}
+@keyframes travel{from{left:0}to{left:calc(100% - 8px)}}
+@media(prefers-reduced-motion:reduce){.flow-pulse{animation:none;left:40%}}
+.flow-broker{display:flex;gap:4px;flex-direction:column;margin:9px 0}
+.flow-broker span{background:#29465a;border:1px solid #557b90;border-radius:4px;padding:3px;font-size:.72rem;color:#e9f8ff}
+.viz-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.metricplot{display:flex;gap:12px;align-items:flex-end;height:138px;border-bottom:1px solid #53687c;margin-top:10px;padding:12px 5px 0}
+.plotcol{flex:1;max-width:80px;min-width:35px;text-align:center;display:flex;flex-direction:column;justify-content:flex-end;height:100%;gap:5px}
+.plotbar{background:linear-gradient(180deg,#36d5dd,#2785a2);border-radius:6px 6px 0 0;min-height:3px;transition:height .2s ease}
+.plotcol:nth-child(even) .plotbar{background:linear-gradient(180deg,#fbbf24,#bc7e1e)}
+.plotcol small{font-size:.7rem;color:#d3e2f1}
+.plotcol strong{font-size:.8rem;color:#fff}
+.chart-note{font-size:.84rem;color:#d0dfed;margin-top:10px}
+#stageDynamic{border-radius:15px;padding:8px 12px;background:#0d1825;border:1px solid #354c60;margin:12px 0}
+#stageDynamic .flow-broker span{color:#e8fcff}
+.event-guide{color:#cfe5f4}
+@media(max-width:690px){.lab-flow{grid-template-columns:1fr;justify-items:stretch}.flow-link{width:5px;height:25px;margin:auto}.flow-link:after{top:auto;right:-5px;bottom:-5px;border-left:7px solid transparent;border-right:7px solid transparent;border-top:9px solid #22d3ee;border-bottom:0}.flow-pulse{display:none}}
+
+/* Contraste accesible y nueva iconografía vectorial */
+:root{color-scheme:dark}
+body{color:#f1f5f9}
+.panel p,.panel .muted,.panel .note,.panel small,.panel .chart-note,
+.panel .stageCaption,.panel .stageNode small,
+#contextos>p,.panel .event-guide,.panel .partition .muted,
+.panel .usecase>span:last-child{color:#d6e1ed!important}
+.panel .pill,.panel .stat small,.panel .plotcol small{color:#f0f6ff!important}
+#contextos>p,.panel>p{line-height:1.65}
+#visualMetrics .pill{background:#263b51;border:1px solid #57728d}
+.caseicon{display:block}
+.art-icon{display:block;width:62px;height:62px;filter:drop-shadow(0 5px 15px #0003)}
+.usecase{min-height:180px;display:flex;flex-direction:column;align-items:flex-start;gap:7px;background:linear-gradient(155deg,#1c2b3c,#111c2b)}
+.usecase .art-icon{width:60px;height:60px;margin-bottom:3px}
+.usecase strong{margin:0}
+.usecase span:last-child{font-weight:450}
+.usecase:hover{transform:translateY(-2px);border-color:#8ca8c0;transition:transform .15s,border-color .15s}
+.usecase[aria-pressed=true]{background:linear-gradient(155deg,#2b3543,#192838)}
+.flow-entity .art-icon{width:68px;height:68px;margin:0 auto 8px}
+.stageNode .art-icon{width:48px;height:48px;margin:0 auto 5px}
+#caseDetail,#liveNarrative{color:#e2edf8}
+.flow-broker span{color:#eaf8ff!important}
+.message small{color:#e5f2ff!important}
+.tooltip{color:#f8fafc}
+button:focus-visible,.usecase:focus-visible{outline:3px solid #facc15;outline-offset:3px}
+@media(prefers-reduced-motion:reduce){.usecase:hover{transform:none}}
+
+/* Arquitectura didáctica de múltiples columnas */
+.learner-path{margin-bottom:14px}.path-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.path-grid>div{background:#122334;border:1px solid #3a536a;border-radius:10px;padding:12px}
+.path-grid span{display:inline-block;color:#fbbf24;font-weight:800;margin-right:8px}
+.path-grid strong{display:inline}.path-grid small{display:block;color:#d1e2ef;margin-top:5px}
+.lab-layout{grid-template-columns:minmax(0,1fr) minmax(280px,.36fr);align-items:start}
+.workspace-visual{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(220px,.85fr);gap:12px}
+.workspace-visual #stageDynamic{margin:0;min-width:0}.workspace-visual #visualMetrics{margin:0;min-width:0}
+.workspace-visual .lab-flow{grid-template-columns:1fr 23px 1.25fr 23px 1fr;gap:3px;padding:10px 0}
+.workspace-visual .flow-link{width:22px}
+.workspace-visual .flow-entity{min-width:0;padding:8px 4px;min-height:108px}
+.workspace-visual .flow-entity strong{font-size:.79rem}
+.workspace-visual .flow-entity .art-icon{width:44px;height:44px}
+.workspace-visual #partitionChart{height:110px}
+.kafka-workgrid{display:grid;grid-template-columns:minmax(290px,1fr) minmax(320px,1.2fr);gap:12px;margin-top:12px}
+.kafka-workgrid .panel{height:100%;margin:0}
+#modeKafka>.panel,#modeSpark>.panel{margin-top:12px}
+#modeKafka>.stage{margin-top:12px}
+#workArea .panel{min-width:0}
+#workArea pre{max-width:100%}
+@media(max-width:1180px){.workspace-visual{grid-template-columns:1fr}.workspace-visual #stageDynamic{margin-top:10px}}
+@media(max-width:960px){.lab-layout{grid-template-columns:1fr}.kafka-workgrid{grid-template-columns:1fr 1fr}.side-inspector{position:static}}
+@media(max-width:710px){.kafka-workgrid,.path-grid{grid-template-columns:1fr}.workspace-visual .lab-flow{grid-template-columns:1fr}.workspace-visual .flow-link{width:5px;height:20px}}
+</style></head>
+<body>
+<div class="khero"><h1>Simulador interactivo de Apache Kafka</h1><p>Producción y consumo de eventos · Kafka + Spark Structured Streaming</p></div>
+<main class="shell">
+<p><a href="simuladores.html">← Volver a simuladores</a></p>
+<section class="panel"><div class="tabs" role="tablist" aria-label="Modo de simulación">
+<button class="tab primary" id="tabKafka" role="tab" aria-selected="true" aria-controls="modeKafka">Modo 1 · Fundamentos de Kafka</button>
+<button class="tab" id="tabSpark" role="tab" aria-selected="false" aria-controls="modeSpark">Modo 2 · USGS → Kafka → Spark</button></div>
+<p class="note">Simulación conceptual ejecutada en el navegador. No instala ni se conecta a un broker Kafka o un clúster Spark reales. Utiliza un conjunto de eventos sísmicos ficticios representativos del formato USGS.</p>
+</section>
+<section class="panel" id="contextos"><p class="inspector-label">01 / La decisión tecnológica</p><h2>¿Cuándo tiene sentido utilizar Apache Kafka?</h2><p>Kafka es una plataforma de streaming de eventos. Resulta especialmente útil cuando muchos eventos deben ser recibidos, conservados temporalmente y procesados por varios sistemas de forma independiente. No es obligatorio usarlo para cualquier integración de datos.</p>
+<div class="context-grid">
+<button class="usecase" data-case="retail" aria-pressed="true"><svg class="art-icon" viewBox="0 0 64 64" role="img" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><circle cx="32" cy="32" r="29" fill="#fbbf24" fill-opacity=".10" stroke="#fbbf24" stroke-opacity=".35"/><path d="M14 19h7l5 25h23l5-18H24" fill="none" stroke="#fbbf24" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="30" cy="50" r="3" fill="#fbbf24"/><circle cx="46" cy="50" r="3" fill="#fbbf24"/><path d="M34 17v10m-5-5h10" stroke="#e9f3fb" stroke-width="2"/></svg><strong>Comercio electrónico</strong><span>Compras → inventario, pagos, envíos y analítica</span></button>
+<button class="usecase" data-case="iot" aria-pressed="false"><svg class="art-icon" viewBox="0 0 64 64" role="img" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><circle cx="32" cy="32" r="29" fill="#67e8f9" fill-opacity=".10" stroke="#67e8f9" stroke-opacity=".35"/><rect x="15" y="28" width="34" height="23" rx="3" fill="none" stroke="#67e8f9" stroke-width="2.7"/><path d="M20 28V17l11 8V14l13 11v3M23 38h5m7 0h5M23 44h5m7 0h5" stroke="#67e8f9" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M47 14q8 6 0 12M52 11q12 9 0 18" stroke="#fbbf24" stroke-width="2" fill="none"/></svg><strong>IoT industrial</strong><span>Sensores → monitoreo y alertas continuas</span></button>
+<button class="usecase" data-case="sismos" aria-pressed="false"><svg class="art-icon" viewBox="0 0 64 64" role="img" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><circle cx="32" cy="32" r="29" fill="#4adeab" fill-opacity=".10" stroke="#4adeab" stroke-opacity=".35"/><path d="M11 37h10l5-13 6 22 6-15 4 6h11" stroke="#4adeab" stroke-width="3" fill="none" stroke-linejoin="round" stroke-linecap="round"/><circle cx="32" cy="32" r="21" stroke="#7cdda8" stroke-width="1.5" stroke-dasharray="2 5" fill="none"/></svg><strong>Monitoreo sísmico</strong><span>API USGS → productor → Kafka → Spark</span></button>
+</div><div id="caseDetail" aria-live="polite"><strong>Problema:</strong> Una compra necesita actualizar diversos sistemas sin que todos dependan de una única llamada síncrona.<p><strong>Aporte de Kafka:</strong> publica un evento de venta que pueden leer sistemas independientes a su propio ritmo, con capacidad de relectura según la retención.</p><p><strong>Precaución:</strong> Kafka no sustituye automáticamente la base transaccional ni garantiza que los pagos ocurran una sola vez.</p></div>
+<div class="kguide"><strong>¿Cuándo NO utilizar Kafka?</strong> Cuando el volumen es reducido, existe un único consumidor y una consulta directa, una tarea programada o una cola sencilla resuelve el problema sin añadir complejidad operativa. La arquitectura debe justificarse por sus requisitos, no por popularidad.</div></section><section class="panel"><h2>¿Qué aprenderás en esta simulación?</h2><p>Kafka recibe eventos de los productores y los conserva en un <strong>registro distribuido</strong> organizado en particiones. Los consumidores leen esos registros a su ritmo; Spark puede interpretarlos y procesarlos en micro-lotes.</p><div class="explainer"><strong>Cómo utilizar la herramienta:</strong> realiza una acción, observa el diagrama y revisa la explicación que aparece debajo. Los botones <span aria-hidden="true">ⓘ</span> explican los términos técnicos. Puedes reiniciar cada modo y repetir los experimentos sin instalar software.</div></section><section class="panel learner-path"><div class="viz-heading"><h2>Tu recorrido de aprendizaje</h2><span class="pill">Explora a tu ritmo</span></div><div class="path-grid"><div><span>01</span><strong>Comprender</strong><small>¿Por qué Kafka?</small></div><div><span>02</span><strong>Experimentar</strong><small>Producir y almacenar</small></div><div><span>03</span><strong>Interpretar</strong><small>Consumir y procesar</small></div></div></section><section class="lab-layout" id="labWorkspace"><div id="workArea"><div class="workspace-visual"><div id="stageDynamic" aria-label="Ruta visual dinámica de los mensajes">
+<div class="lab-flow">
+<div class="flow-entity" id="liveProducer"><svg class="art-icon" viewBox="0 0 64 64" role="img" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><circle cx="32" cy="32" r="29" fill="#fbbf24" fill-opacity=".10" stroke="#fbbf24" stroke-opacity=".35"/><rect x="13" y="18" width="38" height="29" rx="4" fill="none" stroke="#fbbf24" stroke-width="2.6"/><path d="M20 28h13m-13 7h8m8-3h8m-7-6 7 6-7 6" fill="none" stroke="#fbbf24" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/></svg><strong>PRODUCTOR</strong><small id="liveProducerCaption">Esperando publicación</small></div>
+<div class="flow-link"><span class="flow-pulse" aria-hidden="true"></span></div>
+<div class="flow-entity" id="liveBroker"><svg class="art-icon" viewBox="0 0 64 64" role="img" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><circle cx="32" cy="32" r="29" fill="#67e8f9" fill-opacity=".10" stroke="#67e8f9" stroke-opacity=".35"/><rect x="15" y="14" width="34" height="11" rx="3" stroke="#67e8f9" stroke-width="2.5" fill="none"/><rect x="15" y="28" width="34" height="11" rx="3" stroke="#67e8f9" stroke-width="2.5" fill="none"/><rect x="15" y="42" width="34" height="9" rx="3" stroke="#67e8f9" stroke-width="2.5" fill="none"/><path d="M21 19h3m-3 14h3m-3 13h3" stroke="#fbbf24" stroke-width="2.5" stroke-linecap="round"/></svg><strong>BROKER KAFKA</strong><div class="flow-broker" id="brokerMini"></div><small>Registro por partición</small></div>
+<div class="flow-link"><span class="flow-pulse" aria-hidden="true"></span></div>
+<div class="flow-entity" id="liveConsumer"><svg class="art-icon" viewBox="0 0 64 64" role="img" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><circle cx="32" cy="32" r="29" fill="#4adeab" fill-opacity=".10" stroke="#4adeab" stroke-opacity=".35"/><rect x="13" y="17" width="38" height="28" rx="4" fill="none" stroke="#4adeab" stroke-width="2.5"/><path d="M23 27l7 6-7 6m12 0h9M32 45v5m-11 0h22" stroke="#4adeab" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg><strong id="liveConsumerName">CONSUMIDOR</strong><small id="liveConsumerCaption">Esperando lectura</small></div>
+</div><p class="chart-note" id="liveNarrative">Publica mensajes y observa su almacenamiento. Consumirlos no los elimina del registro.</p></div>
+<div class="panel" id="visualMetrics"><div class="viz-heading"><h2>Distribución de mensajes</h2><span class="pill">Datos del simulador</span></div><div id="partitionChart" class="metricplot" role="img" aria-label="Distribución de mensajes por partición"></div><p class="chart-note">Cada barra representa el número de mensajes publicados en una partición. Los offsets comienzan en cero dentro de cada partición.</p></div></div><section id="modeKafka" role="tabpanel" aria-labelledby="tabKafka">
+<div class="stage" aria-label="Diagrama interactivo del recorrido de eventos"><div class="stageFlow"><div class="stageNode" id="visualProducer"><svg class="art-icon" viewBox="0 0 64 64" role="img" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><circle cx="32" cy="32" r="29" fill="#fbbf24" fill-opacity=".10" stroke="#fbbf24" stroke-opacity=".35"/><rect x="13" y="18" width="38" height="29" rx="4" fill="none" stroke="#fbbf24" stroke-width="2.6"/><path d="M20 28h13m-13 7h8m8-3h8m-7-6 7 6-7 6" fill="none" stroke="#fbbf24" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/></svg><strong>Producer</strong><small>Publica mensajes</small></div><span class="stageArrow">→</span><div class="stageNode" id="visualBroker"><svg class="art-icon" viewBox="0 0 64 64" role="img" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><circle cx="32" cy="32" r="29" fill="#67e8f9" fill-opacity=".10" stroke="#67e8f9" stroke-opacity=".35"/><rect x="15" y="14" width="34" height="11" rx="3" stroke="#67e8f9" stroke-width="2.5" fill="none"/><rect x="15" y="28" width="34" height="11" rx="3" stroke="#67e8f9" stroke-width="2.5" fill="none"/><rect x="15" y="42" width="34" height="9" rx="3" stroke="#67e8f9" stroke-width="2.5" fill="none"/><path d="M21 19h3m-3 14h3m-3 13h3" stroke="#fbbf24" stroke-width="2.5" stroke-linecap="round"/></svg><strong>Topic ventas</strong><small>Particiones y offsets</small></div><span class="stageArrow">→</span><div class="stageNode" id="visualConsumer"><svg class="art-icon" viewBox="0 0 64 64" role="img" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><circle cx="32" cy="32" r="29" fill="#4adeab" fill-opacity=".10" stroke="#4adeab" stroke-opacity=".35"/><rect x="13" y="17" width="38" height="28" rx="4" fill="none" stroke="#4adeab" stroke-width="2.5"/><path d="M23 27l7 6-7 6m12 0h9M32 45v5m-11 0h22" stroke="#4adeab" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg><strong>Consumer group</strong><small>Lee a su ritmo</small></div></div><div class="stageCaption" id="visualCaption" role="status">Comienza publicando un evento. Observa cómo aparece en una partición y cómo su offset identifica su posición.</div></div><div class="kafka-workgrid"><div class="producer-column"><div class="panel"><h2>1. Configura y publica eventos</h2><div class="explainer"><h3>¿Qué hace el productor?</h3><p>El productor envía eventos al tópico <strong>ventas</strong>. Cada mensaje queda almacenado en una partición. Si el mensaje tiene clave, el particionador utiliza esa clave para escoger una partición; así es posible mantener el orden de los eventos de una misma clave dentro de esa partición.</p></div>
+<div class="inline">
+<div class="inputgroup"><label for="partitions">Particiones del tópico ventas <span class="helpbox"><button class="help" type="button" aria-label="Ayuda sobre particiones">i</button><span class="tooltip" role="tooltip">Cada partición es un registro ordenado independiente. Más particiones permiten distribuir el trabajo, pero no crean un orden global entre todas ellas.</span></span></label><select id="partitions"><option>1</option><option selected>3</option><option>4</option><option>6</option></select></div>
+<div class="inputgroup"><label for="key">Clave (opcional) <span class="helpbox"><button class="help" type="button" aria-label="Ayuda sobre la clave">i</button><span class="tooltip" role="tooltip">La clave identifica o agrupa eventos relacionados. Con la misma clave, un particionador estable dirige mensajes a la misma partición, mientras no cambie la configuración relevante.</span></span></label><input id="key" placeholder="Ej.: C-025"></div>
+<div class="inputgroup"><label for="value">Mensaje JSON o texto</label><input id="value" value='{"id_venta":"V001","monto":12000}'></div>
+<button class="primary" id="publish">Publicar evento</button>
+<button id="publishSeries">Publicar 5 ejemplos</button>
+<button id="clearKafka">Reiniciar modo</button>
+</div><p class="note">El reparto de mensajes sin clave se simula mediante round-robin. Para mensajes con clave se utiliza un hash didáctico estable, no el particionador exacto de un cliente Kafka real.</p>
+</div>
+</div><div class="topic-column"><div class="panel"><h2>2. Observa el tópico y los offsets <span class="helpbox"><button class="help" aria-label="¿Qué es un offset?" type="button">i</button><span class="tooltip" role="tooltip">Offset: posición secuencial de un mensaje dentro de una partición. Cada partición comienza su propia secuencia en cero.</span></span></h2><p class="muted">Los cuadros representan eventos guardados; el número de cada cuadro es su offset. Los cuadros verdes son los que ya leyó el grupo seleccionado. Consumir no elimina el evento del tópico.</p><div id="topicKafka" class="topic" aria-live="polite"></div></div>
+</div></div><div class="panel"><h2>3. Consume mensajes y compara grupos <span class="helpbox"><button class="help" type="button" aria-label="¿Qué es un grupo consumidor?">i</button><span class="tooltip" role="tooltip">Un grupo coordina lectores que se reparten particiones. Cada grupo tiene su progreso independiente y puede leer el mismo tópico.</span></span></h2><div class="explainer"><strong>Experimenta:</strong> consume con el grupo de analítica, cambia al grupo de auditoría y consume nuevamente. Comprueba que un grupo no desplaza los offsets del otro. Después cambia el número de consumidores para observar la asignación de particiones.</div>
+<div class="inline"><div class="inputgroup"><label for="group">Grupo consumidor</label><select id="group"><option value="analitica">equipo-analitica</option><option value="auditoria">equipo-auditoria</option></select></div>
+<div class="inputgroup"><label for="consumers">Consumidores en el grupo <span class="helpbox"><button class="help" type="button" aria-label="Ayuda sobre consumidores">i</button><span class="tooltip" role="tooltip">Dentro de un grupo, una partición se asigna a un consumidor a la vez. Si hay más consumidores que particiones, algunos quedan sin trabajo.</span></span></label><select id="consumers"><option>1</option><option selected>2</option><option>3</option><option>4</option></select></div>
+<button class="primary" id="consume">Consumir siguiente mensaje</button><button id="consumeAll">Consumir pendientes</button>
+<button id="resetGroup">Reiniciar offsets del grupo</button></div>
+<p class="note" id="groupExplain"></p><div class="stats" id="kStats"></div>
+<h3>Asignaciones y lecturas</h3><div id="assignments"></div>
+</div></section>
+<section id="modeSpark" class="hide" role="tabpanel" aria-labelledby="tabSpark">
+<div class="panel"><h2>1. Comprende la arquitectura</h2><div class="explainer"><h3>¿Qué ocurre en cada etapa?</h3><p><strong>USGS:</strong> entrega una instantánea GeoJSON al consultar una URL REST. <strong>Python:</strong> extrae los campos de cada sismo y publica mensajes JSON con <code>id_evento</code> como clave. <strong>Kafka:</strong> los conserva en el tópico <code>sismos_usgs</code>. <strong>Spark:</strong> lee los registros pendientes, interpreta su esquema y aplica filtros.</p><p>Este es un ejemplo <em>near real-time</em>: consultar periódicamente una API no equivale a recibir eventos continuamente desde ella.</p></div>
+<div class="flow"><div class="node">API REST USGS<br><small>GeoJSON</small></div><span class="arrow">→</span><div class="node">Productor Python<br><small>JSON + id_evento</small></div><span class="arrow">→</span><div class="node">Kafka<br><small>sismos_usgs</small></div><span class="arrow">→</span><div class="node">Spark<br><small>Micro-lotes</small></div></div>
+<p class="note">Una consulta HTTP obtiene una instantánea del feed. El productor la publica en Kafka y Spark lee los mensajes en micro-lotes. Publicar nuevamente el mismo feed puede generar duplicados.</p>
+</div>
+<div class="panel"><h2>2. Datos sísmicos de ejemplo y productor</h2><div class="kguide"><strong>Observa la transformación</strong>Primero consulta el feed: verás <code>features</code>, <code>properties</code> y <code>geometry</code>. Después publica: cada elemento se convierte en un mensaje con clave, partición y offset. Vuelve a publicar el mismo feed para estudiar duplicados.</div>
+<div class="inline"><button class="primary" id="fetchUSGS">Consultar feed simulado</button><button id="publishUSGS" disabled>Publicar feed en Kafka</button><button id="resetSpark">Reiniciar simulación</button></div>
+<p id="feedText" class="note">Consulta el feed simulado para observar la estructura GeoJSON.</p><pre id="geojson" aria-label="Respuesta GeoJSON">Sin consulta todavía.</pre>
+<div class="stats" id="sStats"></div>
+</div>
+<div class="panel"><h2>3. Kafka: particiones y offsets del tópico sismos_usgs</h2><p class="muted">El tópico conserva registros incluso después de que Spark los lea. El cambio de color indica el progreso del consumidor simulado, no la eliminación de mensajes.</p>
+<div id="topicSpark" class="topic"></div><p class="note">Se conserva la clave <code>id_evento</code>. Un mismo ID puede publicarse más de una vez sin que Kafka lo elimine automáticamente.</p></div>
+<div class="panel"><h2>4. Spark Structured Streaming: micro-lotes y filtros <span class="helpbox"><button class="help" type="button" aria-label="Ayuda sobre micro-lotes">i</button><span class="tooltip" role="tooltip">Un micro-lote procesa un conjunto acotado de registros disponibles. Puede tener cero resultados después del filtro, aunque haya leído registros.</span></span></h2><div class="kguide"><strong>¿Qué observar?</strong> Ejecuta un micro-lote y compara mensajes leídos con eventos que superan el umbral de magnitud. El lote puede ser vacío; eso no significa necesariamente que haya fallado la lectura.</div>
+<div class="inline">
+<div class="inputgroup"><label for="threshold">Filtro de magnitud ≥ <span id="thresholdLabel">2.0</span></label><input type="range" id="threshold" min="0" max="7" step=".5" value="2"></div>
+<button class="primary" id="runBatch">Procesar siguiente micro-lote</button><button id="runAll">Procesar pendientes</button>
+<button id="stopSpark">Detener consulta</button><button id="restartSpark">Reiniciar consulta</button></div>
+<p id="sparkInfo" class="callout">Aún no se han procesado eventos. Inicia con el feed y publica los mensajes.</p>
+<pre id="batchOutput">Salida de Spark: esperando micro-lotes...</pre>
+</div>
+<div class="panel"><h2>5. Checkpoint: progreso, reinicio y duplicados <span class="helpbox"><button class="help" type="button" aria-label="Ayuda sobre checkpoints">i</button><span class="tooltip" role="tooltip">El checkpoint guarda información de progreso de una consulta Spark, incluidos offsets procesados. No elimina por sí mismo mensajes duplicados por ID.</span></span></h2><p class="muted">Procesa registros, inspecciona el checkpoint, detén y reinicia la consulta. Luego elimina el checkpoint y reinicia otra vez para comparar cómo cambia el punto de lectura.</p>
+<div class="inline"><button id="checkpointView">Inspeccionar checkpoint</button><button id="checkpointDelete">Eliminar checkpoint simulado</button></div>
+<pre id="checkpointOut">Sin progreso registrado.</pre>
+<p class="note">Con un checkpoint válido, el reinicio recupera offsets. Sin checkpoint, esta simulación arranca desde earliest, como en la primera ejecución. En Spark real, la recuperación también depende de que el checkpoint sea compatible y que los offsets sigan disponibles en Kafka. Los checkpoints no deduplican eventos con el mismo ID.</p>
+</div></section>
+</div><aside class="panel side-inspector"><span class="inspector-label">Inspector de eventos</span><h2>Detalle de un mensaje</h2><p class="note">Selecciona cualquier bloque de las particiones para ver su clave, valor y posición.</p><pre id="inspector">Aún no se ha seleccionado un mensaje.</pre><div class="kguide"><strong>¿Por qué importa?</strong> Un offset es la posición dentro de una partición; no representa una numeración global de todo el tópico.</div></aside></section><section class="panel"><h2>Registro de ejecución</h2><p id="status" role="status" aria-live="polite"></p><pre id="log" aria-label="Registro de ejecución">Listo para comenzar.</pre>
+<div class="callout"><strong>Idea clave:</strong> Kafka conserva eventos organizados por tópico y partición; cada partición tiene offsets propios. Los consumidores y Spark avanzan leyendo mensajes, mientras las aplicaciones deciden cómo procesarlos.</div></section>
+</main>
+<script>
+(function(){
+"use strict";
+const $=id=>document.getElementById(id);
+const events=[{id:"usgs-101",mag:1.2,place:"Región A",time:1790000000000,coords:[-71.2,-33.1,12]},{id:"usgs-102",mag:2.7,place:"Región B",time:1790000120000,coords:[-70.4,-29.8,33]},{id:"usgs-103",mag:3.8,place:"Región C",time:1790000240000,coords:[-72.1,-36.5,18]},{id:"usgs-104",mag:0.9,place:"Región D",time:1790000360000,coords:[-69.6,-25.1,7]},{id:"usgs-105",mag:4.5,place:"Región E",time:1790000480000,coords:[-73.2,-39.2,24]}];
+let kafka,groups,spark,mode="kafka",logs=[];
+function initKafka(){kafka=Array.from({length:+$("partitions").value},()=>[]);groups={analitica:[],auditoria:[]};for(let g in groups)groups[g]=kafka.map(()=>0);renderKafka();}
+function initSpark(){spark={parts:[[],[],[]],feed:null,offsets:[0,0,0],checkpoint:null,batch:0,running:true,seen:[],outputs:[]};$("publishUSGS").disabled=true;$("geojson").textContent="Sin consulta todavía.";$("feedText").textContent="Consulta el feed simulado para observar la estructura GeoJSON.";$("batchOutput").textContent="Salida de Spark: esperando micro-lotes...";$("checkpointOut").textContent="Sin progreso registrado.";renderSpark();}
+
+function drawMetrics(parts){
+ const chart=$("partitionChart"),mini=$("brokerMini");chart.replaceChildren();mini.replaceChildren();
+ parts.forEach((a,i)=>{const col=document.createElement("div");col.className="plotcol";const num=document.createElement("strong");num.textContent=a.length;const bar=document.createElement("div");bar.className="plotbar";bar.style.height=(a.length?Math.max(9,(a.length/Math.max(1,...parts.map(x=>x.length)))*93):3)+"px";const name=document.createElement("small");name.textContent="P"+i;col.append(num,bar,name);chart.appendChild(col);
+ const line=document.createElement("span");line.textContent="P"+i+" · "+a.length+" mensajes";mini.appendChild(line);});
+}
+function stageUpdate(kind,caption){
+ ["liveProducer","liveBroker","liveConsumer"].forEach(id=>$(id).classList.toggle("is-active",id===kind));
+ $("liveNarrative").textContent=caption;
+ if(kind==="liveProducer")$("liveProducerCaption").textContent="Evento preparado";
+ if(kind==="liveBroker")$("liveProducerCaption").textContent="Mensaje confirmado";
+ if(kind==="liveConsumer")$("liveConsumerCaption").textContent="Lectura registrada";
+}
+function illuminate(which,message){stageUpdate(which==="visualConsumer"?"liveConsumer":which==="visualBroker"?"liveBroker":"liveProducer",message);["visualProducer","visualBroker","visualConsumer"].forEach(id=>$(id).classList.toggle("active",id===which));$("visualCaption").textContent=message;}
+function say(m){logs.unshift(new Date().toLocaleTimeString("es")+": "+m);$("log").textContent=logs.slice(0,55).join("\n");$("status").textContent=m;}
+function hash(s){let h=0;for(let i=0;i<s.length;i++)h=(Math.imul(h,31)+s.charCodeAt(i))|0;return h>>>0;}
+function publish(parts,key,value){const n=key?hash(String(key))%parts.length:parts.reduce((best,a,i,all)=>a.length<all[best].length?i:best,0);const offset=parts[n].length;const msg={key:key||null,value,partition:n,offset};parts[n].push(msg);return msg;}
+function showParts(parts,target,reads){target.textContent="";parts.forEach((list,i)=>{const r=document.createElement("div");r.className="partition";const name=document.createElement("strong");name.textContent="Partición "+i;const cells=document.createElement("div");cells.className="cells";list.forEach(m=>{const el=document.createElement("span");el.className="message"+(reads&&m.offset<reads[i]?" consumed":"");el.title="Clave: "+(m.key||"ninguna")+" · valor: "+JSON.stringify(m.value);const off=document.createElement("strong");off.textContent="offset "+m.offset;const val=document.createElement("small");val.textContent=m.key||"sin clave";el.append(off,val);cells.appendChild(el)});if(!list.length){const empty=document.createElement("span");empty.className="muted";empty.textContent="Sin eventos";cells.appendChild(empty)}r.append(name,cells);target.appendChild(r)})}
+function stats(el,items){el.textContent="";items.forEach(([l,v])=>{const d=document.createElement("div");d.className="stat";const title=document.createElement("small");title.textContent=l;const val=document.createElement("strong");val.textContent=v;d.append(title,val);el.append(d)})}
+function renderKafka(){drawMetrics(kafka);const g=$("group").value,cs=+$("consumers").value,reads=groups[g];showParts(kafka,$("topicKafka"),reads);stats($("kStats"),[["Mensajes",kafka.reduce((n,p)=>n+p.length,0)],["Consumidos por "+g,reads.reduce((a,b)=>a+b,0)],["Pendientes",kafka.reduce((n,p,i)=>n+p.length-reads[i],0)]]);$("assignments").textContent="";for(let c=0;c<cs;c++){const d=document.createElement("p");const owned=kafka.map((_,i)=>i).filter(i=>i%cs===c);d.textContent="Consumidor "+(c+1)+": "+(owned.length?"particiones "+owned.join(", "):"sin particiones asignadas");$("assignments").append(d)}$("groupExplain").textContent="Cada partición se asigna a un solo consumidor dentro del grupo. Otros grupos mantienen sus propios offsets. Esta distribución es un rebalanceo conceptual simplificado.";}
+function nextConsume(all){let count=0,g=$("group").value,c=+$("consumers").value;const reads=groups[g];do {let found=false;for(let p=0;p<kafka.length;p++){const o=reads[p];if(o<kafka[p].length){reads[p]++;count++;found=true;say("Grupo "+g+" · consumidor "+((p%c)+1)+" leyó partición "+p+", offset "+o);if(!all)break}}if(!found||!all)break}while(true);if(!count)say("No hay mensajes pendientes para "+g);renderKafka();if(count)illuminate("visualConsumer","El grupo "+g+" avanzó sus offsets al leer mensajes; Kafka no los elimina y otros grupos conservan su propio progreso.");}
+function renderSpark(){if(mode==="spark")drawMetrics(spark.parts);showParts(spark.parts,$("topicSpark"),spark.offsets);stats($("sStats"),[["Eventos del feed",spark.feed?spark.feed.features.length:0],["Mensajes Kafka",spark.parts.reduce((n,p)=>n+p.length,0)],["Micro-lotes",spark.batch],["Offsets leídos",spark.offsets.reduce((a,b)=>a+b,0)]]);}
+function getFeed(){return {type:"FeatureCollection",features:events.map(e=>({type:"Feature",id:e.id,properties:{mag:e.mag,place:e.place,time:e.time},geometry:{type:"Point",coordinates:e.coords}}))};}
+function batch(){if(!spark.running){say("Consulta detenida. Reiníciala para procesar.");return false}let taken=[];for(let p=0;p<3;p++){let count=0;while(spark.offsets[p]<spark.parts[p].length&&count<2){taken.push(spark.parts[p][spark.offsets[p]++]);count++}}const limit=+$("threshold").value;const pass=taken.filter(m=>m.value.magnitud>=limit);const dup=taken.filter(m=>spark.seen.includes(m.value.id_evento));taken.forEach(m=>spark.seen.push(m.value.id_evento));let lines=["Batch: "+spark.batch,"Entradas: "+taken.length+" | Filtradas: "+pass.length+" | Umbral: "+limit.toFixed(1),"Offsets siguientes: "+JSON.stringify(spark.offsets),""];pass.forEach(m=>lines.push(m.value.id_evento+" | magnitud "+m.value.magnitud+" | "+m.value.ubicacion));if(!pass.length)lines.push("(micro-lote sin resultados)");if(dup.length)lines.push("AVISO: "+dup.length+" registros con ID ya observado; el checkpoint NO los elimina.");$("batchOutput").textContent=lines.join("\n")+"\n\n"+$("batchOutput").textContent.slice(0,5500);spark.checkpoint={offsets:spark.offsets.slice(),nextBatch:spark.batch+1};spark.batch++;$("sparkInfo").textContent="Micro-lote procesado: "+taken.length+" registros leídos; "+pass.length+" cumplen el filtro. "+(dup.length?"Se detectaron IDs repetidos.":"");stageUpdate("liveConsumer","Spark leyó "+taken.length+" mensajes y mostró "+pass.length+" registros tras el filtro. El progreso se conserva en el checkpoint simulado.");say("Spark procesó Batch "+(spark.batch-1)+" ("+pass.length+" visibles).");renderSpark();return !!taken.length;}
+$("tabKafka").onclick=()=>switchMode("kafka");$("tabSpark").onclick=()=>switchMode("spark");
+function switchMode(to){mode=to;$("liveConsumerName").textContent=to==="spark"?"SPARK STREAM":"CONSUMIDOR";drawMetrics(to==="spark"?spark.parts:kafka);$("modeKafka").classList.toggle("hide",to!=="kafka");$("modeSpark").classList.toggle("hide",to!=="spark");$("tabKafka").setAttribute("aria-selected",to==="kafka");$("tabSpark").setAttribute("aria-selected",to==="spark");$("tabKafka").classList.toggle("primary",to==="kafka");$("tabSpark").classList.toggle("primary",to==="spark");say(to==="kafka"?"Modo fundamentos de Kafka activo.":"Modo USGS → Kafka → Spark activo.");}
+$("partitions").onchange=()=>{initKafka();say("Tópico ventas reiniciado con "+kafka.length+" particiones.");};
+$("publish").onclick=()=>{const m=publish(kafka,$("key").value.trim(),$("value").value);renderKafka();illuminate("visualBroker","El productor publicó un mensaje. Kafka lo añadió a la partición "+m.partition+" con offset "+m.offset+". El evento permanece disponible para los grupos consumidores.");say("Publicado en partición "+m.partition+", offset "+m.offset);};
+$("publishSeries").onclick=()=>{for(let i=0;i<5;i++)publish(kafka,i%2?"C-025":"C-031",{id_venta:"V"+(i+1),monto:10000+i*3000});renderKafka();illuminate("visualBroker","Se publicaron cinco eventos. Observa cómo cada partición asigna offsets desde cero y cómo la clave influye en la distribución.");say("Cinco eventos de ejemplo publicados.");};
+$("clearKafka").onclick=()=>{initKafka();say("Modo Kafka reiniciado.");};
+$("group").onchange=renderKafka;$("consumers").onchange=()=>{renderKafka();say("Simulación de rebalanceo: "+$("consumers").value+" consumidores.");};
+$("consume").onclick=()=>nextConsume(false);$("consumeAll").onclick=()=>nextConsume(true);
+$("resetGroup").onclick=()=>{groups[$("group").value]=kafka.map(()=>0);renderKafka();say("Offsets simulados del grupo reiniciados al comienzo.");};
+$("fetchUSGS").onclick=()=>{spark.feed=getFeed();$("geojson").textContent=JSON.stringify(spark.feed,null,2);$("publishUSGS").disabled=false;$("feedText").textContent="HTTP 200 (simulado): FeatureCollection con "+spark.feed.features.length+" eventos. Es una instantánea, no un stream HTTP continuo.";renderSpark();say("Feed sísmico de ejemplo consultado.");};
+$("publishUSGS").onclick=()=>{if(!spark.feed)return;spark.feed.features.forEach(f=>{const p=f.properties,c=f.geometry.coordinates;publish(spark.parts,f.id,{id_evento:f.id,magnitud:p.mag,ubicacion:p.place,fecha_evento:p.time,longitud:c[0],latitud:c[1],profundidad_km:c[2]})});renderSpark();stageUpdate("liveBroker","El productor transformó la instantánea del feed y publicó eventos JSON; ahora Kafka conserva sus offsets.");say("Se publicaron "+spark.feed.features.length+" eventos. Repetir la publicación genera mensajes con IDs repetidos.");};
+$("threshold").oninput=()=>{$("thresholdLabel").textContent=(+$("threshold").value).toFixed(1);};
+$("runBatch").onclick=()=>batch();$("runAll").onclick=()=>{for(let i=0;i<50;i++)if(!batch())break;};
+$("stopSpark").onclick=()=>{spark.running=false;say("Consulta Spark detenida. Checkpoint conservado.");};
+$("restartSpark").onclick=()=>{spark.running=true;if(spark.checkpoint){spark.offsets=spark.checkpoint.offsets.slice();spark.batch=spark.checkpoint.nextBatch;say("Spark retomó offsets desde el checkpoint.");}else{spark.offsets=[0,0,0];spark.batch=0;say("Sin checkpoint: nueva consulta desde earliest (simulado).");}renderSpark();};
+$("checkpointView").onclick=()=>{$("checkpointOut").textContent=spark.checkpoint?JSON.stringify({offsets:spark.checkpoint.offsets,commits:spark.checkpoint.nextBatch-1,siguiente_batch:spark.checkpoint.nextBatch},null,2):"No hay checkpoint: procesa al menos un micro-lote.";say("Estado del checkpoint inspeccionado.");};
+$("checkpointDelete").onclick=()=>{spark.checkpoint=null;$("checkpointOut").textContent="Checkpoint simulado eliminado. Reinicia la consulta para empezar desde earliest.";say("Checkpoint eliminado; los mensajes de Kafka permanecen.");};
+$("resetSpark").onclick=()=>{initSpark();say("Modo USGS → Kafka → Spark reiniciado.");};
+
+const examples={
+ retail:'<strong>Problema:</strong> Una compra debe actualizar inventario, pagos, envíos y analítica sin que todos los sistemas dependan de una única llamada síncrona.<p><strong>Aporte de Kafka:</strong> un evento de venta puede ser leído por varios sistemas a ritmos independientes, con relectura según la retención.</p><p><strong>Precaución:</strong> Kafka no sustituye la base transaccional ni garantiza por sí mismo pagos exactamente una vez.</p>',
+ iot:'<strong>Problema:</strong> Miles de sensores generan mediciones frecuentes que distintas aplicaciones necesitan analizar.<p><strong>Aporte de Kafka:</strong> desacopla la recepción de telemetría del análisis, almacenamiento y detección de anomalías; las particiones permiten paralelismo.</p><p><strong>Precaución:</strong> se requieren políticas de retención, claves y capacidad acordes a las tasas de eventos.</p>',
+ sismos:'<strong>Problema:</strong> la consulta periódica de un feed REST devuelve instantáneas, mientras distintos procesos necesitan recibir y analizar los registros publicados.<p><strong>Aporte de Kafka:</strong> desacopla la consulta y publicación en Python del procesamiento en Spark, que puede recuperar posiciones de lectura.</p><p><strong>Precaución:</strong> republicar el mismo sismo puede duplicarlo; el feed REST no es un flujo de eventos continuo.</p>'
+};
+document.querySelectorAll(".usecase").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll(".usecase").forEach(x=>x.setAttribute("aria-pressed",String(x===b)));$("caseDetail").innerHTML=examples[b.dataset.case];if(b.dataset.case==="sismos")switchMode("spark");}));
+document.addEventListener("click",e=>{const m=e.target.closest(".message");if(!m)return;const parent=m.closest(".topic");if(!parent)return;const parts=parent.id==="topicSpark"?spark.parts:kafka;const row=m.closest(".partition");const pi=[...row.parentNode.children].indexOf(row);const mi=[...m.parentNode.children].indexOf(m);const data=parts[pi]?.[mi];if(data){document.querySelectorAll(".message.selected").forEach(x=>x.classList.remove("selected"));m.classList.add("selected");$("inspector").textContent=JSON.stringify({topic:parent.id==="topicSpark"?"sismos_usgs":"ventas",partition:data.partition,offset:data.offset,key:data.key,value:data.value},null,2);}});
+initKafka();initSpark();switchMode("kafka");illuminate("visualProducer","Comienza escribiendo y publicando un evento. Los controles modifican el estado de la simulación.");
+})();
+</script></body></html>
