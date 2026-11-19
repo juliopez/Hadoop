@@ -276,6 +276,6 @@ Marcar cada condición:
 Una vez completada esta preparación, desarrollar en orden:
 
 1. [Guía práctica 1 — Publicación y consumo de eventos con Apache Kafka](Semana_12_Kafka_Ejercicios.md).
-2. [Guía práctica 2 — Procesamiento Near Real-Time de sismos con USGS, Kafka y Spark](Guia_Practica_2_Kafka_Spark.md).
+2. [Guía práctica 2 — Procesamiento Near Real-Time de sismos con USGS, Kafka y Spark](Semana_14_Kafka_Ejercicios.md).
 
 **Alcance:** la guía habilita Kafka y su integración con una instalación existente de Spark. Los comandos Docker describen el despliegue de referencia; deben adaptarse cuando los servicios se ejecutan de forma nativa o con otra configuración. Kafka y ZooKeeper están definidos en el Compose del repositorio; la preparación consiste en comprobarlos y resolver la conectividad, no en crear un clúster nuevo. No se requiere volver a desplegar HDFS, Hive ni Spark.
